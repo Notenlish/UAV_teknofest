@@ -13,5 +13,31 @@ class Point:
     def __eq__(self, other: object) -> bool:
         return self.x == other.x and self.y == other.y
 
+
+class DubinPoint:
+    def __init__(self, x, y, theta) -> None:
+        """point that the dubins algorithm uses
+
+        Args:
+            x (float): point x
+            y (float): point y
+            theta (float): between 0 and 2pi
+        """
+        self.x = x
+        self.y = y
+        self.theta = theta
+    
+    def __getitem__(self, index):
+        if index == 0:
+            return self.x
+        if index == 1:
+            return self.y
+        if index == 2:
+            return self.theta
+
+    def as_dict(self):
+        return {"x":self.x,"y":self.y,"theta":self.theta}
+
+
 if __name__ == '__main__':
     assert Point(1,2) == Point.from_tuple((1,2))
