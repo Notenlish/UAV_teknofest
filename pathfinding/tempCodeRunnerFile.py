@@ -1,0 +1,1 @@
+            self.window.fill("#EBEBEB")
