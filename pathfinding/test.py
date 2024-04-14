@@ -28,6 +28,11 @@ class App:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     raise SystemExit
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.result_path, self.sample_results = self.pathmaker.run(DubinPoint(50, 380, 1),
+                        DubinPoint(*pygame.mouse.get_pos(), 0.5),
+                        rho=self.turning_radius,
+                        step_size=self.step_size)
             self.visualizer.draw(self.result_path, self.sample_results)
             pygame.display.update()
             self.clock.tick(self.max_fps)

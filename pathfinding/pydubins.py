@@ -66,7 +66,7 @@ def dubins_shortest_path(path, q0, q1, rho):
     errcode = dubins_intermediate_results(in_, q0, q1, rho)
     if errcode != EDUBOK:
         return errcode
-    print(path)
+    #print(path)
     path.qi[0] = q0[0]
     path.qi[1] = q0[1]
     path.qi[2] = q0[2]
@@ -309,8 +309,8 @@ def dubins_LRL(in_, out):
     return EDUBNOPATH
 
 def dubins_word(in_, pathType, out):
-    print(pathType)
-    print("There might be a bug here...")
+    #print(pathType)
+    #print("There might be a bug here...")
     result = 0
     if pathType == DubinPathStuffIDKMAN.LSL:
         result = dubins_LSL(in_, out)
