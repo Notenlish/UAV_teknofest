@@ -7,6 +7,11 @@ from uav import OwnUAV, TargetUAV
 
 import math
 
+
+# TODO the pathfinder will calculate two paths, one for the guessed location of target
+# and the other for the location confirmed by server
+# When drawing the paths and the uavs, keep this in mind
+
 class Visualizer:
     def __init__(self, surface: pygame.Surface, display: pygame.display) -> None:
         self.surface = surface
