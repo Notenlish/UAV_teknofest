@@ -76,7 +76,7 @@ def dubins_shortest_path(path, q0, q1, rho):
     best_word = -1
 
     for i in range(6):
-        pathType = DubinPathStuffIDKMAN(i) # DubinsPathType(i) # NOTE: I changed this
+        pathType = DubinPathStuffIDKMAN(i) # DubinsPathType(i) # NOTE I changed this
         params = [0.0, 0.0, 0.0]
         errcode = dubins_word(in_, pathType, params)
         if errcode == EDUBOK:
