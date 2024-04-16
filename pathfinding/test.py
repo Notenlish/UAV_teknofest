@@ -9,7 +9,7 @@ from telemetry import Telemetry
 
 class App:
     def __init__(self) -> None:
-        self.window = pygame.display.set_mode((500, 500))
+        self.window = pygame.display.set_mode((700, 500))
         self.clock = pygame.time.Clock()
         
         # config
