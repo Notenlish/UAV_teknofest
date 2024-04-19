@@ -6,6 +6,7 @@ from visualizer import Visualizer
 from pathfinder import Pathfinder
 from telemetry import Telemetry
 from camera import Camera
+import math
 
 
 class App:
@@ -41,6 +42,17 @@ class App:
             self.camera.move(0, 1, dt)
         if keys[pygame.K_d]:
             self.camera.move(1, 0, dt)
+
+        campos = self.camera.get_pos()
+        mousepos = pygame.mouse.get_pos()
+        pos = (mousepos[0]-campos[0],mousepos[1]-campos[1])
+        diffx = pos[0] - self.telemetry.own_uav.x
+        diffy = pos[1] - self.telemetry.own_uav.y
+        
+        # NOTE: camera pos is not taken into account correctly, its bugged.
+        
+        theta = math.atan2(diffy,diffx)
+        self.telemetry.own_uav.theta = theta
 
     def run(self):
         while True:
