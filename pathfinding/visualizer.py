@@ -104,8 +104,9 @@ class Visualizer:
         points = []
         for v in segments.values():
             point = subtract_tuple((v["q"][0], v["q"][1]), self.camera.get_pos())
-            pygame.draw.circle(self.surface, "#8D99AE", point, radius=2)
+            pygame.draw.circle(self.surface, "#8D99AE", point, radius=0)
             points.append(point)
+        points.append(subtract_tuple(target_uav.get_pos(), self.camera.get_pos()))
         pygame.draw.lines(self.surface, "black", False, points, width=1)
 
         start_pos = subtract_tuple(
