@@ -24,3 +24,7 @@ class OwnUAV(UAV):
 class TargetUAV(UAV):
     def __init__(self, x, y, theta, calculated_vel=None, past_locations=[]) -> None:
         super().__init__(x, y, theta, calculated_vel, past_locations)
+        self.turnfor = 0
+        self.waitfor = 0
+        self.time_waited = 0
+        self.since_last_pos_save = 0

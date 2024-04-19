@@ -4,6 +4,7 @@ from shape import Point
 from pydubins import DubinsPath
 
 from uav import OwnUAV, TargetUAV
+from camera import Camera
 
 import math
 
@@ -13,8 +14,18 @@ import math
 # When drawing the paths and the uavs, keep this in mind
 
 
+def add_tuple(t1, t2):
+    return (t1[0] + t2[0], t1[1] + t2[1])
+
+
+def subtract_tuple(t1, t2):
+    return (t1[0] - t2[0], t1[1] - t2[1])
+
+
 class Visualizer:
-    def __init__(self, surface: pygame.Surface, display: pygame.display) -> None:
+    def __init__(
+        self, surface: pygame.Surface, camera: Camera, display: pygame.display
+    ) -> None:
         self.surface = surface
         pygame.font.init()
         try:
@@ -22,19 +33,21 @@ class Visualizer:
         except FileNotFoundError:
             self.font = pygame.font.Font("Outfit-VariableFont_wght.ttf", 16)
         self.display = display
+        self.camera = camera
 
         self.uav_rad = 15
         self.past_loc_rad = 5
         self.uav_dir_width = 4
-        
 
     def draw_text(self, text, point: Point):
         surf = self.font.render(text)
-        self.surface.blit(surf, point.get_tuple())
+        self.surface.blit(
+            surf, subtract_tuple(point.get_tuple(), self.camera.get_pos())
+        )
 
     def _draw_uavs(self, own_uav: OwnUAV, target_uav: TargetUAV):
-        own_uav_pos = own_uav.get_pos()
-        target_uav_pos = target_uav.get_pos()
+        own_uav_pos = subtract_tuple(own_uav.get_pos(), self.camera.get_pos())
+        target_uav_pos = subtract_tuple(target_uav.get_pos(), self.camera.get_pos())
 
         pygame.draw.circle(self.surface, "#8ECAE6", own_uav_pos, radius=self.uav_rad)
         pygame.draw.line(
@@ -48,9 +61,7 @@ class Visualizer:
             width=self.uav_dir_width,
         )
 
-        pygame.draw.circle(
-            self.surface, "#EC4F62", target_uav.get_pos(), radius=self.uav_rad
-        )
+        pygame.draw.circle(self.surface, "#EC4F62", target_uav_pos, radius=self.uav_rad)
         pygame.draw.line(
             self.surface,
             "#B81530",
@@ -64,9 +75,19 @@ class Visualizer:
 
     def _draw_past_locations(self, own_uav: OwnUAV, target_uav: TargetUAV):
         for loc in own_uav.past_locations:
-            pygame.draw.circle(self.surface, "#D6C9C9", loc, radius=self.past_loc_rad)
+            pygame.draw.circle(
+                self.surface,
+                "#D6C9C9",
+                subtract_tuple(loc, self.camera.get_pos()),
+                radius=self.past_loc_rad,
+            )
         for loc in target_uav.past_locations:
-            pygame.draw.circle(self.surface, "#C9CFD6", loc, radius=self.past_loc_rad)
+            pygame.draw.circle(
+                self.surface,
+                "#C9CFD6",
+                subtract_tuple(loc, self.camera.get_pos()),
+                radius=self.past_loc_rad,
+            )
 
     def draw(
         self,
@@ -82,15 +103,16 @@ class Visualizer:
 
         points = []
         for v in segments.values():
-            point = (v["q"][0], v["q"][1])
+            point = subtract_tuple((v["q"][0], v["q"][1]), self.camera.get_pos())
             pygame.draw.circle(self.surface, "#8D99AE", point, radius=2)
             points.append(point)
         pygame.draw.lines(self.surface, "black", False, points, width=1)
 
-        start_pos = (path.qi[0], path.qi[1])  # same as just getting own_uav.get_pos()
-        end_pos = (
-            target_uav.get_pos()
-        )  # for some reason the path object doesnt have end path
+        start_pos = subtract_tuple(
+            (path.qi[0], path.qi[1]), self.camera.get_pos()
+        )  # same as just getting own_uav.get_pos()
+        end_pos = subtract_tuple((target_uav.get_pos()), self.camera.get_pos())
+        # for some reason the path object doesnt have end path
         pygame.draw.circle(self.surface, "black", start_pos, radius=2)
         pygame.draw.circle(self.surface, "black", end_pos, radius=2)
 
