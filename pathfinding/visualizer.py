@@ -35,9 +35,9 @@ class Visualizer:
         self.display = display
         self.camera = camera
 
-        self.uav_rad = 15
+        self.uav_rad = 16
         self.past_loc_rad = 5
-        self.uav_dir_width = 4
+        self.uav_dir_width = 5
 
     def draw_text(self, text, point: Point):
         surf = self.font.render(text)

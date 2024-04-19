@@ -11,6 +11,7 @@ from camera import Camera
 class App:
     def __init__(self) -> None:
         self.window = pygame.display.set_mode((700, 500))
+        pygame.display.set_caption("Test")
         self.clock = pygame.time.Clock()
 
         # config
