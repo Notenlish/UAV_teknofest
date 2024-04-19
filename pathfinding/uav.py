@@ -12,6 +12,9 @@ class UAV:
     def get_pos(self):
         return (self.x, self.y)
 
+    def get_pos_text(self):
+        return "(" + "{:.0f},".format(self.x) + "{:.0f},".format(self.y) + ")" # add .2f if you want
+
     def as_dubin_point(self):
         return DubinPoint(self.x, self.y, self.theta)
 

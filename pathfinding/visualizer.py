@@ -29,9 +29,9 @@ class Visualizer:
         self.surface = surface
         pygame.font.init()
         try:
-            self.font = pygame.font.Font("pathfinding/Outfit-VariableFont_wght.ttf", 16)
+            self.font = pygame.font.Font("pathfinding/Renogare-Regular.otf", 16)
         except FileNotFoundError:
-            self.font = pygame.font.Font("Outfit-VariableFont_wght.ttf", 16)
+            self.font = pygame.font.Font("Renogare-Regular.otf", 16)
         self.display = display
         self.camera = camera
 
@@ -39,36 +39,40 @@ class Visualizer:
         self.past_loc_rad = 5
         self.uav_dir_width = 5
 
-    def draw_text(self, text, point: Point):
-        surf = self.font.render(text)
-        self.surface.blit(
-            surf, subtract_tuple(point.get_tuple(), self.camera.get_pos())
-        )
+    def draw_text(self, text, point: tuple[float, float], color="black"):
+        surf = self.font.render(text, antialias=True, color=color)
+        self.surface.blit(surf, point)
 
     def _draw_uavs(self, own_uav: OwnUAV, target_uav: TargetUAV):
-        own_uav_pos = subtract_tuple(own_uav.get_pos(), self.camera.get_pos())
-        target_uav_pos = subtract_tuple(target_uav.get_pos(), self.camera.get_pos())
+        own_uav_campos = subtract_tuple(own_uav.get_pos(), self.camera.get_pos())
+        target_uav_campos = subtract_tuple(target_uav.get_pos(), self.camera.get_pos())
 
-        pygame.draw.circle(self.surface, "#8ECAE6", own_uav_pos, radius=self.uav_rad)
+        pygame.draw.circle(self.surface, "#8ECAE6", own_uav_campos, radius=self.uav_rad)
+        self.draw_text(
+            own_uav.get_pos_text(), subtract_tuple(own_uav_campos, (self.uav_rad, self.uav_rad + 20))
+        )
         pygame.draw.line(
             self.surface,
             "#219EBC",
-            own_uav_pos,
+            own_uav_campos,
             (
-                own_uav_pos[0] + (math.cos(own_uav.theta) * self.uav_rad),
-                own_uav_pos[1] + (math.sin(own_uav.theta) * self.uav_rad),
+                own_uav_campos[0] + (math.cos(own_uav.theta) * self.uav_rad),
+                own_uav_campos[1] + (math.sin(own_uav.theta) * self.uav_rad),
             ),
             width=self.uav_dir_width,
         )
 
-        pygame.draw.circle(self.surface, "#EC4F62", target_uav_pos, radius=self.uav_rad)
+        pygame.draw.circle(self.surface, "#EC4F62", target_uav_campos, radius=self.uav_rad)
+        self.draw_text(
+            target_uav.get_pos_text(), subtract_tuple(target_uav_campos, (self.uav_rad, self.uav_rad + 20))
+        )
         pygame.draw.line(
             self.surface,
             "#B81530",
-            target_uav_pos,
+            target_uav_campos,
             (
-                target_uav_pos[0] + (math.cos(target_uav.theta) * self.uav_rad),
-                target_uav_pos[1] + (math.sin(target_uav.theta) * self.uav_rad),
+                target_uav_campos[0] + (math.cos(target_uav.theta) * self.uav_rad),
+                target_uav_campos[1] + (math.sin(target_uav.theta) * self.uav_rad),
             ),
             width=self.uav_dir_width,
         )

@@ -45,13 +45,11 @@ class App:
 
         campos = self.camera.get_pos()
         mousepos = pygame.mouse.get_pos()
-        pos = (mousepos[0]-campos[0],mousepos[1]-campos[1])
+        pos = (mousepos[0] + campos[0], mousepos[1] + campos[1])
         diffx = pos[0] - self.telemetry.own_uav.x
         diffy = pos[1] - self.telemetry.own_uav.y
-        
-        # NOTE: camera pos is not taken into account correctly, its bugged.
-        
-        theta = math.atan2(diffy,diffx)
+
+        theta = math.atan2(diffy, diffx)
         self.telemetry.own_uav.theta = theta
 
     def run(self):
