@@ -32,6 +32,8 @@ measurement_variance = 0.1**2  # Measurement noise variance
 kf = KalmanFilter(initial_state, initial_covariance, process_variance, measurement_variance)
 
 # Assuming you have a measurement z (e.g., from a sensor)
+# Z: measurement
+# 
 z = np.random.normal(0, 0.1)  # Simulated noisy measurement
 H = np.array([[1, 0]])  # Measurement matrix (position measurement)
 
