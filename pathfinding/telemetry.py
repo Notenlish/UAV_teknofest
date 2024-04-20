@@ -8,22 +8,25 @@ import math
 
 
 class Telemetry:
-    def __init__(self, own_uav: OwnUAV, target_uav: TargetUAV) -> None:
-        self.own_uav = own_uav
-        self.target_uav = target_uav
+    def __init__(self) -> None:
+        self.own_uav = OwnUAV(100, 100, theta=0)
+        self.target_uav = TargetUAV(400, 300, theta=0)
+        self.server_wait_time = 1
+        self.waited = self.server_wait_time
+        
+        self.uav_vel = 50
 
     def target_change(self):
-        target_uav = self.target_uav
-        if target_uav.time_waited >= target_uav.waitfor:  # seconds
-            print(f"{target_uav.waitfor:.2f} seconds passed")
+        if self.target_uav.time_waited >= self.target_uav.waitfor:  # seconds
+            print(f"{self.target_uav.waitfor:.2f} seconds passed")
             self.time_passed = 0
 
             _rot_dir = choice([-1, 1])
-            target_uav.turnfor = ((random() * 0.7) + 0.05) * _rot_dir
+            self.target_uav.turnfor = ((random() * 0.7) + 0.05) * _rot_dir
 
-            target_uav.waitfor = (random() * 2) + 2
-            target_uav.time_waited = 0
-            target_uav.since_last_pos_save = 0
+            self.target_uav.waitfor = (random() * 2) + 2
+            self.target_uav.time_waited = 0
+            self.target_uav.since_last_pos_save = 0
 
     def run(self, dt):
         target_uav = self.target_uav
@@ -46,6 +49,11 @@ class Telemetry:
 
         target_uav.theta += target_uav.turnfor * time_passed_s
         target_uav.theta += target_uav.turnfor * time_passed_s
-        target_uav.x += math.cos(target_uav.theta) * 50 * time_passed_s
-        target_uav.y += math.sin(target_uav.theta) * 50 * time_passed_s
+        target_uav.x += math.cos(target_uav.theta) * self.uav_vel * time_passed_s
+        target_uav.y += math.sin(target_uav.theta) * self.uav_vel * time_passed_s
         target_uav.since_last_pos_save -= time_passed_s
+
+        self.waited += time_passed_s
+        if self.waited >= self.server_wait_time:
+            self.waited = 0
+            return {"own_uav":own_uav.as_dubin_point(), "target_uav":target_uav.as_dubin_point()}

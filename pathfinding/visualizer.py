@@ -3,7 +3,7 @@ import pygame
 from shape import Point
 from pydubins import DubinsPath
 
-from uav import OwnUAV, TargetUAV
+from uav import OwnUAV, TargetUAV, DubinPoint
 from camera import Camera
 
 import math
@@ -43,8 +43,8 @@ class Visualizer:
         surf = self.font.render(text, antialias=True, color=color)
         self.surface.blit(surf, point)
 
-    def _draw_uavs(self, own_uav: OwnUAV, target_uav: TargetUAV):
-        own_uav_campos = subtract_tuple(own_uav.get_pos(), self.camera.get_pos())
+    def _draw_uavs(self, own_uav: DubinPoint, target_uav: DubinPoint):
+        own_uav_campos = subtract_tuple(own_uav, self.camera.get_pos())
         target_uav_campos = subtract_tuple(target_uav.get_pos(), self.camera.get_pos())
 
         pygame.draw.circle(self.surface, "#8ECAE6", own_uav_campos, radius=self.uav_rad)
@@ -77,15 +77,15 @@ class Visualizer:
             width=self.uav_dir_width,
         )
 
-    def _draw_past_locations(self, own_uav: OwnUAV, target_uav: TargetUAV):
-        for loc in own_uav.past_locations:
+    def _draw_past_locations(self, own_uav_past_locations:list[DubinPoint], target_uav_past_locations):
+        for loc in own_uav_past_locations:
             pygame.draw.circle(
                 self.surface,
                 "#D6C9C9",
                 subtract_tuple(loc, self.camera.get_pos()),
                 radius=self.past_loc_rad,
             )
-        for loc in target_uav.past_locations:
+        for loc in target_uav_past_locations:
             pygame.draw.circle(
                 self.surface,
                 "#C9CFD6",
@@ -95,14 +95,18 @@ class Visualizer:
 
     def draw(
         self,
-        own_uav: OwnUAV,
-        target_uav: TargetUAV,
+        own_uav: DubinPoint,
+        target_uav: DubinPoint,
+        own_uav_past_locations: list[DubinPoint],
+        target_uav_past_locations: list[DubinPoint],
+        predicted: DubinPoint,
+        updated: DubinPoint,
         path: DubinsPath,
         segments: dict[str, any],
     ):
         self.surface.fill("#EBEBEB")
 
-        self._draw_past_locations(own_uav, target_uav)
+        self._draw_past_locations(own_uav_past_locations, target_uav_past_locations)
         self._draw_uavs(own_uav, target_uav)
 
         points = []
@@ -120,5 +124,11 @@ class Visualizer:
         # for some reason the path object doesnt have end path
         pygame.draw.circle(self.surface, "black", start_pos, radius=2)
         pygame.draw.circle(self.surface, "black", end_pos, radius=2)
+
+
+        if updated:
+            pygame.draw.circle(self.surface, "purple", subtract_tuple(updated.get_pos(), self.camera.get_pos()), radius=self.uav_rad)
+        if predicted:
+            pygame.draw.circle(self.surface, "pink", subtract_tuple(predicted.get_pos(), self.camera.get_pos()), radius=self.uav_rad)
 
         self.display.update()
