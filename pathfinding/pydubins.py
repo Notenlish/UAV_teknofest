@@ -1,20 +1,21 @@
-
 ### ERRORS
 EDUBOK = 0
-EDUBCOCONFIGS =1 #Colocated configurations
-EDUBPARAM=2#Path parameterisitation error */
-EDUBBADRHO=3# the rho value is invalid */
-EDUBNOPATH=4#
+EDUBCOCONFIGS = 1  # Colocated configurations
+EDUBPARAM = 2  # Path parameterisitation error */
+EDUBBADRHO = 3  # the rho value is invalid */
+EDUBNOPATH = 4  #
 
 import math
 from enum import IntEnum
 
-EPSILON = (10e-10)
+EPSILON = 10e-10
+
 
 class DubinsPathType(IntEnum):
     L_SEG = 0
     S_SEG = 1
     R_SEG = 2
+
 
 DIRDATA = [
     [DubinsPathType.L_SEG, DubinsPathType.S_SEG, DubinsPathType.L_SEG],
@@ -22,8 +23,9 @@ DIRDATA = [
     [DubinsPathType.R_SEG, DubinsPathType.S_SEG, DubinsPathType.L_SEG],
     [DubinsPathType.R_SEG, DubinsPathType.S_SEG, DubinsPathType.R_SEG],
     [DubinsPathType.R_SEG, DubinsPathType.L_SEG, DubinsPathType.R_SEG],
-    [DubinsPathType.L_SEG, DubinsPathType.R_SEG, DubinsPathType.L_SEG]
+    [DubinsPathType.L_SEG, DubinsPathType.R_SEG, DubinsPathType.L_SEG],
 ]
+
 
 class DubinPathStuffIDKMAN(IntEnum):
     LSL = 0
@@ -32,6 +34,7 @@ class DubinPathStuffIDKMAN(IntEnum):
     RSR = 3
     RLR = 4
     LRL = 5
+
 
 class DubinsIntermediateResults:
     def __init__(self):
@@ -45,38 +48,42 @@ class DubinsIntermediateResults:
         self.c_ab = 0.0
         self.d_sq = 0.0
 
+
 class DubinsPath:
     def __init__(self):
         self.qi = [0.0, 0.0, 0.0]
         self.rho = 0.0  # Turning radius
         self.param = [0.0, 0.0, 0.0]
         self.type = DubinsPathType.L_SEG
-    
+
     def __str__(self) -> str:
         return f"<DubinsPath qi: {self.qi}  rho: {self.rho}  param:{self.param}  type:{self.type}(aka: {DubinPathStuffIDKMAN(self.type).name}) >"
+
 
 def fmodr(x, y):
     return x - y * math.floor(x / y)
 
+
 def mod2pi(theta):
     return fmodr(theta, 2 * math.pi)
+
 
 def dubins_shortest_path(path, q0, q1, rho):
     in_ = DubinsIntermediateResults()
     errcode = dubins_intermediate_results(in_, q0, q1, rho)
     if errcode != EDUBOK:
         return errcode
-    #print(path)
+    # print(path)
     path.qi[0] = q0[0]
     path.qi[1] = q0[1]
     path.qi[2] = q0[2]
     path.rho = rho
 
-    best_cost = float('inf')
+    best_cost = float("inf")
     best_word = -1
 
     for i in range(6):
-        pathType = DubinPathStuffIDKMAN(i) # DubinsPathType(i) # NOTE I changed this
+        pathType = DubinPathStuffIDKMAN(i)  # DubinsPathType(i) # NOTE I changed this
         params = [0.0, 0.0, 0.0]
         errcode = dubins_word(in_, pathType, params)
         if errcode == EDUBOK:
@@ -92,6 +99,7 @@ def dubins_shortest_path(path, q0, q1, rho):
     if best_word == -1:
         return EDUBNOPATH
     return EDUBOK
+
 
 def dubins_path(path, q0, q1, rho, pathType):
     in_ = DubinsIntermediateResults()
@@ -110,6 +118,7 @@ def dubins_path(path, q0, q1, rho, pathType):
             path.type = pathType
     return errcode
 
+
 def dubins_path_length(path):
     length = 0.0
     length += path.param[0]
@@ -118,18 +127,22 @@ def dubins_path_length(path):
     length = length * path.rho
     return length
 
+
 def dubins_segment_length(path, i):
     if i < 0 or i > 2:
-        return float('inf')
+        return float("inf")
     return path.param[i] * path.rho
+
 
 def dubins_segment_length_normalized(path, i):
     if i < 0 or i > 2:
-        return float('inf')
+        return float("inf")
     return path.param[i]
+
 
 def dubins_path_type(path):
     return path.type
+
 
 def dubins_segment(t, qi, qt, type_):
     st = math.sin(qi[2])
@@ -149,6 +162,7 @@ def dubins_segment(t, qi, qt, type_):
     qt[0] += qi[0]
     qt[1] += qi[1]
     qt[2] += qi[2]
+
 
 def dubins_path_sample(path, t, q):
     tprime = t / path.rho
@@ -182,6 +196,7 @@ def dubins_path_sample(path, t, q):
 
     return EDUBOK
 
+
 def dubins_path_sample_many(path, stepSize, cb, user_data):
     retcode = 0
     q = [0.0, 0.0, 0.0]
@@ -195,8 +210,10 @@ def dubins_path_sample_many(path, stepSize, cb, user_data):
         x += stepSize
     return 0
 
+
 def dubins_path_endpoint(path, q):
     return dubins_path_sample(path, dubins_path_length(path) - EPSILON, q)
+
 
 def dubins_extract_subpath(path, t, newpath):
     tprime = t / path.rho
@@ -215,11 +232,12 @@ def dubins_extract_subpath(path, t, newpath):
     newpath.param[2] = min(path.param[2], tprime - newpath.param[0] - newpath.param[1])
     return 0
 
+
 def dubins_intermediate_results(in_, q0, q1, rho):
     dx = q1[0] - q0[0]
     dy = q1[1] - q0[1]
     D = math.sqrt(dx * dx + dy * dy)
-    d = D / rho 
+    d = D / rho
     theta = 0
 
     if d > 0:
@@ -239,6 +257,7 @@ def dubins_intermediate_results(in_, q0, q1, rho):
 
     return EDUBOK
 
+
 def dubins_LSL(in_, out):
     tmp0 = in_.d + in_.sa - in_.sb
     p_sq = 2 + in_.d_sq - (2 * in_.c_ab) + (2 * in_.d * (in_.sa - in_.sb))
@@ -251,6 +270,7 @@ def dubins_LSL(in_, out):
         return EDUBOK
     return EDUBNOPATH
 
+
 def dubins_RSR(in_, out):
     tmp0 = in_.d - in_.sa + in_.sb
     p_sq = 2 + in_.d_sq - (2 * in_.c_ab) + (2 * in_.d * (in_.sb - in_.sa))
@@ -262,55 +282,64 @@ def dubins_RSR(in_, out):
         return EDUBOK
     return EDUBNOPATH
 
+
 def dubins_LSR(in_, out):
     p_sq = -2 + (in_.d_sq) + (2 * in_.c_ab) + (2 * in_.d * (in_.sa + in_.sb))
     if p_sq >= 0:
         p = math.sqrt(p_sq)
-        tmp0 = math.atan2((-in_.ca - in_.cb), (in_.d + in_.sa + in_.sb)) - math.atan2(-2.0, p)
+        tmp0 = math.atan2((-in_.ca - in_.cb), (in_.d + in_.sa + in_.sb)) - math.atan2(
+            -2.0, p
+        )
         out[0] = mod2pi(tmp0 - in_.alpha)
         out[1] = p
         out[2] = mod2pi(tmp0 - mod2pi(in_.beta))
         return EDUBOK
     return EDUBNOPATH
 
+
 def dubins_RSL(in_, out):
     p_sq = -2 + in_.d_sq + (2 * in_.c_ab) - (2 * in_.d * (in_.sa + in_.sb))
     if p_sq >= 0:
         p = math.sqrt(p_sq)
-        tmp0 = math.atan2((in_.ca + in_.cb), (in_.d - in_.sa - in_.sb)) - math.atan2(2.0, p)
+        tmp0 = math.atan2((in_.ca + in_.cb), (in_.d - in_.sa - in_.sb)) - math.atan2(
+            2.0, p
+        )
         out[0] = mod2pi(in_.alpha - tmp0)
         out[1] = p
         out[2] = mod2pi(in_.beta - tmp0)
         return EDUBOK
     return EDUBNOPATH
 
+
 def dubins_RLR(in_, out):
-    tmp0 = (6. - in_.d_sq + 2 * in_.c_ab + 2 * in_.d * (in_.sa - in_.sb)) / 8.
+    tmp0 = (6.0 - in_.d_sq + 2 * in_.c_ab + 2 * in_.d * (in_.sa - in_.sb)) / 8.0
     phi = math.atan2(in_.ca - in_.cb, in_.d - in_.sa + in_.sb)
     if abs(tmp0) <= 1:
         p = mod2pi((2 * math.pi) - math.acos(tmp0))
-        t = mod2pi(in_.alpha - phi + mod2pi(p / 2.))
+        t = mod2pi(in_.alpha - phi + mod2pi(p / 2.0))
         out[0] = t
         out[1] = p
         out[2] = mod2pi(in_.alpha - in_.beta - t + mod2pi(p))
         return EDUBOK
     return EDUBNOPATH
 
+
 def dubins_LRL(in_, out):
-    tmp0 = (6. - in_.d_sq + 2 * in_.c_ab + 2 * in_.d * (in_.sb - in_.sa)) / 8.
+    tmp0 = (6.0 - in_.d_sq + 2 * in_.c_ab + 2 * in_.d * (in_.sb - in_.sa)) / 8.0
     phi = math.atan2(in_.ca - in_.cb, in_.d + in_.sa - in_.sb)
     if abs(tmp0) <= 1:
         p = mod2pi(2 * math.pi - math.acos(tmp0))
-        t = mod2pi(-in_.alpha - phi + p / 2.)
+        t = mod2pi(-in_.alpha - phi + p / 2.0)
         out[0] = t
         out[1] = p
         out[2] = mod2pi(mod2pi(in_.beta) - in_.alpha - t + mod2pi(p))
         return EDUBOK
     return EDUBNOPATH
 
+
 def dubins_word(in_, pathType, out):
-    #print(pathType)
-    #print("There might be a bug here...")
+    # print(pathType)
+    # print("There might be a bug here...")
     result = 0
     if pathType == DubinPathStuffIDKMAN.LSL:
         result = dubins_LSL(in_, out)
@@ -327,5 +356,3 @@ def dubins_word(in_, pathType, out):
     else:
         result = EDUBNOPATH
     return result
-
-

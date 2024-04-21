@@ -6,8 +6,8 @@ class Camera:
 
     def get_pos(self):
         return (self.x, self.y)
-    
-    def move(self, dirx,diry, dt):
+
+    def move(self, dirx, diry, dt):
         time_passed_s = dt / 1000
         self.x += dirx * self.speed * time_passed_s
         self.y += diry * self.speed * time_passed_s

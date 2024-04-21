@@ -6,10 +6,11 @@ import pyautogui
 def move_mouse_periodically(interval):
     c = 0
     while True:
-        c+=1
+        c += 1
         # Move the mouse slightly to prevent sleep
-        pyautogui.write('Hello world! ', interval=0.25)
+        pyautogui.write("Hello world! ", interval=0.25)
         time.sleep(interval)
+
 
 if __name__ == "__main__":
     # Set the interval in seconds

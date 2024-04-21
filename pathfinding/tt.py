@@ -15,22 +15,22 @@ import numpy as np
 import numpy.random as random
 
 
-def bar_plot(pos, ylim=(0,1), title=None):
+def bar_plot(pos, ylim=(0, 1), title=None):
     plt.cla()
     ax = plt.gca()
     x = np.arange(len(pos))
-    ax.bar(x, pos, color='#30a2da')
+    ax.bar(x, pos, color="#30a2da")
     if ylim:
         plt.ylim(ylim)
-    plt.xticks(x+0.4, x)
+    plt.xticks(x + 0.4, x)
     if title is not None:
         plt.title(title)
-
 
 
 def normalize(belief):
     s = sum(belief)
     belief /= s
+
 
 def update(map_, belief, z, p_hit, p_miss):
     for i, val in enumerate(map_):
@@ -49,24 +49,23 @@ def predict(prob_dist, offset, kernel):
 
     result = np.zeros(N)
     for i in range(N):
-        for k in range (kN):
-            index = (i + (width-k) - offset) % N
+        for k in range(kN):
+            index = (i + (width - k) - offset) % N
             result[i] += prob_dist[index] * kernel[k]
-    prob_dist[:] = result[:] # update belief
+    prob_dist[:] = result[:]  # update belief
 
 
-def add_noise (Z, count):
-    n= len(Z)
+def add_noise(Z, count):
+    n = len(Z)
     for i in range(count):
-        j = random.randint(0,n)
-        Z[j] = random.randint(0,2)
+        j = random.randint(0, n)
+        Z[j] = random.randint(0, 2)
 
 
-def animate_three_doors (loops=5):
-    world = np.array([1,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0])
-    #world = np.array([1,1,1,1,1])
-    #world = np.array([1,0,1,0,1,0])
-
+def animate_three_doors(loops=5):
+    world = np.array([1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0])
+    # world = np.array([1,1,1,1,1])
+    # world = np.array([1,0,1,0,1,0])
 
     f = DiscreteBayes1D(world)
 
@@ -74,8 +73,8 @@ def animate_three_doors (loops=5):
     add_noise(measurements, 50)
 
     for m in measurements:
-        f.sense (m, .8, .2)
-        f.update(1, (.05, .9, .05))
+        f.sense(m, 0.8, 0.2)
+        f.update(1, (0.05, 0.9, 0.05))
 
         bar_plot(f.belief)
         plt.pause(0.01)
@@ -83,18 +82,18 @@ def animate_three_doors (loops=5):
 
 def animate_book(loops=5):
     world = np.array([1, 1, 0, 0, 0, 0, 0, 0, 1, 0])
-    #world = np.array([1,1,1,1,1])
-    #world = np.array([1,0,1,0,1,0])
+    # world = np.array([1,1,1,1,1])
+    # world = np.array([1,0,1,0,1,0])
 
     N = len(world)
-    belief = np.array([1./N]*N)
+    belief = np.array([1.0 / N] * N)
 
     measurements = np.tile(world, loops)
     add_noise(measurements, 5)
 
     for m in measurements:
-        update(world, belief, m, .8, .2)
-        predict(belief, 1, (.05, .9, .05))
+        update(world, belief, m, 0.8, 0.2)
+        predict(belief, 1, (0.05, 0.9, 0.05))
 
         bar_plot(belief)
         plt.pause(0.01)
@@ -106,16 +105,15 @@ import random
 
 class Train(object):
 
-    def __init__(self, track, kernel=[1.], sense_error=.1, no_sense_error=.05):
+    def __init__(self, track, kernel=[1.0], sense_error=0.1, no_sense_error=0.05):
         self.track = track
         self.pos = 0
         self.kernel = kernel
         self.sense_error = sense_error
         self.no_sense_error = no_sense_error
 
-
     def move(self, distance=1):
-        """ move in the specified direction with some small chance of error"""
+        """move in the specified direction with some small chance of error"""
 
         self.pos += distance
 
@@ -135,39 +133,39 @@ class Train(object):
     def sense(self):
         pos = self.pos
 
-         # insert random sensor error
+        # insert random sensor error
         r = random.random()
         if r < self.sense_error:
             if random.random() > 0.5:
                 pos += 1
             else:
                 pos -= 1
-                print('sense error')
+                print("sense error")
         return pos
 
 
 def animate_train(loops=5):
-    world = np.array([1,2,3,4,5,6,7,8,9,10])
+    world = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
     N = len(world)
     belief = np.zeros(N)
     belief[0] = 1.0
 
-    robot = Train(world, [.1, .8, .1], .1, .1)
+    robot = Train(world, [0.1, 0.8, 0.1], 0.1, 0.1)
 
-    for i in range(N*loops):
+    for i in range(N * loops):
         robot.move(1)
         m = robot.sense()
-        update(world, belief, m, .9, .1)
-        predict(belief, 1, (.05, .9, .05))
+        update(world, belief, m, 0.9, 0.1)
+        predict(belief, 1, (0.05, 0.9, 0.05))
 
         bar_plot(belief)
         plt.pause(0.1)
     print(belief)
 
+
 animate_train(3)
 
-world = np.array([1,2,3,4,5,6,7,8,9,10])
-#world = np.array([1,1,1,1,1])
-#world = np.array([1,0,1,0,1,0])
-
+world = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+# world = np.array([1,1,1,1,1])
+# world = np.array([1,0,1,0,1,0])

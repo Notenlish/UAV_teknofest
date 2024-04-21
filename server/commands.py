@@ -9,7 +9,7 @@ from cryptography.fernet import Fernet
 class COMMANDS(enum.IntEnum):
     CONNECT = enum.auto()
     DISCONNECT = enum.auto()
-    NOTHING = enum.auto() # nothing to send, used to pass msg sending to the server
+    NOTHING = enum.auto()  # nothing to send, used to pass msg sending to the server
     FOUND_SOLDIER = enum.auto()
     CANT_FIND_SOLDIER = enum.auto()
     SETUP = enum.auto()
@@ -29,19 +29,18 @@ class COMMANDS(enum.IntEnum):
     KAMIKAZE = enum.auto()
 
 
-
 class Command:
     def __init__(self, type, data: dict[str, Any]) -> None:
-        self.type: int = type 
+        self.type: int = type
         self.data = data
         self._reset_tuples()
-    
+
     def _reset_tuples(self):
         # fix assert not working because of json changing tuples to list
         for key, value in self.data.items():
             if type(value) == tuple:
                 self.data[key] = list(value)
-    
+
     @staticmethod
     def to_dict(cmd):
         _dict = {}
@@ -52,7 +51,7 @@ class Command:
     @classmethod
     def from_dict(cls, _dict: dict[str, Any]):
         return cls(_dict["TYPE"], _dict["DATA"])
-    
+
     def __str__(self) -> str:
         return f"<Command {self.type} {self.data} />"
 
@@ -63,11 +62,12 @@ class Command:
             return False
         return True
 
+
 class CommandConverter:
     def __init__(self) -> None:
         self.key = utils.read_json("../config.json")["ENCRYPT_KEY"]
         self.encrypter = Fernet(self.key)
-    
+
     def msg_from_command(self, command: Command):
         _str = json.dumps(Command.to_dict(command))
         _encrypted_str = self.encrypter.encrypt(_str.encode("utf8"))
@@ -79,11 +79,12 @@ class CommandConverter:
         _dict = json.loads(_decrypted_str)
         return Command.from_dict(_dict)
 
+
 if __name__ == "__main__":
-    command = Command(type=COMMANDS.GO_TO, data={ "GPS_LOCATION":(33.5973, 73.0479)})
+    command = Command(type=COMMANDS.GO_TO, data={"GPS_LOCATION": (33.5973, 73.0479)})
     command_converter = CommandConverter()
     msg = command_converter.msg_from_command(command)
     new_command = command_converter.command_from_msg(msg)
     print(command)
     print(new_command)
-    assert command==new_command
+    assert command == new_command

@@ -6,7 +6,7 @@ import utils
 HOST, PORT = utils.read_json("config.json")
 
 
-class ThreadedTCPClient():
+class ThreadedTCPClient:
     def __init__(self) -> None:
         self.HOST, self.PORT = utils.read_json("config.json")
         self.socket = socket.socket()
@@ -25,7 +25,7 @@ class ThreadedTCPClient():
 
         def connect(self):
             self.socket.connect((self.HOST, self.PORT))
-        
+
         def receive_message(self):
             data = self.socket.recv(1024)
             if data == b"NOTHING_TO_SEND":
@@ -34,13 +34,13 @@ class ThreadedTCPClient():
                 else:
                     pass
             print(f"Received from server: {data.decode()}")
-        
+
         try:
             connect(self)
             while True:
                 try:
                     msg_to_send = self.msg_queue.pop(0).upper().encode()
-                    if msg_to_send == b'EXIT':
+                    if msg_to_send == b"EXIT":
                         break
                     self.socket.sendall(msg_to_send)  # send msg
                     print(f"Sent message to server: {msg_to_send}")
@@ -49,7 +49,7 @@ class ThreadedTCPClient():
                 receive_message(self)
         finally:
             print("closing connection")
-            close_connection(self)      
+            close_connection(self)
 
 
 if __name__ == "__main__":
@@ -59,4 +59,3 @@ if __name__ == "__main__":
     except Exception as e:
         client.thread.join()
         print(e)
-    

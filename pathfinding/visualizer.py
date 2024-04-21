@@ -5,6 +5,7 @@ from camera import Camera
 from pydubins import DubinsPath
 from shape import Point
 from uav import DubinPoint, OwnUAV, TargetUAV
+
 # TODO the pathfinder will calculate two paths, one for the guessed location of target
 # and the other for the location confirmed by server
 # When drawing the paths and the uavs, keep this in mind
@@ -38,7 +39,8 @@ class Visualizer:
 
         pygame.draw.circle(self.surface, "#8ECAE6", own_uav_campos, radius=self.uav_rad)
         self.draw_text(
-            own_uav.get_pos_text(), subtract_tuple(own_uav_campos, (self.uav_rad, self.uav_rad + 20))
+            own_uav.get_pos_text(),
+            subtract_tuple(own_uav_campos, (self.uav_rad, self.uav_rad + 20)),
         )
         pygame.draw.line(
             self.surface,
@@ -51,9 +53,12 @@ class Visualizer:
             width=self.uav_dir_width,
         )
 
-        pygame.draw.circle(self.surface, "#EC4F62", target_uav_campos, radius=self.uav_rad)
+        pygame.draw.circle(
+            self.surface, "#EC4F62", target_uav_campos, radius=self.uav_rad
+        )
         self.draw_text(
-            target_uav.get_pos_text(), subtract_tuple(target_uav_campos, (self.uav_rad, self.uav_rad + 20))
+            target_uav.get_pos_text(),
+            subtract_tuple(target_uav_campos, (self.uav_rad, self.uav_rad + 20)),
         )
         pygame.draw.line(
             self.surface,
@@ -66,7 +71,9 @@ class Visualizer:
             width=self.uav_dir_width,
         )
 
-    def _draw_past_locations(self, own_uav_past_locations:list[DubinPoint], target_uav_past_locations):
+    def _draw_past_locations(
+        self, own_uav_past_locations: list[DubinPoint], target_uav_past_locations
+    ):
         for loc in own_uav_past_locations:
             pygame.draw.circle(
                 self.surface,
@@ -114,10 +121,19 @@ class Visualizer:
         pygame.draw.circle(self.surface, "black", start_pos, radius=2)
         pygame.draw.circle(self.surface, "black", end_pos, radius=2)
 
-
         if updated:
-            pygame.draw.circle(self.surface, "purple", subtract_tuple(updated.get_pos(), self.camera.get_pos()), radius=self.uav_rad)
+            pygame.draw.circle(
+                self.surface,
+                "purple",
+                subtract_tuple(updated.get_pos(), self.camera.get_pos()),
+                radius=self.uav_rad,
+            )
         if predicted:
-            pygame.draw.circle(self.surface, "pink", subtract_tuple(predicted.get_pos(), self.camera.get_pos()), radius=self.uav_rad)
+            pygame.draw.circle(
+                self.surface,
+                "pink",
+                subtract_tuple(predicted.get_pos(), self.camera.get_pos()),
+                radius=self.uav_rad,
+            )
 
         self.display.update()
