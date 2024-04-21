@@ -33,9 +33,9 @@ class Visualizer:
         surf = self.font.render(text, antialias=True, color=color)
         self.surface.blit(surf, point)
 
-    def _draw_uavs(self, own_uav: DubinPoint, target_uav: DubinPoint):
-        own_uav_campos = subtract_tuple(own_uav, self.camera.get_pos())
-        target_uav_campos = subtract_tuple(target_uav.get_pos(), self.camera.get_pos())
+    def _draw_uavs(self, cam_pos, own_uav: DubinPoint, target_uav: DubinPoint):
+        own_uav_campos = subtract_tuple(own_uav, cam_pos)
+        target_uav_campos = subtract_tuple(target_uav.get_pos(), cam_pos)
 
         pygame.draw.circle(self.surface, "#8ECAE6", own_uav_campos, radius=self.uav_rad)
         self.draw_text(
@@ -72,21 +72,58 @@ class Visualizer:
         )
 
     def _draw_past_locations(
-        self, own_uav_past_locations: list[DubinPoint], target_uav_past_locations
+        self,
+        cam_pos,
+        own_uav_past_locations: list[DubinPoint],
+        target_uav_past_locations,
     ):
         for loc in own_uav_past_locations:
             pygame.draw.circle(
                 self.surface,
                 "#D6C9C9",
-                subtract_tuple(loc, self.camera.get_pos()),
+                subtract_tuple(loc, cam_pos),
                 radius=self.past_loc_rad,
             )
         for loc in target_uav_past_locations:
             pygame.draw.circle(
                 self.surface,
                 "#C9CFD6",
-                subtract_tuple(loc, self.camera.get_pos()),
+                subtract_tuple(loc, cam_pos),
                 radius=self.past_loc_rad,
+            )
+
+    def _draw_path(self, cam_pos, segments, own_uav, target_uav):
+        points = []
+        for v in segments.values():
+            point = subtract_tuple(v["q"], cam_pos)
+            # pygame.draw.circle(self.surface, "#8D99AE", point, radius=0)
+            points.append(point)
+        points.append(subtract_tuple(target_uav.get_pos(), cam_pos))
+        pygame.draw.lines(self.surface, "black", False, points, width=1)
+
+        start_pos = subtract_tuple(own_uav.get_pos(), cam_pos)
+        # same as this:
+        # subtract_tuple( (path.qi[0], path.qi[1]), cam_pos)
+
+        end_pos = subtract_tuple((target_uav.get_pos()), cam_pos)
+        # for some reason the path object doesnt have end path
+        pygame.draw.circle(self.surface, "black", start_pos, radius=2)
+        pygame.draw.circle(self.surface, "black", end_pos, radius=2)
+
+    def _draw_prediction(self, cam_pos, predicted, updated):
+        if updated:
+            pygame.draw.circle(
+                self.surface,
+                "purple",
+                subtract_tuple(updated.get_pos(), cam_pos),
+                radius=self.uav_rad,
+            )
+        if predicted:
+            pygame.draw.circle(
+                self.surface,
+                "pink",
+                subtract_tuple(predicted.get_pos(), cam_pos),
+                radius=self.uav_rad,
             )
 
     def draw(
@@ -102,38 +139,15 @@ class Visualizer:
     ):
         self.surface.fill("#EBEBEB")
 
-        self._draw_past_locations(own_uav_past_locations, target_uav_past_locations)
-        self._draw_uavs(own_uav, target_uav)
+        cam_pos = self.camera.get_pos()
 
-        points = []
-        for v in segments.values():
-            point = subtract_tuple((v["q"][0], v["q"][1]), self.camera.get_pos())
-            pygame.draw.circle(self.surface, "#8D99AE", point, radius=0)
-            points.append(point)
-        points.append(subtract_tuple(target_uav.get_pos(), self.camera.get_pos()))
-        pygame.draw.lines(self.surface, "black", False, points, width=1)
+        self._draw_past_locations(
+            cam_pos, own_uav_past_locations, target_uav_past_locations
+        )
+        self._draw_uavs(cam_pos, own_uav, target_uav)
 
-        start_pos = subtract_tuple(
-            (path.qi[0], path.qi[1]), self.camera.get_pos()
-        )  # same as just getting own_uav.get_pos()
-        end_pos = subtract_tuple((target_uav.get_pos()), self.camera.get_pos())
-        # for some reason the path object doesnt have end path
-        pygame.draw.circle(self.surface, "black", start_pos, radius=2)
-        pygame.draw.circle(self.surface, "black", end_pos, radius=2)
+        self._draw_path(cam_pos, segments, own_uav, target_uav)
 
-        if updated:
-            pygame.draw.circle(
-                self.surface,
-                "purple",
-                subtract_tuple(updated.get_pos(), self.camera.get_pos()),
-                radius=self.uav_rad,
-            )
-        if predicted:
-            pygame.draw.circle(
-                self.surface,
-                "pink",
-                subtract_tuple(predicted.get_pos(), self.camera.get_pos()),
-                radius=self.uav_rad,
-            )
+        self._draw_prediction(cam_pos, predicted, updated)
 
         self.display.update()
