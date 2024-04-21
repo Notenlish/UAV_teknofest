@@ -10,9 +10,9 @@ Created on Sat Apr  4 19:02:39 2015
 # https://notebooks.gesis.org/binder/jupyter/user/rlabbe-kalman-a-lters-in-python-7d4kagth/lab/tree/01-g-h-filter.ipynb
 
 
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.random as random
-import matplotlib.pyplot as plt
 
 
 def bar_plot(pos, ylim=(0,1), title=None):
@@ -102,6 +102,7 @@ def animate_book(loops=5):
 
 
 import random
+
 
 class Train(object):
 

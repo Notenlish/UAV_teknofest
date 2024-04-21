@@ -1,6 +1,6 @@
 
-from typing import Any
 import time
+from typing import Any
 
 import commands
 from async_client import TCPClient

@@ -1,5 +1,6 @@
 from numpy import array, ndarray
 
+
 class Point:
     def __init__(self, x,y) -> None:
         self.x = x

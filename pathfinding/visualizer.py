@@ -1,25 +1,14 @@
-import pygame
-
-from shape import Point
-from pydubins import DubinsPath
-
-from uav import OwnUAV, TargetUAV, DubinPoint
-from camera import Camera
-
 import math
 
-
+import pygame
+from camera import Camera
+from pydubins import DubinsPath
+from shape import Point
+from uav import DubinPoint, OwnUAV, TargetUAV
 # TODO the pathfinder will calculate two paths, one for the guessed location of target
 # and the other for the location confirmed by server
 # When drawing the paths and the uavs, keep this in mind
-
-
-def add_tuple(t1, t2):
-    return (t1[0] + t2[0], t1[1] + t2[1])
-
-
-def subtract_tuple(t1, t2):
-    return (t1[0] - t2[0], t1[1] - t2[1])
+from utils import subtract_tuple
 
 
 class Visualizer:

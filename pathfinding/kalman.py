@@ -1,9 +1,8 @@
 import numpy as np
-from filterpy.kalman import KalmanFilter
 from filterpy.common import Q_discrete_white_noise
-
-
+from filterpy.kalman import KalmanFilter
 from shape import DubinPoint
+
 
 class UAVKalmanFilter:
     def __init__(self, target_dub_pos:DubinPoint, measurement_noise_variance, process_noise_variance):

@@ -1,6 +1,6 @@
 import asyncio
-import utils
 
+import utils
 from commands import COMMANDS, Command, CommandConverter
 
 config = utils.read_json("../config.json")

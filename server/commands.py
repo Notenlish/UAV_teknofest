@@ -1,9 +1,10 @@
 import enum
 import json
 from typing import Any, Type
-import utils 
 
+import utils
 from cryptography.fernet import Fernet
+
 
 class COMMANDS(enum.IntEnum):
     CONNECT = enum.auto()

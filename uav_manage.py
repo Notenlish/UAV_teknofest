@@ -2,6 +2,7 @@ import enum
 
 from server.commands import COMMANDS, Command
 
+
 class SCAN_RESULTS(enum.IntEnum):
     FOUND_SOLDIER = enum.auto()
     NOTHING = enum.auto() 
