@@ -3,6 +3,8 @@ import json
 from pydubins import DubinsPath, dubins_path_sample_many, dubins_shortest_path
 from shape import DubinPoint, Point
 
+from uav import OwnUAV, TargetUAV
+
 # usta https://github.com/AndrewWalker/pydubins/blob/master/dubins/dubins.pyx buna bak
 
 
@@ -10,17 +12,16 @@ class PathMaker:
     def __init__(self) -> None:
         pass
 
-    def run(self, point0: DubinPoint, point1: DubinPoint, rho: float, step_size=0.1):
+    def run(self, own_uav: OwnUAV, target_uav: TargetUAV, rho: float, step_size=0.1):
         # rho = turning radius
 
         path = DubinsPath()
-        _ = dubins_shortest_path(path, point0, point1, rho)
+        _ = dubins_shortest_path(path, own_uav.as_dubin_point(), target_uav.as_dubin_point(), rho)
 
         results = {}
 
         def sample_callback(q, x, user_data):
             results[x] = {"q": [q[0], q[1], q[2]], "user_data": user_data}
-            # print(f"{q[0]}, {q[1]}, {q[2]}, {x}")
             return 0
 
         _ = dubins_path_sample_many(

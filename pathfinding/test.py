@@ -1,17 +1,17 @@
 import pygame
 from camera import Camera
-from kalman import UAVKalmanFilter
-from pathfinder import PathFinding
-from shape import DubinPoint
+from kalman import ThetaKalmanFilter, VelocityKalmanFilter
+from path_finding import PathFinding
 from telemetry import Telemetry
 from uav import OwnUAV, TargetUAV
 from visualizer import Visualizer
+from predictor import Predictor
 
 
 class App:
     def __init__(self) -> None:
         self.window = pygame.display.set_mode((700, 500))
-        pygame.display.set_caption("Test")
+        pygame.display.set_caption("Pathfinding")
         self.clock = pygame.time.Clock()
 
         # config
@@ -19,8 +19,8 @@ class App:
         self.step_size = 20
         self.turning_radius = 50
 
-        self.own_uav = OwnUAV(100, 100, theta=0)
-        self.target_uav = TargetUAV(400, 300, theta=0)
+        self.own_uav = OwnUAV(100, 100, theta=0, vel=50)
+        self.target_uav = TargetUAV(400, 300, theta=0, vel=50)
 
         self.camera = Camera()
         self.visualizer = Visualizer(self.window, self.camera, pygame.display)
@@ -31,13 +31,18 @@ class App:
             self.turning_radius,
             self.step_size,
         )
-        self.kalman = UAVKalmanFilter(
-            target_dub_pos=self.path_finding.target_uav_dub_pos,
-            measurement_noise_variance=0.1,
-            process_noise_variance=0.01,
+        self.theta_kalman = ThetaKalmanFilter(
+            initial_theta=self.target_uav.theta, theta_rate_of_change=0
+        )
+        self.vel_kalman = VelocityKalmanFilter(
+            initial_vel=self.target_uav.vel, acceleration=0
+        )
+        self.predictor = Predictor(
+            self.theta_kalman, self.vel_kalman, self.path_finding
         )
 
-        self.telemetry.init(self.path_finding)
+        self.telemetry.init(self.path_finding, self.predictor)
+        self.visualizer.init(self.path_finding)
 
     def input(self, dt):
         for event in pygame.event.get():
@@ -67,19 +72,10 @@ class App:
             dt = self.clock.tick(self.max_fps)  # ms
             self.telemetry.run(dt)
 
-            # self.kalman.update_state_transition_matrix(dt=1, velocity=self.telemetry.uav_vel)
-            # predict = self.kalman.predict()
-            # updated_state = self.kalman.update(self.pathfinding.target_uav_dub_pos)
-            # self.pathfinding.predicted = DubinPoint.from_array(predict)
-            # self.pathfinding.updated = DubinPoint.from_array(updated_state)
-
-            # predict = self.kalman.predict()
-            # self.pathfinding.predicted = DubinPoint.from_array(predict)
-
-            results = self.path_finding.run()
             self.input(dt)
+            result = self.path_finding.run()
 
-            self.visualizer.draw(*results.values())
+            self.visualizer.draw(*result)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,12 @@
 import math
 from random import choice, random
 
-from pathfinder import PathFinding
-from uav import OwnUAV, TargetUAV
+from path_finding import PathFinding
+from uav import OwnUAV, TargetUAV, UAVPredictColors
 from utils import add_tuple
+from predictor import Predictor
+
+from copy import deepcopy
 
 # TODO more than 1 target uav data being given by telemetry
 
@@ -15,14 +18,15 @@ class Telemetry:
 
         self.will_keep_player_near = True
         self.server_wait_time = 1
-        self.uav_vel = 50
 
         self.path_finding: PathFinding = None
+        self.predictor: Predictor = None
 
         self.waited = self.server_wait_time
 
-    def init(self, path_finding: PathFinding):
+    def init(self, path_finding: PathFinding, predictor: Predictor):
         self.path_finding = path_finding
+        self.predictor: Predictor = predictor
 
     def set_own_uav_theta(self, cam_pos, mouse_pos):
         pos = add_tuple(mouse_pos, cam_pos)
@@ -59,10 +63,10 @@ class Telemetry:
     def move_target(self, time_passed_s: float):
         self.target_uav.theta += self.target_uav.turnfor * time_passed_s
         self.target_uav.x += (
-            math.cos(self.target_uav.theta) * self.uav_vel * time_passed_s
+            math.cos(self.target_uav.theta) * self.target_uav.vel * time_passed_s
         )
         self.target_uav.y += (
-            math.sin(self.target_uav.theta) * self.uav_vel * time_passed_s
+            math.sin(self.target_uav.theta) * self.target_uav.vel * time_passed_s
         )
 
     def send_target_pos(self, time_passed_s):
@@ -71,13 +75,23 @@ class Telemetry:
             self.waited = 0
 
             self.path_finding.own_uav_past_locations.append(
-                self.path_finding.own_uav_dub_pos
+                self.path_finding.measured_own_uav.get_pos()
             )
             self.path_finding.target_uav_past_locations.append(
-                self.path_finding.target_uav_dub_pos
+                self.path_finding.measured_target_uav.get_pos()
             )
-            self.path_finding.own_uav_dub_pos = self.own_uav.as_dubin_point()
-            self.path_finding.target_uav_dub_pos = self.target_uav.as_dubin_point()
+            self.path_finding.measured_own_uav = deepcopy(self.own_uav)
+            self.path_finding.predicted_own_uav = deepcopy(self.own_uav)
+            self.path_finding.measured_target_uav = deepcopy(self.target_uav)
+            self.path_finding.predicted_target_uav = deepcopy(self.target_uav)
+            
+            self.path_finding.predicted_own_uav.bg_col = UAVPredictColors.own["bg_col"]
+            self.path_finding.predicted_own_uav.dir_col = UAVPredictColors.own["dir_col"]
+            self.path_finding.predicted_target_uav.bg_col = UAVPredictColors.target["bg_col"]
+            self.path_finding.predicted_target_uav.dir_col = UAVPredictColors.target["dir_col"]
+                
+
+            self.predictor.run(self.target_uav)
 
     def run(self, dt):
         time_passed_s = dt / 1000
