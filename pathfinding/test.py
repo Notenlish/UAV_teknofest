@@ -14,11 +14,6 @@ from predictor import Predictor
 # I should probably take the lazy approach.
 
 
-# FIXME: We draw measured ones first and then the predicted ones, which hides the past loc points of measured ones
-# I should stop cloning the entire objects and make sure that the old past loc arr of predicted objects are not replaced by the ones of measured obj
-# measured ların past location ları predicted nesnelerinin üzerine replace ediyor nesneleri direkten deepcopy yaptığımdan
-
-
 class App:
     def __init__(self) -> None:
         self.window = pygame.display.set_mode((700, 500))
@@ -37,8 +32,8 @@ class App:
         self.visualizer = Visualizer(self.window, self.camera, pygame.display)
         self.telemetry = Telemetry(self.own_uav, self.target_uav)
         self.path_finding = PathFinding(
-            self.own_uav.as_dubin_point(),
-            self.target_uav.as_dubin_point(),
+            self.own_uav,
+            self.target_uav,
             self.turning_radius,
             self.step_size,
         )
@@ -72,21 +67,15 @@ class App:
 
         self.telemetry.set_own_uav_theta(self.camera.get_pos(), pygame.mouse.get_pos())
 
-    # kodu temizle
-    # kalman alakalı her şeyi yok et
-    # yeni bir uavkalmanfilter classı yaz
-    # ama sadece thetayı tahmin etmeye çalışacak
-    # theta 0-2 arasında mı olmalı yoksa istediği herhangi bir değer olabilir mi bilmiyorum
-
     def run(self):
         while True:
             dt = self.clock.tick(self.max_fps)  # ms
-            self.telemetry.run(dt)
+            time_left, server_wait_time = self.telemetry.run(dt)
 
             self.input(dt)
             result = self.path_finding.run()
 
-            self.visualizer.draw(*result)
+            self.visualizer.draw(time_left, server_wait_time, *result)
 
 
 if __name__ == "__main__":

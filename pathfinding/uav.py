@@ -4,7 +4,7 @@ from enum import Enum
 
 class UAVPredictColors:
     own = {"bg_col": "#8E9AE6", "dir_col": "#2253BD", "past_loc_col": "#C7CBE2"}
-    target = {"bg_col": "#ED794E", "dir_col": "#B84D14", "past_loc_col": "#E1C6BC"}
+    target = {"bg_col": "#ED794E", "dir_col": "#D95812", "past_loc_col": "#E1C6BC"}
 
 
 class UAV:
@@ -19,6 +19,13 @@ class UAV:
         self.bg_col = "#E0E0E0"
         self.dir_col = "#C2C2C2"
         self.past_loc_col = "#949396"
+
+    def update(self, uav):
+        """Used for updating the predicted uav instances in telemetry module."""
+        self.x = uav.x
+        self.y = uav.y
+        self.vel = uav.vel
+        self.theta = uav.theta
 
     def get_pos(self):
         return (self.x, self.y)

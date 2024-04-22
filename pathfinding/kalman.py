@@ -8,9 +8,9 @@ class BaseKalmanFilter:
         self.f.x = np.array([[initial], [rate_of_change]])  # theta  # theta rate of change
         self.f.F = np.array([[1.0, 1.0], [0.0, 1.0]])
         self.f.H = np.array([[1.0, 0.0]])
-        self.f.P *= 1000.0
-        self.f.R = 5
-        self.f.Q = Q_discrete_white_noise(dim=2, dt=0.1, var=0.01)
+        self.f.P *= 100.0
+        self.f.R = 50
+        self.f.Q = Q_discrete_white_noise(dim=2, dt=1, var=0.05)
 
     def run(self, measurement):
         z = measurement

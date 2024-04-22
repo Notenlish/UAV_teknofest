@@ -82,9 +82,13 @@ class Telemetry:
                 self.path_finding.measured_target_uav.get_pos()
             )"""
             self.path_finding.measured_own_uav = deepcopy(self.own_uav)
-            self.path_finding.predicted_own_uav = deepcopy(self.own_uav)
+            self.path_finding.predicted_own_uav.update(self.own_uav)
             self.path_finding.measured_target_uav = deepcopy(self.target_uav)
-            self.path_finding.predicted_target_uav = deepcopy(self.target_uav)
+            self.path_finding.predicted_target_uav.update(self.target_uav)
+
+            print(
+                f"own: {len(self.path_finding.measured_own_uav.past_locations)} predicted: {len(self.path_finding.predicted_own_uav.past_locations)}"
+            )
 
             self.path_finding.predicted_own_uav.bg_col = UAVPredictColors.own["bg_col"]
             self.path_finding.predicted_own_uav.dir_col = UAVPredictColors.own[
@@ -117,3 +121,5 @@ class Telemetry:
         self.move_target(time_passed_s)
 
         self.send_target_pos(time_passed_s)
+        
+        return self.waited, self.server_wait_time

@@ -34,3 +34,5 @@ class Predictor:
         )
         self.path_finding.predicted_target_uav.x = new_x
         self.path_finding.predicted_target_uav.y = new_y
+        self.path_finding.predicted_target_uav.theta = predicted_theta
+        self.path_finding.predicted_target_uav.vel = predicted_vel
