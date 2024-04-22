@@ -85,20 +85,38 @@ class Visualizer:
 
     def _draw_past_locations(self):
         cam_pos = self.camera.get_pos()
-        for loc in self.path_finding.own_uav_past_locations:
+        measured_uavs = [
+            self.path_finding.measured_own_uav,
+            self.path_finding.measured_target_uav,
+        ]
+        predicted_uavs = [
+            self.path_finding.predicted_own_uav,
+            self.path_finding.predicted_target_uav,
+        ]
+        for l in [measured_uavs, predicted_uavs]:
+            for i, v in enumerate(l):
+                v: UAV
+                for loc in v.past_locations:
+                    pygame.draw.circle(
+                        self.surface,
+                        v.past_loc_col,
+                        subtract_tuple(loc, cam_pos),
+                        radius=self.past_loc_rad,
+                    )
+        """for loc in self.path_finding.own_uav_past_locations:
             pygame.draw.circle(
                 self.surface,
-                "#D6C9C9",
+                self.path_finding.measured_own_uav.past_loc_col,
                 subtract_tuple(loc, cam_pos),
                 radius=self.past_loc_rad,
             )
         for loc in self.path_finding.target_uav_past_locations:
             pygame.draw.circle(
                 self.surface,
-                "#C9CFD6",
+                self.path_finding.measured_target_uav.past_loc_col,
                 subtract_tuple(loc, cam_pos),
                 radius=self.past_loc_rad,
-            )
+            )"""
 
     def _draw_path(self, path, segments):
         cam_pos = self.camera.get_pos()

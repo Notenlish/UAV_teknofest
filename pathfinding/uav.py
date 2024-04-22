@@ -3,8 +3,8 @@ from enum import Enum
 
 
 class UAVPredictColors:
-    own = {"bg_col": "#8E9AE6", "dir_col": "#2253BD"}
-    target = {"bg_col": "#ED794E", "dir_col": "#B84D14"}
+    own = {"bg_col": "#8E9AE6", "dir_col": "#2253BD", "past_loc_col": "#C7CBE2"}
+    target = {"bg_col": "#ED794E", "dir_col": "#B84D14", "past_loc_col": "#E1C6BC"}
 
 
 class UAV:
@@ -14,9 +14,11 @@ class UAV:
         self.vel = vel
         self.past_locations: list[tuple[float, float]] = past_locations
         self.theta = theta
+        self.since_last_pos_save = 0
 
         self.bg_col = "#E0E0E0"
         self.dir_col = "#C2C2C2"
+        self.past_loc_col = "#949396"
 
     def get_pos(self):
         return (self.x, self.y)
@@ -34,6 +36,7 @@ class OwnUAV(UAV):
         super().__init__(x, y, theta, vel, past_locations)
         self.bg_col = "#8ECAE6"
         self.dir_col = "#219EBC"
+        self.past_loc_col = "#CFDBE1"
 
 
 class TargetUAV(UAV):
@@ -42,6 +45,17 @@ class TargetUAV(UAV):
         self.turnfor = 0
         self.waitfor = 0
         self.time_waited = 0
-        self.since_last_pos_save = 0
         self.bg_col = "#EC4F62"
         self.dir_col = "#B81530"
+        self.past_loc_col = "#E7D2D5"
+
+
+if __name__ == "__main__":
+    a = TargetUAV(0, 0, 0)
+    import sys
+
+    for v in range(1_000_000):
+        a.past_locations.append((v + 1, v + 1))
+    size = sys.getsizeof(a.past_locations) / (1024 * 1024.0)
+    print(size)
+    # 1 million locations = 8 mb so idk mem will be an issue

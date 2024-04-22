@@ -8,6 +8,17 @@ from visualizer import Visualizer
 from predictor import Predictor
 
 
+# TODO: predictor should also predict own uav pos
+# or maybe not? Since we can run the telemetry multiple times a second while the targetuav is only updated once per second
+# and it would make it difficult for the whole structure
+# I should probably take the lazy approach.
+
+
+# FIXME: We draw measured ones first and then the predicted ones, which hides the past loc points of measured ones
+# I should stop cloning the entire objects and make sure that the old past loc arr of predicted objects are not replaced by the ones of measured obj
+# measured ların past location ları predicted nesnelerinin üzerine replace ediyor nesneleri direkten deepcopy yaptığımdan
+
+
 class App:
     def __init__(self) -> None:
         self.window = pygame.display.set_mode((700, 500))

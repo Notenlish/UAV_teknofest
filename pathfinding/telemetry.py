@@ -43,7 +43,7 @@ class Telemetry:
             _rot_dir = choice([-1, 1])
             self.target_uav.turnfor = ((random() * 0.7) + 0.05) * _rot_dir
 
-            self.target_uav.waitfor = (random() * 2) + 2
+            self.target_uav.waitfor = 3
             self.target_uav.time_waited = 0
             self.target_uav.since_last_pos_save = 0
 
@@ -54,11 +54,12 @@ class Telemetry:
             self.own_uav.x += dist_x * 0.1 * time_passed_s
             self.own_uav.y += dist_y * 0.1 * time_passed_s
 
-    def save_target_last_pos(self, time_passed_s: float):
-        self.target_uav.since_last_pos_save -= time_passed_s
-        if self.target_uav.since_last_pos_save <= 0:
-            self.target_uav.past_locations.append(self.target_uav.get_pos())
-            self.target_uav.since_last_pos_save = 0.5  # seconds
+    def save_last_pos(self, time_passed_s: float):
+        for v in [self.own_uav, self.target_uav]:
+            v.since_last_pos_save -= time_passed_s
+            if v.since_last_pos_save <= 0:
+                v.past_locations.append(v.get_pos())
+                v.since_last_pos_save = 0.5  # seconds
 
     def move_target(self, time_passed_s: float):
         self.target_uav.theta += self.target_uav.turnfor * time_passed_s
@@ -74,22 +75,33 @@ class Telemetry:
         if self.waited >= self.server_wait_time:
             self.waited = 0
 
-            self.path_finding.own_uav_past_locations.append(
+            """self.path_finding.own_uav_past_locations.append(
                 self.path_finding.measured_own_uav.get_pos()
             )
             self.path_finding.target_uav_past_locations.append(
                 self.path_finding.measured_target_uav.get_pos()
-            )
+            )"""
             self.path_finding.measured_own_uav = deepcopy(self.own_uav)
             self.path_finding.predicted_own_uav = deepcopy(self.own_uav)
             self.path_finding.measured_target_uav = deepcopy(self.target_uav)
             self.path_finding.predicted_target_uav = deepcopy(self.target_uav)
-            
+
             self.path_finding.predicted_own_uav.bg_col = UAVPredictColors.own["bg_col"]
-            self.path_finding.predicted_own_uav.dir_col = UAVPredictColors.own["dir_col"]
-            self.path_finding.predicted_target_uav.bg_col = UAVPredictColors.target["bg_col"]
-            self.path_finding.predicted_target_uav.dir_col = UAVPredictColors.target["dir_col"]
-                
+            self.path_finding.predicted_own_uav.dir_col = UAVPredictColors.own[
+                "dir_col"
+            ]
+            self.path_finding.predicted_own_uav.past_loc_col = UAVPredictColors.own[
+                "past_loc_col"
+            ]
+            self.path_finding.predicted_target_uav.bg_col = UAVPredictColors.target[
+                "bg_col"
+            ]
+            self.path_finding.predicted_target_uav.dir_col = UAVPredictColors.target[
+                "dir_col"
+            ]
+            self.path_finding.predicted_target_uav.past_loc_col = (
+                UAVPredictColors.target["past_loc_col"]
+            )
 
             self.predictor.run(self.target_uav)
 
@@ -100,7 +112,7 @@ class Telemetry:
         self.keep_player_near(time_passed_s)
 
         self.change_target_movement()
-        self.save_target_last_pos(time_passed_s)
+        self.save_last_pos(time_passed_s)
 
         self.move_target(time_passed_s)
 

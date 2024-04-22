@@ -14,12 +14,14 @@ class PathFinding:
         self.target_uav_past_locations = []
 
         self.predicted_own_uav: OwnUAV = deepcopy(measured_own_uav)
-        print(UAVPredictColors.own)
         self.predicted_own_uav.bg_col = UAVPredictColors.own["bg_col"]
         self.predicted_own_uav.dir_col = UAVPredictColors.own["dir_col"]
+        self.predicted_own_uav.past_loc_col = UAVPredictColors.own["past_loc_col"]
+
         self.predicted_target_uav: TargetUAV = deepcopy(measured_target_uav)
         self.predicted_target_uav.bg_col = UAVPredictColors.target["bg_col"]
         self.predicted_target_uav.dir_col = UAVPredictColors.target["dir_col"]
+        self.predicted_target_uav.past_loc_col = UAVPredictColors.target["past_loc_col"]
 
         # NOTE when calculating paths, it should store 2 locations,
         # one for the location we got from the server and
