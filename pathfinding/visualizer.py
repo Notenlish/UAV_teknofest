@@ -23,6 +23,8 @@ class Visualizer:
         self.display = display
         self.camera = camera
 
+        self.is_debug = False
+
         self.uav_rad = 16
         self.past_loc_rad = 5
         self.uav_dir_width = 5
@@ -83,40 +85,42 @@ class Visualizer:
             p_uav: UAV = predicted_uavs[i]
 
             # predicted uav
-            diff = subtract_tuple(p_uav.get_pos(), m_uav.get_pos())
-            ratio = time_left / server_wait_time
-            predicted_pos = add_tuple(
-                m_uav.get_pos(), multiply_tuple_by_int(ratio, diff)
-            )
-            predicted_cam_pos = subtract_tuple(predicted_pos, self.camera.get_pos())
-            pygame.draw.circle(
-                self.surface,
-                p_uav.bg_col,
-                predicted_cam_pos,
-                self.uav_rad,
-            )
-            pygame.draw.line(
-                self.surface,
-                p_uav.dir_col,
-                predicted_cam_pos,
-                add_tuple(
+            if self.is_debug:
+                diff = subtract_tuple(p_uav.get_pos(), m_uav.get_pos())
+                ratio = time_left / server_wait_time
+                predicted_pos = add_tuple(
+                    m_uav.get_pos(), multiply_tuple_by_int(ratio, diff)
+                )
+                predicted_cam_pos = subtract_tuple(predicted_pos, self.camera.get_pos())
+                pygame.draw.circle(
+                    self.surface,
+                    p_uav.bg_col,
                     predicted_cam_pos,
-                    (
-                        math.cos(p_uav.theta) * self.uav_rad,
-                        math.sin(p_uav.theta) * self.uav_rad,
+                    self.uav_rad,
+                )
+                pygame.draw.line(
+                    self.surface,
+                    p_uav.dir_col,
+                    predicted_cam_pos,
+                    add_tuple(
+                        predicted_cam_pos,
+                        (
+                            math.cos(p_uav.theta) * self.uav_rad,
+                            math.sin(p_uav.theta) * self.uav_rad,
+                        ),
                     ),
-                ),
-                width=self.uav_dir_width,
-            )
+                    width=self.uav_dir_width,
+                )
 
             # info
-            self.draw_text(
-                f"p: {m_uav.get_pos_text()}\n p_p:{p_uav.get_pos_text()}\nt: {m_uav.theta:.2f}\np_t: {p_uav.theta:.2f}",
-                subtract_tuple(
-                    subtract_tuple(m_uav.get_pos(), self.camera.get_pos()),
-                    (self.uav_rad, self.uav_rad + 70),
-                ),
-            )
+            if self.is_debug:
+                self.draw_text(
+                    f"p: {m_uav.get_pos_text()}\n p_p:{p_uav.get_pos_text()}\nt: {m_uav.theta:.2f}\np_t: {p_uav.theta:.2f}",
+                    subtract_tuple(
+                        subtract_tuple(m_uav.get_pos(), self.camera.get_pos()),
+                        (self.uav_rad, self.uav_rad + 70),
+                    ),
+                )
 
             # measured uav
             m_uav_cam_pos = subtract_tuple(m_uav.get_pos(), self.camera.get_pos())
@@ -161,9 +165,10 @@ class Visualizer:
     def _draw_path(self, path, segments):
         cam_pos = self.camera.get_pos()
         points = []
+        r = 2
         for v in segments.values():
             point = subtract_tuple(v["q"], cam_pos)
-            # pygame.draw.circle(self.surface, "#8D99AE", point, radius=1)
+            pygame.draw.circle(self.surface, "#8D99AE", point, radius=r)
             points.append(point)
         points.append(
             subtract_tuple(self.path_finding.measured_target_uav.get_pos(), cam_pos)
@@ -188,13 +193,15 @@ class Visualizer:
 
     def draw(self, time_left: float, server_wait_time: float, path, segments):
         self.surface.fill("#EBEBEB")
-        self._draw_past_locations()
+        if self.is_debug:
+            self._draw_past_locations()
         self._draw_uavs(time_left, server_wait_time)
 
         self._draw_path(path, segments)
 
         self._draw_prediction()
 
-        self._draw_target_theta()
+        if self.is_debug:
+            self._draw_target_theta()
 
         self.display.update()
