@@ -3,7 +3,10 @@ result.json
 *.pt
 *.onnx
 *.torchscript
+*.pb
 datasets/
+
+yolov8n*/
 
 drone-5k/
 
