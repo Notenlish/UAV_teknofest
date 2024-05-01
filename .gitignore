@@ -7,6 +7,10 @@ result.json
 datasets/
 
 yolov8n*/
+yolov8s*/
+yolov8m*/
+
+runs/
 
 drone-5k/
 

@@ -1,6 +1,6 @@
-
-from ultralytics.utils.benchmarks import benchmark
 from ultralytics import YOLO
 
-# Benchmark on GPU
-benchmark(model='yolov8n.pt', data='coco128.yaml', imgsz=640, half=False, device="cuda")
+# Load a model
+model = YOLO('yolov8n.pt')  # load an official model
+
+metrics = model.val()  # no arguments needed, dataset and settings remembered
