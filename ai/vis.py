@@ -13,7 +13,7 @@ metrics = [
 
 # Load CSV data
 data = []
-with open("runs/detect/train15/results.csv") as csvfile:
+with open("runs/detect/train2/results.csv") as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         data.append(row)

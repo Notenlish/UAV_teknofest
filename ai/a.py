@@ -1,7 +1,6 @@
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     from ultralytics import YOLO
 
-    model = YOLO('yolov8n.pt')
+    model = YOLO("yolov5n.pt")
 
-    metrics = model.train(data="datasets/deneme-5k/data.yaml", device="cuda", batch=16)
+    metrics = model.train(data="datasets/deneme-5k/data.yaml", device="cuda", batch=-1)
