@@ -29,14 +29,26 @@ def qr(frame):
     return retval, decoded_info, frame
 
 
+def qrdetect(frame):
+    retval, points = detector.detect(frame)
+    print(retval, points)
+    if retval:
+        frame = cv2.polylines(frame, points.astype(int), True, (255, 0, 0), 3)
+    return retval, frame
+
+
 cap = cv2.VideoCapture(0)
 
 ret, frame = cap.read()
 while ret:
     ret, frame = cap.read()
-    #frame = contrast(frame)
+    frame = contrast(frame)
 
     retval, decoded, frame = qr(frame)
+    retval2, frame = qrdetect(frame)
+
+    # it can detect at far distances but actually decoding is a problem,
+    # we might need to scale up the detected area.
 
     if frame is not None and type(frame) == np.ndarray:
         cv2.imshow("Stream", frame)
