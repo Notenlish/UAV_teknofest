@@ -42,7 +42,7 @@ cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
 while ret:
     ret, frame = cap.read()
-    frame = contrast(frame)
+    # frame = contrast(frame)
 
     retval, decoded, frame = qr(frame)
     retval2, frame = qrdetect(frame)
