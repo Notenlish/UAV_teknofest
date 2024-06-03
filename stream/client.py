@@ -34,15 +34,15 @@ while ret:
         frame_info = {"packs":num_of_packs}
 
         # send the number of packs to be expected
-        print("Number of packs:", num_of_packs)
+        # print("Number of packs:", num_of_packs)
         sock.sendto(pickle.dumps(frame_info), (host, port))
         
         left = 0
         right = max_length
 
         for i in range(num_of_packs):
-            print("left:", left)
-            print("right:", right)
+            # print("left:", left)
+            # print("right:", right)
 
             # truncate data to send
             data = buffer[left:right]
