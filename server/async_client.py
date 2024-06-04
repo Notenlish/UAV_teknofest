@@ -33,10 +33,10 @@ class TCPClient:
 
         data = await reader.read(MSG_SIZE)
         incoming_cmd = self.cmd_converter.command_from_msg(data)
-        print(incoming_cmd)
         if incoming_cmd.type == commands.COMMANDS.CONNECT:
             if incoming_cmd.data["successful"]:
                 print("Communication with server has been established")
+        print(incoming_cmd)
 
         while True:
             if len(self.msg_queue):

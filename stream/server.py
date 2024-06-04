@@ -22,7 +22,7 @@ while True:
     
     if len(data) < 100:
         frame_info = pickle.loads(data)
-        print("got data")
+        # print("got data")
 
         if frame_info:
             nums_of_packs = frame_info["packs"]
