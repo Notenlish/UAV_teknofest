@@ -1,6 +1,10 @@
 import time
 from threading import Event
 
+from pymavlink import mavutil, mavparm
+import pymavlink
+import pymavlink.mavutil
+
 
 class Process:
     def __init__(self, config: dict[str, any]) -> None:

@@ -1,5 +1,9 @@
 {
-    "windowSize":[1200, 675],
-    "windowName":"StarWing UAV YKS",
-    "windowFps":10
+    "windowSize": [
+        1200,
+        675
+    ],
+    "windowName": "StarWing UAV YKS",
+    "windowFPS": 10,
+    "earthMoveSpeed": 5
 }
