@@ -14,7 +14,7 @@ class UI:
         self.UI_FPS = config["windowFps"]
         self.is_running = False
 
-        self.earth = pygame.image.load("ui/earth.jpg").convert()
+        self.earth = pygame.image.load("ui/earth.jpg").convert()  # https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74518/world.topo.200412.3x21600x10800.jpg
 
         self.font = pygame.font.Font("ui/Renogare-Regular.otf", size=20)
 
