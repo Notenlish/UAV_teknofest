@@ -18,7 +18,7 @@ from threading import Thread, Event, Lock
 CONFIG = read_config("ui/config.json")
 
 global MEMORY
-MEMORY = {"i": 0, "earth_scaled": {}}
+MEMORY = {"i": 0}
 global EVENTS
 EVENTS = {"close_app": Event()}
 

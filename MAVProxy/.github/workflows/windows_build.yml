@@ -1,0 +1,81 @@
+name: Windows Build
+
+on: [push, pull_request, workflow_dispatch]
+concurrency:
+  group: ci-${{github.workflow}}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: 'windows-latest'
+    strategy:
+      matrix:
+        python-version: ['3.10']
+        
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install -U wheel setuptools pip
+          python -m pip install -U pywin32 lxml pymavlink numpy matplotlib pyserial opencv-python PyYAML Pygame Pillow wxpython prompt-toolkit scipy
+          python -m pip install -U openai wave pyaudio
+          python -m pip install -U pyinstaller packaging 
+      - name: Download Inno Setup installer
+        run: curl -L -o installer.exe http://files.jrsoftware.org/is/6/innosetup-6.2.0.exe
+      - name: Install Inno Setup
+        run: ./installer.exe /verysilent /allusers /dir=inst
+      - name: Build MAVProxy
+        run: |
+          python -m pip install . --user
+          python -m pip list
+      - name: Prepare installer
+        run: |
+          cd MAVProxy
+          copy ..\\windows\\mavproxy.spec
+          pyinstaller --clean mavproxy.spec
+          del mavproxy.spec
+      - name: Download parameters
+        run: |          
+          mkdir Parameters
+          $wc = New-Object System.Net.WebClient
+          $wc.DownloadFile('https://autotest.ardupilot.org/Parameters/APMrover2/apm.pdef.xml', 'Parameters\Rover.xml')
+          $wc.DownloadFile('https://autotest.ardupilot.org/Parameters/ArduCopter/apm.pdef.xml', 'Parameters\ArduCopter.xml')
+          $wc.DownloadFile('https://autotest.ardupilot.org/Parameters/ArduPlane/apm.pdef.xml', 'Parameters\ArduPlane.xml')
+          $wc.DownloadFile('https://autotest.ardupilot.org/Parameters/ArduSub/apm.pdef.xml', 'Parameters\ArduSub.xml')
+          $wc.DownloadFile('https://autotest.ardupilot.org/Parameters/AntennaTracker/apm.pdef.xml', 'Parameters\AntennaTracker.xml')
+      - name: Build installer
+        run: |
+          cd  windows
+          $env:VERSION=$(python returnVersion.py)
+          python returnVersion.py > version.txt
+          ISCC.exe /dMyAppVersion=$env:VERSION mavproxy.iss
+          ls Output
+      - name: Archive build
+        uses: actions/upload-artifact@v4
+        with:
+           name: MAVProxyInstaller
+           path: windows/Output
+           retention-days: 7
+      - name: Pre Release
+        uses: "softprops/action-gh-release@v2"
+        if: github.ref == 'refs/heads/master'
+        with:
+          prerelease: true
+          name: "Development Build"
+          tag_name: "latest"
+          files: windows/Output/*.*
+          token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Release
+        uses: "softprops/action-gh-release@v2"
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          prerelease: false
+          files: windows/Output/*.*
+          token: "${{ secrets.GITHUB_TOKEN }}"

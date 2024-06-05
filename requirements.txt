@@ -3,3 +3,5 @@ cryptography
 numpy
 filterpy
 pymavlink
+pyserial
+geopy
