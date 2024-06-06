@@ -3,9 +3,9 @@
         1200,
         675
     ],
-    "windowName": "StarWing UAV YKS",
-    "windowFPS": 10,
-    "earthMoveSpeed": 5,
+    "windowName": "StarWing UAV YKİ",
+    "windowFPS": 60,
+    "earthMoveSpeed": 1,
     "earthZoomSteps": [
         1,
         2,
