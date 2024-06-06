@@ -5,3 +5,4 @@ filterpy
 pymavlink
 pyserial
 geopy
+python-dotenv

@@ -27,9 +27,12 @@ class UI:
         self.is_running = False
 
         self.earth_move_speed = config["earthMoveSpeed"]
-        self.earth = pygame.image.load(
-            "ui/earth.jpg"
-        ).convert()  # https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74518/world.topo.200412.3x21600x10800.jpg
+        try:
+            self.earth = pygame.image.load(
+                "ui/earth.jpg"
+            ).convert()
+        except:
+            print("you don't have earth.jpg, please download it from https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74518/world.topo.200412.3x21600x10800.jpg")
 
         self.zoom_steps = config["earthZoomSteps"]
         self.test_teams = config["testTeams"]
