@@ -25,7 +25,7 @@ EVENTS = {"close_app": Event()}
 
 class App:
     def __init__(self) -> None:
-        self.ui = UI(CONFIG)
+        self.ui = UI(CONFIG, MEMORY, EVENTS)
         self.process = Process(CONFIG)
 
     def run(self):
@@ -34,7 +34,7 @@ class App:
                 target=self.process.start, name="Process Thread", args=(MEMORY, EVENTS)
             )
             self.process_thread.start()
-            self.ui.start(MEMORY, EVENTS)
+            self.ui.start()
         except Exception as e:
             print(e)
             EVENTS["close_app"].set()

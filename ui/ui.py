@@ -19,28 +19,24 @@ pygame.font.init()
 
 
 class UI:
-    def __init__(self, config: dict[str, any]) -> None:
+    def __init__(
+        self, config: dict[str, any], memory: dict[str, any], events: dict[str, any]
+    ) -> None:
         self.screen_size = config["windowSize"]
         self.screen = pygame.display.set_mode(self.screen_size)
         self.clock = pygame.time.Clock()
         self.UI_FPS = config["windowFPS"]
         self.is_running = False
 
-        self.earth_move_speed = config["earthMoveSpeed"]
-        try:
-            self.earth = pygame.image.load(
-                "ui/earth.jpg"
-            ).convert()
-        except:
-            print("you don't have earth.jpg, please download it from https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74518/world.topo.200412.3x21600x10800.jpg")
-
-        self.zoom_steps = config["earthZoomSteps"]
-        self.test_teams = config["testTeams"]
+        self.earth = pygame.Surface((10, 10))
 
         self.font = pygame.font.Font("ui/Renogare-Regular.otf", size=20)
         pygame.transform.set_smoothscale_backend("SSE2")
 
-    def _draw_teams(self, MEMORY):
+        self.memory = memory
+        self.events = events
+
+    def _draw_teams(self):
         pixel_percent_w = self.screen_size[0] / 100
         pixel_percent_h = self.screen_size[1] / 100
         teams_screen_area = pygame.Rect(
@@ -111,22 +107,24 @@ class UI:
 
         return (resultx, resulty)
 
-    def _set_zoom(self, MEMORY: dict[str, any]):
-        MEMORY["zoom"] = min(max(MEMORY["zoom"], 0), 9)
-        val = self.zoom_steps[MEMORY["zoom"]]
+    def _set_zoom(self, change):
+        zoom = self.memory["zoom"]
+        zoom += change
+        zoom = min(max(zoom, 0), 9)
+        val = self.zoom_steps[zoom]
         result_zoom = 1 / val
-        print(MEMORY["zoom"], val)
 
-        orig = MEMORY["orig_earth_rect"].copy()
-        MEMORY["orig_earth_rect"].scale_by_ip(result_zoom)
-        x = MEMORY["earth_rect"].centerx
-        y = MEMORY["earth_rect"].centery
-        MEMORY["earth_rect"] = MEMORY["orig_earth_rect"]
-        MEMORY["earth_rect"].centerx = x
-        MEMORY["earth_rect"].centery = y
-        MEMORY["orig_earth_rect"] = orig
+        orig = self.memory["orig_earth_rect"].copy()
+        self.memory["orig_earth_rect"].scale_by_ip(result_zoom)
+        x = self.memory["earth_rect"].centerx
+        y = self.memory["earth_rect"].centery
+        self.memory["earth_rect"] = self.memory["orig_earth_rect"]
+        self.memory["earth_rect"].centerx = x
+        self.memory["earth_rect"].centery = y
+        self.memory["orig_earth_rect"] = orig
+        self.memory["zoom"] = zoom
 
-    def _draw_earth(self, MEMORY):
+    def _draw_earth(self):
         pixel_percent_w = self.screen_size[0] / 100
         pixel_percent_h = self.screen_size[1] / 100
         earth_screen_area = pygame.Rect(
@@ -135,31 +133,28 @@ class UI:
             round(pixel_percent_w * 50),
             round(pixel_percent_h * 60),
         )
-        rect: pygame.Rect = MEMORY["earth_rect"]
+        rect: pygame.Rect = self.memory["earth_rect"]
         if rect.w < 0 or rect.h < 0:
             return
         hashed_rect = hash_pg_rect(rect)
-        # print(rect)
         try:
-            result = MEMORY["earth_draw_cache"][hashed_rect]
-            # print("found hashed")
+            result = self.memory["earth_draw_cache"][hashed_rect]
         except KeyError:
             result = pygame.transform.smoothscale(
                 self.earth.subsurface(rect).copy(), earth_screen_area.size
             )
-            MEMORY["earth_draw_cache"][hashed_rect] = result
-            # print(f"{getsizeof(MEMORY['earth_draw_cache']) / 1024 / 1024:.5f}")
+            self.memory["earth_draw_cache"][hashed_rect] = result
         self.screen.blit(result, (0, 0))
 
-    def move_earth(self, MEMORY: dict[str, any], x, y):
-        rect: pygame.Rect = MEMORY["earth_rect"]
+    def move_earth(self, x, y):
+        rect: pygame.Rect = self.memory["earth_rect"]
         pixel_per_percent = rect.w / 100
         rect = rect.move(
             x * self.earth_move_speed * pixel_per_percent,
             y * self.earth_move_speed * pixel_per_percent,
         )
-        rect = rect.clamp(MEMORY["orig_earth_rect"])
-        MEMORY["earth_rect"] = rect
+        rect = rect.clamp(self.memory["orig_earth_rect"])
+        # self.memory["earth_rect"] = rect
 
     def _draw_texts(
         self,
@@ -193,44 +188,43 @@ class UI:
         self.screen.blit(surf, anchor)
         return rect
 
-    def start(self, MEMORY: dict[str, any], EVENTS: dict[str, Event]):
+    def start(self):
         self.is_running = True
-        MEMORY["earth_scaled"] = {}
-        MEMORY["orig_earth_rect"] = pygame.Rect(self.earth.get_rect())
-        MEMORY["earth_rect"] = MEMORY["orig_earth_rect"].copy()
-        MEMORY["earth_draw_cache"] = {}
-        MEMORY["zoom"] = 0
+        self.memory["earth_scaled"] = {}
+        self.memory["orig_earth_rect"] = pygame.Rect(self.earth.get_rect())
+        self.memory["earth_rect"] = self.memory["orig_earth_rect"].copy()
+        self.memory["earth_draw_cache"] = {}
+        self.memory["zoom"] = 0
         while self.is_running:
             self.screen.fill("white")
 
-            self._draw_earth(MEMORY)
+            self._draw_earth()
             self._draw_text(
-                f"{MEMORY['i']}", (self.screen_size[0] * 0.5, self.screen_size[1] * 0.5)
+                f"{self.memory['i']}",
+                (self.screen_size[0] * 0.5, self.screen_size[1] * 0.5),
             )
-            self._draw_teams(MEMORY)
+            self._draw_teams()
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_F1:
-                        MEMORY["zoom"] += 1
-                        self._set_zoom(MEMORY)
+                        self._set_zoom(1)
                     if event.key == pygame.K_F2:
-                        MEMORY["zoom"] -= 1
-                        self._set_zoom(MEMORY)
+                        self._set_zoom(-1)
                 if event.type == pygame.QUIT:
                     self.is_running = False
-                    EVENTS["close_app"].set()
+                    self.events["close_app"].set()
                     break
 
             events = pygame.key.get_pressed()
             if events[pygame.K_w]:
-                self.move_earth(MEMORY, 0, -1)
+                self.move_earth(0, -1)
             if events[pygame.K_a]:
-                self.move_earth(MEMORY, -1, 0)
+                self.move_earth(-1, 0)
             if events[pygame.K_s]:
-                self.move_earth(MEMORY, 0, 1)
+                self.move_earth(0, 1)
             if events[pygame.K_d]:
-                self.move_earth(MEMORY, 1, 0)
+                self.move_earth(1, 0)
 
             self.dt = self.clock.tick(self.UI_FPS)
             pygame.display.update()
