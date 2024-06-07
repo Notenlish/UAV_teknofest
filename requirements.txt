@@ -2,3 +2,4 @@ pygame-ce
 cryptography
 numpy
 filterpy
+label-studio
