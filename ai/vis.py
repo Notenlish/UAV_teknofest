@@ -1,4 +1,5 @@
 import csv
+
 import matplotlib.pyplot as plt
 
 # wont run with the environment activated

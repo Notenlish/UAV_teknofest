@@ -15,7 +15,6 @@ import sys
 import tempfile
 import time
 
-
 import pexpect
 
 if sys.version_info[0] >= 3:
@@ -752,7 +751,7 @@ def gps_newpos(lat, lon, bearing, distance):
     """Extrapolate latitude/longitude given a heading and distance
     thanks to http://www.movable-type.co.uk/scripts/latlong.html .
     """
-    from math import sin, asin, cos, atan2, radians, degrees
+    from math import asin, atan2, cos, degrees, radians, sin
 
     lat1 = radians(lat)
     lon1 = radians(lon)

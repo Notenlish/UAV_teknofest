@@ -1,6 +1,7 @@
-from threading import Event
-from pymavlink import mavutil, mavparm
 import time
+from threading import Event
+
+from pymavlink import mavparm, mavutil
 
 
 class Communication:

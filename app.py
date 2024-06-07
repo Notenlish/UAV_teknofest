@@ -1,19 +1,15 @@
-import sys
 import os
+import sys
 
 from utils import read_config
 
-
 # couldnt figure out how to set project launch json, so this is how I will be able to launch app.py from ui.py
-try:
-    from ui.ui import UI
-except ModuleNotFoundError:
-    from ui import UI
 
+from ui.ui import UI
+
+from threading import Event, Lock, Thread
 
 from process.process import Process
-
-from threading import Thread, Event, Lock
 
 CONFIG = read_config("ui/config.json")
 

@@ -12,25 +12,23 @@ AP_FLAKE8_CLEAN
 from __future__ import print_function
 
 import atexit
+import binascii
 import datetime
 import errno
+import math
 import optparse
 import os
 import os.path
 import re
+import shlex
 import signal
 import subprocess
 import sys
 import tempfile
 import textwrap
 import time
-import shlex
-import binascii
-import math
 
-from pysim import util
-from pysim import vehicleinfo
-
+from pysim import util, vehicleinfo
 
 # List of open terminal windows for macosx
 windowID = []
@@ -1588,8 +1586,9 @@ if cmd_opts.delay_start:
 tmp = None
 if cmd_opts.frame in ['scrimmage-plane', 'scrimmage-copter']:
     # import only here so as to avoid jinja dependency in whole script
-    from jinja2 import Environment, FileSystemLoader
     from tempfile import mkstemp
+
+    from jinja2 import Environment, FileSystemLoader
     entities = []
     config = {}
     config['plane'] = cmd_opts.vehicle == 'ArduPlane'

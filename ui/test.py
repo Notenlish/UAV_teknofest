@@ -1,8 +1,8 @@
-import pygame
-import requests
 import os
 import sys
 
+import pygame
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
