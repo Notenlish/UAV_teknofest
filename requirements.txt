@@ -2,4 +2,8 @@ pygame-ce
 cryptography
 numpy
 filterpy
+pymavlink
+pyserial
+geopy
+python-dotenv
 label-studio
