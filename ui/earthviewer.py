@@ -5,6 +5,8 @@ import pygame
 import requests
 from dotenv import load_dotenv
 
+from utils import draw_text
+
 load_dotenv()
 
 # Tiles are available on zoom levels 0 through 22.
@@ -54,6 +56,7 @@ class EarthViewer:
         )
 
         if not os.path.exists(tile_path):
+            print("tile doesnt exist, attempting to get it from api")
             os.makedirs(cache_dir, exist_ok=True)
             response = requests.get(url)
             if response.ok:
@@ -89,28 +92,56 @@ class EarthViewer:
     def calculate_tiles(self):
         tile_w = 256 * self.scale
         tile_h = 256 * self.scale
-        max_x = self.zoom**2 if self.zoom > 0 else 1
-        max_y = max_x
-        tiles = []
-        for tile_x in range(math.ceil(self.screen_area.w / tile_w)):
-            for tile_y in range(math.ceil(self.screen_area.h / tile_h)):
-                normalized_x = tile_x % max_x
-                normalized_y = tile_x % max_y
-                tiles.append(
-                    {
-                        "normalized_x": normalized_x,
-                        "normalized_y": normalized_y,
-                        "screen_x": tile_x * tile_w + self.x,
-                        "screen_y": tile_y * tile_h + self.y,
-                    }
-                )
-        return tiles
 
-    def render(self, screen: pygame.Surface):
+        start_x = math.floor(0 / tile_w) - 1
+        end_x = math.ceil((0 + self.screen_area.w) / tile_w)
+        start_y = math.floor(0 / tile_h) - 1
+        end_y = math.ceil((0 + self.screen_area.h) / tile_h)
+
+        tile_id = 0
+        tiles = []
+        for x in range(start_x, end_x):
+            offset_x = self.x % tile_w
+            screen_x = x * tile_w + offset_x
+            for y in range(start_y, end_y):
+                offset_y = self.y % tile_h
+                screen_y = y * tile_h + offset_y
+
+                if self.zoom == 0:
+                    tile_id = 0
+
+                tile_rect = pygame.Rect(screen_x, screen_y, tile_w, tile_h)
+                tile_rect = tile_rect.move(offset_x, offset_y)
+                tile = {
+                    "x": tile_rect.x,
+                    "y": tile_rect.y,
+                    "w": tile_rect.w,
+                    "h": tile_rect.h,
+                    "id": tile_id,
+                }
+                tiles.append(tile)
+                tile_id += 1
+            tile_id += 1
+            return tiles
+
+    def render(self, screen: pygame.Surface, font: pygame.Font):
         for tile in self.calculate_tiles():
-            img = self.load_tile(self.zoom, tile["normalized_x"], tile["normalized_y"])
-            rect = img.get_rect()
-            screen.blit(img, (tile["screen_x"], tile["screen_y"]))
+            tile_rect = pygame.Rect(tile["x"], tile["y"], tile["w"], tile["h"])
+            tile_id = tile["id"]
+
+            max_tile_x = self.zoom**2 if self.zoom > 0 else 1
+            max_tile_y = max_tile_x
+
+            tile_x = tile_id // max_tile_x
+            tile_y = tile_id % max_tile_x
+
+
+            print("debug:", f"zoom:{self.zoom} id:{tile_id} tilex:{tile_x} tiley{tile_y} maxx{max_tile_x} maxy{max_tile_y}")
+            img = self.load_tile(self.zoom, tile_x, tile_y)
+
+            screen.blit(img, tile_rect.topleft)
+            pygame.draw.rect(screen, "grey", tile_rect, 3)
+            draw_text(screen, font, str(tile_id), tile_rect.center)
 
 
 if __name__ == "__main__":

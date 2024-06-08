@@ -6,8 +6,6 @@ from geopy import distance
 
 from utils import draw_table
 
-from types import FunctionType
-
 
 class TeamViewer:
     def __init__(self, config: dict[str, any], screen_area: pygame.Rect) -> None:
@@ -57,7 +55,7 @@ class TeamViewer:
             screen,
             font,
             table,
-            self.screen_area,
+            self.screen_area.scale_by(1, 0.3),
             text_color="black",
             sep_color="white",
         )

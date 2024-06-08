@@ -12,6 +12,14 @@ def read_config(file: str = None):
         data = json.load(f)
     return data
 
+# taken from https://stackoverflow.com/questions/15098900/how-to-set-the-pivot-point-center-of-rotation-for-pygame-transform-rotate 
+def rotate(surface, angle, pivot, offset):
+    rotated_image = pg.transform.rotozoom(surface, -angle, 1)
+    rotated_offset = offset.rotate(angle)
+    # Add the offset vector to the center/pivot point to shift the rect.
+    rect = rotated_image.get_rect(center=pivot+rotated_offset)
+    return rotated_image, rect
+
 
 def position_anchor(rect: pygame.Rect | pygame.FRect, anchor: tuple[str, str]):
     resulty = None
@@ -68,46 +76,35 @@ def draw_table(
     text_color="black",
     sep_color="white",
 ):
+    # calculate sep width and height
     row1 = texts[0]
+    combined = "".join(texts[0])
+    combined_rect = get_text_rect(font, combined)
+    diff_w = table_rect.w - combined_rect.w
+    diff_h = table_rect.h - combined_rect.h
+    sep_w = diff_w / len(row1)
+    sep_h = diff_h / len(row1)
+
     point = pygame.Rect(table_rect.topleft, (1, 1))
-    row_rects = []
+    row_rects: list[pygame.Rect] = []
+
+    point.move(sep_w, 0)
     for text in row1:
         rect = get_text_rect(font, text)
-        # rect = rect.move(table_rect.topleft)
         rect = rect.move(point.x, 0)
         row_rects.append(rect)
         point.x += rect.w
         point.y += rect.h
+        point.x += sep_w
+        point.y += sep_w
 
-    sum_rect = pygame.Rect(*table_rect.topleft, 0, 0)
-    for rect in row_rects:
-        sum_rect.w += rect.w
-        sum_rect.h += rect.h
-
-    sep_count = len(texts[0]) + 1
-    sep_width = (table_rect.w - sum_rect.w) / sep_count
-
-    point = pygame.Rect(*table_rect.topleft, 0, 0)
-    for j, row in enumerate(texts):
-        point.x = table_rect.left + sep_width
+    y = row_rects[0].y
+    for row in texts:
         for i, text in enumerate(row):
-            text_rect = get_text_rect(font, text, antialias=True, color=text_color)
-            row_text = texts[0][i]
-            container = row_rects[i]
-
-            if j == 1 and 0 == 1:
-                container.x = point.x
-                pygame.draw.rect(screen, (i * 42, i * 42, i * 42), container, width=3)
-
-            # text_rect.center = container.center
+            rect = get_text_rect(font, text)
+            rect.center = row_rects[i].center
+            rect.y = y
             draw_text(
-                screen,
-                font,
-                text,
-                point.move(0, container.h / 2).topleft,
-                text_color,
-                anchor=("center", "center") if j != 0 else ("left", "top"),
+                screen, font, text, rect.center, text_color, anchor=("center", "center")
             )
-
-            point[0] += sep_width + container.w
-        point[1] += sep_width + container.h
+        y += row_rects[0].h + sep_h

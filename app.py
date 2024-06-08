@@ -3,8 +3,6 @@ import sys
 
 from utils import read_config
 
-# couldnt figure out how to set project launch json, so this is how I will be able to launch app.py from ui.py
-
 from ui.ui import UI
 
 from threading import Event, Lock, Thread
@@ -32,7 +30,7 @@ class App:
             self.process_thread.start()
             self.ui.start()
         except Exception as e:
-            print(e)
+            print("Error found:", e)
             EVENTS["close_app"].set()
             print("emitted close app event")
             self.process_thread.join(1)

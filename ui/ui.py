@@ -4,7 +4,7 @@ from threading import Event
 
 import pygame
 
-from utils import hash_pg_rect, draw_text
+from utils import draw_text
 
 from ui.earthviewer import EarthViewer
 
@@ -68,7 +68,7 @@ class UI:
         while self.is_running:
             self.screen.fill(self.bg_col)
 
-            self.earthviewer.render(self.screen)
+            self.earthviewer.render(self.screen, self.font)
             self.teamviewer.render(self.screen, self.font)
             draw_text(
                 self.screen,
@@ -102,20 +102,3 @@ class UI:
 
             self.dt = self.clock.tick(self.UI_FPS) / 1000
             pygame.display.update()
-
-
-# couldnt figure out how to set project launch json, so this is how I will be able to launch app.py from ui.py
-if __name__ == "__main__":
-    import os
-    import sys
-
-    current_directory = os.path.dirname(os.path.realpath(__file__))
-    parent_directory = os.path.dirname(current_directory)
-
-    sys.path.append(parent_directory)
-
-    from app import App
-    from utils import hash_pg_rect
-
-    app = App()
-    app.run()
