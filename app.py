@@ -12,7 +12,7 @@ from process.process import Process
 CONFIG = read_config("ui/config.json")
 
 global MEMORY
-MEMORY = {"i": 0}
+MEMORY = {"i": 0, "tiles_to_fetch": []}
 global EVENTS
 EVENTS = {"close_app": Event()}
 

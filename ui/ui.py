@@ -26,6 +26,9 @@ class UI:
         self.UI_FPS = config["windowFPS"]
         self.is_running = False
 
+        self.memory = memory
+        self.events = events
+
         self.bg_col = config["windowBackground"]
 
         self.pixel_percent_w = self.screen_size[0] / 100
@@ -33,6 +36,7 @@ class UI:
 
         self.earthviewer = EarthViewer(
             config,
+            self.memory,
             screen_area=pygame.Rect(
                 0, 0, self.pixel_percent_w * 50, self.pixel_percent_h * 65
             ),
@@ -56,15 +60,15 @@ class UI:
             ),
         )
 
-        self.font = pygame.font.Font("ui/Renogare-Regular.otf", size=20)
+        self.font = pygame.font.Font(
+            config["windowFont"], size=config["windowFontSize"]
+        )
         # pygame.transform.set_smoothscale_backend("SSE2")
-
-        self.memory = memory
-        self.events = events
 
     def start(self):
         self.dt = 1 / 1000
         self.is_running = True
+        self.memory["tiles_loaded"] = {}
         while self.is_running:
             self.screen.fill(self.bg_col)
 

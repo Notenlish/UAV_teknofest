@@ -1,8 +1,13 @@
 {
-  "windowSize": [1200, 675],
+  "windowSize": [
+    1200,
+    675
+  ],
   "windowName": "StarWing UAV YKİ",
   "windowFPS": 60,
-  "earthMoveSpeed": 100,
+  "earthMoveSpeed": 400,
+  "windowFont": "ui/data/Renogare-Regular.otf",
+  "windowFontSize": 20,
   "testTeams": [
     {
       "takim_numarasi": 1,
