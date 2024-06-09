@@ -1,7 +1,7 @@
 result.json
 ui/earth.jpg
 ui/tiles/*
-
+.VSCodeCounter/*
 venv/
 
 *.pt

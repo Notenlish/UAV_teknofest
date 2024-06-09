@@ -16,7 +16,7 @@ class EarthViewer:
         self.earth_move_speed = config["earthMoveSpeed"]
         self.memory = memory
 
-        self.zoom = 0
+        self.zoom = 0   
         self._calculate_max_tiles()
         self.scale = 1
 
@@ -27,8 +27,22 @@ class EarthViewer:
         self.max_tile_nums = 2**self.zoom if self.zoom != 0 else 1
 
     def move(self, x, y, dt):
+        tile_w = 256 * self.scale
+        tile_h = 256 * self.scale
+
         self.camera_x += x * self.earth_move_speed * dt
         self.camera_y += y * self.earth_move_speed * dt
+
+        val = self.zoom if self.zoom != 0 else 1
+        # usta neden bunu yapmamız gerektiğini bilmiyoruz, ama lazım
+        # yoksa harita dışına çıkabiliyorsun
+        # elleme sakın.
+        # elleyen gay.
+        if self.zoom % 2 == 1:  # odd number
+            val = 2
+
+        self.camera_x = min(max(self.camera_x, 0), (self.max_tile_nums - val )* tile_w)
+        self.camera_y = min(max(self.camera_y, 0), (self.max_tile_nums - val ) * tile_h)
 
     def change_zoom(self, amount):
         self.zoom += amount
@@ -85,48 +99,54 @@ class EarthViewer:
         tile_w = 256 * self.scale
         tile_h = 256 * self.scale
 
-        start_x = 0
-        start_y = 0
+        offset_x = 0  # self.camera_x % tile_w
+        offset_y = 0  # self.camera_y % tile_h
 
-        end_x = self.max_tile_nums
-        end_y = self.max_tile_nums
+        tile_start_x = int(self.camera_x) // tile_w
+        tile_start_y = int(self.camera_y) // tile_h
 
-        tile_id = 0
+        how_many_rects_hor = int(self.screen_area.width) // tile_w
+        how_many_rects_ver = int(self.screen_area.height) // tile_h
+
+        tile_end_x = tile_start_x + how_many_rects_hor
+
+        tile_diff_x = tile_start_x
+        tile_diff_y = tile_start_y
+
+        if self.zoom == 0:
+            tile_end_x = 1
+
+        tile_end_y = tile_start_y + self.screen_area.height // tile_h * 2
+
+        if self.zoom == 0:
+            tile_end_y = 1
+
         tiles = []
-        for y in range(start_y, end_y):
-            offset_y = self.camera_y  # % tile_h
-            screen_y = y * tile_h + offset_y
-            for x in range(start_x, end_x):
-                offset_x = self.camera_x  # % tile_w
-                screen_x = x * tile_w + offset_x
+        for y in range(tile_start_y, tile_end_y):
+            for x in range(tile_start_x, tile_end_x):
+                tile_id = x + y * self.max_tile_nums
 
-                if self.zoom == 0:
-                    tile_id = 0
-
-                tile_rect = pygame.Rect(screen_x, screen_y, tile_w, tile_h)
-
+                normalized_tile_x = x - tile_diff_x
+                normalized_tile_y = y - tile_diff_y
+                screen_x = 0 + normalized_tile_x * tile_w + offset_x
+                screen_y = 0 + normalized_tile_y * tile_h + offset_y
+            
                 tile = {
-                    "x": tile_rect.x,
-                    "y": tile_rect.y,
-                    "w": tile_rect.w,
-                    "h": tile_rect.h,
-                    "id": tile_id,
+                    "x": screen_x,
+                    "y": screen_y,
+                    "w": tile_w,
+                    "h": tile_h,
+                    "tile_x": x,
+                    "tile_y": y,
                 }
                 tiles.append(tile)
-
-                tile_id += 1
         return tiles
 
     def render(self, screen: pygame.Surface, font: pygame.Font):
         for tile in self.calculate_tiles(screen, font):
             tile_rect = pygame.Rect(tile["x"], tile["y"], tile["w"], tile["h"])
-            tile_id = tile["id"]
-
-            max_tile_x = self.max_tile_nums
-            max_tile_y = max_tile_x
-
-            tile_x = tile_id % max_tile_x
-            tile_y = (tile_id // max_tile_y) % max_tile_y
+            tile_x = tile["tile_x"]
+            tile_y = tile["tile_y"]
 
             # print(
             #    f"id:{tile_id} x:{tile_x} y:{tile_y} maxX:{max_tile_x} maxY:{max_tile_y}"
@@ -136,5 +156,6 @@ class EarthViewer:
 
             screen.blit(img, tile_rect.topleft)
             pygame.draw.rect(screen, "grey", tile_rect, 3)
-            draw_text(screen, font, str(tile_id), tile_rect.center)
-
+            draw_text(
+                screen, font, f"x{tile_x} y{tile_y}", tile_rect.center, color="red"
+            )
