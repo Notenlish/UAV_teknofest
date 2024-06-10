@@ -12,7 +12,7 @@ class Indicator:
         self.ground_col = config["indicatorGroundBackground"]
 
         self.altitude_vel = 0
-        self.roll = 0.5  # rad
+        self.roll = 0  # rad
 
     def _draw_bg(self, screen):
         pygame.draw.rect(
@@ -44,32 +44,22 @@ class Indicator:
         line_w = 10 * pixel_percent_w
         line_sep = 10 * pixel_percent_w
 
-        low_left = self.screen_area.move(
-            -5 * pixel_percent_w, 5 * pixel_percent_h
-        ).center
-        low_right = self.screen_area.move(
-            5 * pixel_percent_w, 5 * pixel_percent_h
-        ).center
+        rect = pygame.Rect(self.screen_area.centerx, self.screen_area.centery, 1, 1)
 
-        left_start = self.screen_area.move(
-            cos(self.roll) * line_sep, sin(self.roll) * line_sep
-        )
+        bottom_start = rect.move(sin(self.roll) * line_sep, cos(self.roll) * line_sep)
+        bottom_end = bottom_start.move(sin(self.roll) * line_w, cos(self.roll) * line_w)
+
+        left_start = rect.move(cos(self.roll) * line_sep, sin(self.roll) * line_sep)
         left_end = left_start.move(cos(self.roll) * line_w, sin(self.roll) * line_w)
 
-        right_start = self.screen_area.move(
-            cos(self.roll) * -line_sep, sin(self.roll) * -line_sep
-        )
+        right_start = rect.move(cos(self.roll) * -line_sep, sin(self.roll) * -line_sep)
         right_end = right_start.move(cos(self.roll) * -line_w, sin(self.roll) * -line_w)
 
         pygame.draw.line(screen, "red", left_start.center, left_end.center, width=3)
         pygame.draw.line(screen, "red", right_start.center, right_end.center, width=3)
-        pygame.draw.lines(
-            screen,
-            "red",
-            closed=False,
-            points=[low_left, self.screen_area.center, low_right],
-            width=3,
-        )
+        #pygame.draw.circle(screen, "blue", bottom_start.center, radius=2)
+        #pygame.draw.circle(screen, "blue", bottom_end.center, radius=2)
+        pygame.draw.line(screen, "red", bottom_start.center, bottom_end.center, width=3)
 
 
 if __name__ == "__main__":

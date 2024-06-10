@@ -6,11 +6,10 @@ import pygame
 
 from utils import draw_text
 
-from ui.earthviewer import EarthViewer
-
+from ui.earth_viewer import EarthViewer
 from ui.indicator import Indicator
-
-from ui.teamviewer import TeamViewer
+from ui.team_viewer import TeamViewer
+from ui.command_panel import CommandPanel
 
 
 pygame.font.init()
@@ -59,6 +58,15 @@ class UI:
                 self.pixel_percent_h * 65,
             ),
         )
+        self.command_panel = CommandPanel(
+            config,
+            pygame.Rect(
+                self.pixel_percent_w * 85,
+                0,
+                self.pixel_percent_w * 15,
+                self.pixel_percent_h * 65,
+            ),
+        )
 
         self.font = pygame.font.Font(
             config["windowFont"], size=config["windowFontSize"]
@@ -82,6 +90,7 @@ class UI:
                 color="white",
             )
             self.indicator.render(self.screen)
+            self.command_panel.render(self.screen)
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:

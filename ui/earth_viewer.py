@@ -110,7 +110,7 @@ class EarthViewer:
         tile_start_x = int(self.camera_x) // tile_w
         tile_start_y = int(self.camera_y) // tile_h
 
-        how_many_rects_hor = (int(self.screen_area.width) // tile_w) + 1 
+        how_many_rects_hor = (int(self.screen_area.width) // tile_w) + 2 
         how_many_rects_ver = (int(self.screen_area.height) // tile_h) + 2
 
         tile_end_x = tile_start_x + how_many_rects_hor
