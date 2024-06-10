@@ -16,9 +16,14 @@ class EarthViewer:
         self.earth_move_speed = config["earthMoveSpeed"]
         self.memory = memory
 
-        self.zoom = 0   
+        self.zoom = 0
         self._calculate_max_tiles()
         self.scale = 1
+
+        self.bg_col = config["windowBackground"]
+        self.window_size = config["windowSize"]
+
+        self.debug = True
 
         self.camera_x = 0
         self.camera_y = 0
@@ -41,8 +46,8 @@ class EarthViewer:
         if self.zoom % 2 == 1:  # odd number
             val = 2
 
-        self.camera_x = min(max(self.camera_x, 0), (self.max_tile_nums - val )* tile_w)
-        self.camera_y = min(max(self.camera_y, 0), (self.max_tile_nums - val ) * tile_h)
+        self.camera_x = min(max(self.camera_x, 0), (self.max_tile_nums - val) * tile_w)
+        self.camera_y = min(max(self.camera_y, 0), (self.max_tile_nums - val + 0.29) * tile_h)
 
     def change_zoom(self, amount):
         self.zoom += amount
@@ -99,14 +104,14 @@ class EarthViewer:
         tile_w = 256 * self.scale
         tile_h = 256 * self.scale
 
-        offset_x = 0  # self.camera_x % tile_w
-        offset_y = 0  # self.camera_y % tile_h
+        offset_x = self.camera_x % tile_w
+        offset_y = self.camera_y % tile_h
 
         tile_start_x = int(self.camera_x) // tile_w
         tile_start_y = int(self.camera_y) // tile_h
 
-        how_many_rects_hor = int(self.screen_area.width) // tile_w
-        how_many_rects_ver = int(self.screen_area.height) // tile_h
+        how_many_rects_hor = (int(self.screen_area.width) // tile_w) + 1 
+        how_many_rects_ver = (int(self.screen_area.height) // tile_h) + 2
 
         tile_end_x = tile_start_x + how_many_rects_hor
 
@@ -116,7 +121,7 @@ class EarthViewer:
         if self.zoom == 0:
             tile_end_x = 1
 
-        tile_end_y = tile_start_y + self.screen_area.height // tile_h * 2
+        tile_end_y = tile_start_y + how_many_rects_ver
 
         if self.zoom == 0:
             tile_end_y = 1
@@ -128,16 +133,17 @@ class EarthViewer:
 
                 normalized_tile_x = x - tile_diff_x
                 normalized_tile_y = y - tile_diff_y
-                screen_x = 0 + normalized_tile_x * tile_w + offset_x
-                screen_y = 0 + normalized_tile_y * tile_h + offset_y
-            
+
+                screen_x = 0 + normalized_tile_x * tile_w - offset_x
+                screen_y = 0 + normalized_tile_y * tile_h - offset_y
+
                 tile = {
                     "x": screen_x,
                     "y": screen_y,
                     "w": tile_w,
                     "h": tile_h,
-                    "tile_x": x,
-                    "tile_y": y,
+                    "tile_x": x % self.max_tile_nums,
+                    "tile_y": y % self.max_tile_nums,
                 }
                 tiles.append(tile)
         return tiles
@@ -155,7 +161,18 @@ class EarthViewer:
             img = self.load_tile(self.zoom, tile_x, tile_y)
 
             screen.blit(img, tile_rect.topleft)
-            pygame.draw.rect(screen, "grey", tile_rect, 3)
-            draw_text(
+            if self.debug:
+                pygame.draw.rect(screen, "grey", tile_rect, 3)
+                draw_text(
                 screen, font, f"x{tile_x} y{tile_y}", tile_rect.center, color="red"
-            )
+                )
+        pygame.draw.rect(
+            screen,
+            self.bg_col,
+            pygame.Rect(
+                0,
+                self.screen_area.h,
+                self.window_size[0],
+                self.window_size[1] - self.screen_area.h,
+            ),
+        )
