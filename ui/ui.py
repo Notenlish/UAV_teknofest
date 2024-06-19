@@ -11,13 +11,12 @@ from ui.indicator import Indicator
 from ui.team_viewer import TeamViewer
 from ui.command_panel import CommandPanel
 
-
 pygame.font.init()
 
 
 class UI:
     def __init__(
-        self, config: dict[str, any], memory: dict[str, any], events: dict[str, any]
+            self, config: dict[str, any], memory: dict[str, any], events: dict[str, any]
     ) -> None:
         self.screen_size = config["windowSize"]
         self.screen = pygame.display.set_mode(self.screen_size)
@@ -73,6 +72,19 @@ class UI:
         )
         # pygame.transform.set_smoothscale_backend("SSE2")
 
+    def render_children(self):
+        self.earthviewer.render(self.screen, self.font)
+        self.teamviewer.render(self.screen, self.font)
+        draw_text(
+            self.screen,
+            self.font,
+            f"{self.memory['i']}",
+            (self.screen_size[0] * 0.5, self.screen_size[1] * 0.5),
+            color="white",
+        )
+        self.indicator.render(self.screen)
+        self.command_panel.render(self.screen)
+
     def start(self):
         self.dt = 1 / 1000
         self.is_running = True
@@ -80,17 +92,7 @@ class UI:
         while self.is_running:
             self.screen.fill(self.bg_col)
 
-            self.earthviewer.render(self.screen, self.font)
-            self.teamviewer.render(self.screen, self.font)
-            draw_text(
-                self.screen,
-                self.font,
-                f"{self.memory['i']}",
-                (self.screen_size[0] * 0.5, self.screen_size[1] * 0.5),
-                color="white",
-            )
-            self.indicator.render(self.screen)
-            self.command_panel.render(self.screen)
+            self.render_children()
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
