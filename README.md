@@ -38,4 +38,6 @@ Currently working on training the model
 
 # Testing
 
-`-` Getting telemetry data from Xplane 11 & feeding to the system
+`+` Getting data from XPlane 11
+`+` Parsing data from XPlane 11
+`-` Feeding to the system

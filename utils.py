@@ -1,5 +1,11 @@
 import json
 
+from pyproj import Proj, transform
+
+# https://epsg.io/3857
+web_mercator = Proj(init="epsg:3857")
+
+
 import pygame
 
 pygame.font.init()
@@ -12,12 +18,13 @@ def read_config(file: str = None):
         data = json.load(f)
     return data
 
-# taken from https://stackoverflow.com/questions/15098900/how-to-set-the-pivot-point-center-of-rotation-for-pygame-transform-rotate 
+
+# taken from https://stackoverflow.com/questions/15098900/how-to-set-the-pivot-point-center-of-rotation-for-pygame-transform-rotate
 def rotate(surface, angle, pivot, offset):
-    rotated_image = pg.transform.rotozoom(surface, -angle, 1)
+    rotated_image = pygame.transform.rotozoom(surface, -angle, 1)
     rotated_offset = offset.rotate(angle)
     # Add the offset vector to the center/pivot point to shift the rect.
-    rect = rotated_image.get_rect(center=pivot+rotated_offset)
+    rect = rotated_image.get_rect(center=pivot + rotated_offset)
     return rotated_image, rect
 
 
@@ -108,3 +115,19 @@ def draw_table(
                 screen, font, text, rect.center, text_color, anchor=("center", "center")
             )
         y += row_rects[0].h + sep_h
+
+
+def lat_lon_to_web_mercator(lat, lon):
+    """NOTE: The web mercator projection is limited by the poles because earth isnt perfectly round. So you cant use this for the north pole or smth
+
+    Args:
+        lat (_type_): _description_
+        lon (_type_): _description_
+
+    Returns:
+        x: as in meters away from center of equator(i think) between -20037508.34 to 20037508.34 meters
+        y: as in meters away from center of equator(i think) between -20037508.34 to 20037508.34 meters
+    """
+    # Transform the latitude and longitude to Web Mercator x, y coordinates
+    x, y = web_mercator(lon, lat)
+    return x, y

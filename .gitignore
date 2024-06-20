@@ -4,6 +4,10 @@ ui/tiles/*
 .VSCodeCounter/*
 venv/
 
+keyframes/*
+input_vid/*
+
+
 *.pt
 *.onnx
 *.torchscript
