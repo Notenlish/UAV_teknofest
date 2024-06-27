@@ -6,6 +6,7 @@ try:
 except ModuleNotFoundError:
     import sys
     from os.path import dirname, curdir
+
     print(__file__, curdir)
     sys.path.append(curdir)
     from utils import lat_lon_to_web_mercator
@@ -45,6 +46,7 @@ class SimCommunicator:
                 print("received raw data")
                 data = self.parse_udp(raw)
                 self.update_values(data)
+
     # https://www.nuclearprojects.com/xplane/info.shtml
     # Written by chatgippity because i was lazy
     def parse_udp(self, data):
@@ -88,6 +90,7 @@ class SimCommunicator:
             lat_origin = floats[LatLongAltRef.LAT_ORIGIN.value]
             lon_origin = floats[LatLongAltRef.LON_ORIGIN.value]
             x, y = lat_lon_to_web_mercator(lat_deg, lon_deg)
+            print(x, y, lat_deg, lon_deg)
 
 
 if __name__ == "__main__":

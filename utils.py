@@ -3,7 +3,9 @@ import json
 from pyproj import Proj, transform
 
 # https://epsg.io/3857
+# https://epsg.io/4326
 web_mercator = Proj(init="epsg:3857")
+latlon_proj = Proj(init="epsg:4326")
 
 
 import pygame
@@ -131,3 +133,55 @@ def lat_lon_to_web_mercator(lat, lon):
     # Transform the latitude and longitude to Web Mercator x, y coordinates
     x, y = web_mercator(lon, lat)
     return x, y
+
+
+def normalize(min_val, max_val, value):
+    # Ensure min_val is less than max_val
+    if min_val >= max_val:
+        raise ValueError("min_val must be less than max_val")
+
+    # Calculate the normalized value
+    normalized_value = (value - min_val) / (max_val - min_val)
+
+    # Ensure the normalized value is within the range [0, 1]
+    if normalized_value < 0:
+        normalized_value = 0
+    elif normalized_value > 1:
+        normalized_value = 1
+
+    return normalized_value
+
+
+# 3 olası çözüm
+# 1 - Eposta yazdığım adamlar ya yardım eder ve kodu verir
+# 2 - StaticMaps API
+# 3 - Lat ve lon değerleriyle direkten hesaplamayı çözerim
+
+
+def latlon_to_map(lat, lon, zoom):
+    x, y = transform(latlon_proj, web_mercator, lon, lat)
+
+    earth_circumference = 40_075_000  # Approximately 40,075,000 meters
+
+    map_w = (2**zoom) - 1
+    map_h = (2**zoom) - 1
+
+    print(map_w)
+    print(map_h)
+
+    x_normalized = x / earth_circumference
+    y_normalized = y / earth_circumference
+
+    print(f"xnormal: {x_normalized}  ynormal: {y_normalized}")
+
+    tile_x = round(x_normalized * map_w)
+    tile_y = round(y_normalized * map_h)
+
+    return tile_x, tile_y
+
+
+if __name__ == "__main__":
+    # istanbul lat and lon
+    lat, lon = 39.916668, 116.383331
+    x, y = latlon_to_map(lat, lon, zoom=1)
+    print(f"x {x}, y {y}")
