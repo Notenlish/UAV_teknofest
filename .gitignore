@@ -6,6 +6,7 @@ venv/
 
 keyframes/*
 input_vid/*
+recording/*
 
 
 *.pt

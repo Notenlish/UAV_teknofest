@@ -12,7 +12,7 @@ Credits to [Andrew Walker](https://github.com/AndrewWalker/Dubins-Curves) for th
 
 # AI image detection
 
-Currently working on training the model
+Need training data.
 
 # Algorithm
 
