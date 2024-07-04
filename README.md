@@ -14,6 +14,8 @@ Credits to [Andrew Walker](https://github.com/AndrewWalker/Dubins-Curves) for th
 
 Need training data.
 
+`...` [In progress] making a test training data by just placing red objects and recording them. WOOHOO!
+
 # Algorithm
 
 `-` Going to specified location
@@ -41,3 +43,11 @@ Need training data.
 `+` Getting data from XPlane 11
 `+` Parsing data from XPlane 11
 `-` Feeding to the system
+
+# stuff
+
+https://github.com/adderbyte/GYM_XPLANE_ML/issues/1
+https://openreview.net/forum?id=S1lR6YT4nQ
+https://forums.x-plane.org/index.php?/forums/topic/171171-machine-learning-gym_xplane-gym-environment-for-xplane/
+https://openreview.net/pdf?id=H1mMHwt9X
+https://github.com/nasa/XPlaneConnect

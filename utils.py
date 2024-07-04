@@ -1,6 +1,7 @@
 import json
 
 from pyproj import Proj, transform
+import math
 
 # https://epsg.io/3857
 # https://epsg.io/4326
@@ -157,31 +158,27 @@ def normalize(min_val, max_val, value):
 # 2 - StaticMaps API
 # 3 - Lat ve lon değerleriyle direkten hesaplamayı çözerim
 
+# taken from: https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames 
+def latlon_to_map(lat_deg, lon_deg, zoom):
+  lat_rad = math.radians(lat_deg)
+  n = 1 << zoom
+  xtile = int((lon_deg + 180.0) / 360.0 * n)
+  ytile = int((1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n)
+  return xtile, ytile
 
-def latlon_to_map(lat, lon, zoom):
-    x, y = transform(latlon_proj, web_mercator, lon, lat)
-
-    earth_circumference = 40_075_000  # Approximately 40,075,000 meters
-
-    map_w = (2**zoom) - 1
-    map_h = (2**zoom) - 1
-
-    print(map_w)
-    print(map_h)
-
-    x_normalized = x / earth_circumference
-    y_normalized = y / earth_circumference
-
-    print(f"xnormal: {x_normalized}  ynormal: {y_normalized}")
-
-    tile_x = round(x_normalized * map_w)
-    tile_y = round(y_normalized * map_h)
-
-    return tile_x, tile_y
+# this doesnt seem to be working but who cares, latlon_to_map works!
+def map_to_latlon(xtile, ytile, zoom):
+  n = 1 << zoom
+  lon_deg = xtile / n * 360.0 - 180.0
+  lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
+  lat_deg = math.degrees(lat_rad)
+  return lat_deg, lon_deg
 
 
 if __name__ == "__main__":
     # istanbul lat and lon
-    lat, lon = 39.916668, 116.383331
-    x, y = latlon_to_map(lat, lon, zoom=1)
-    print(f"x {x}, y {y}")
+    lat_deg, lon_deg = 41.015137, 28.979530
+    zoom = 14
+    
+    x, y = latlon_to_map(lat_deg, lon_deg, zoom=zoom)
+    print(x, y)
