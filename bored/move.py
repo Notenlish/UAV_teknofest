@@ -46,7 +46,7 @@ class Mover:
             if i <= 170:
                 self.set_throttle(1)
                 y = i / 300
-                self.move(y / 10, y)
+                self.move(0, y)
             else:
                 self.move(1, 0)
             i += 1
