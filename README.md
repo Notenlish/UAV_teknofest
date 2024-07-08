@@ -42,6 +42,7 @@ Need training data.
 
 `+` Getting data from XPlane 11
 `+` Parsing data from XPlane 11
+`+` XPlaneConnect functionality
 `-` Feeding to the system
 
 # stuff
