@@ -45,6 +45,9 @@ Need training data.
 `+` XPlaneConnect functionality
 `-` Feeding to the system
 
+# NOTE:
+xplaneconnect should be downloaded as a compiled zip, just downlaoding the project source and putting it to plugins dir wont work.
+
 # stuff
 
 https://github.com/adderbyte/GYM_XPLANE_ML/issues/1
