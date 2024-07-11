@@ -4,12 +4,13 @@ import pickle
 import numpy as np
 import sys
 
-host = "127.0.0.1" # sys.argv[1]
-port = 5000
+HOST = "0.0.0.0" #"192.168.1.51"
+PORT = 5000
+
 max_length = 65540
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((host, port))
+sock.bind((HOST, PORT))
 
 frame_info = None
 buffer = None

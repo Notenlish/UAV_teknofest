@@ -12,11 +12,11 @@ except ModuleNotFoundError:
 
 # Constants
 MAX_LENGTH = 65000
-HOST = "127.0.0.1"
+HOST = "192.168.1.52"
 PORT = 5000
 
 # Set mode: "STREAM" or "RECORD"
-MODE = "RECORD"
+MODE = "STREAM"
 
 # Initialize socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
