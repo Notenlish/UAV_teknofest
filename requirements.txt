@@ -9,3 +9,4 @@ python-dotenv
 label-studio
 opencv-python
 pyproj
+gymnasium
