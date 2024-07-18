@@ -25,18 +25,15 @@ def receive_ffmpeg_stream(port, use_udp=True):
         return
 
     while True:
-        print("31")
         ret, frame = cap.read()
-        print("31")
+
         if not ret:
             print("Error: Failed to capture frame.")
             break
 
-        print("31")
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame = np.rot90(frame)
         surf = pygame.surfarray.make_surface(frame)
-        print("31")
 
         # Flip the frame for mirroring
         # frame = cv2.flip(frame, 1)

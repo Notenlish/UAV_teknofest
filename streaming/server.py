@@ -18,9 +18,9 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
         '-vf', 'hflip' if MIRROR else "", 
         "-flush_packets", "0",
         "-fflags", "nobuffer", # "+genpts",
-        "-analyzeduration", "0",
+        # "-analyzeduration", "0",
         "-tune", "zerolatency",
-        "-bf", "0",  # maybe dont allow this?
+        # "-bf", "0",  # maybe dont allow this?
         '-vcodec', 'libx264',
         '-pix_fmt', 'yuv420p',
         '-preset', 'veryfast',
