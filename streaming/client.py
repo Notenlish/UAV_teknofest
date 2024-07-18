@@ -12,7 +12,7 @@ except ModuleNotFoundError:
 
 # Constants
 MAX_LENGTH = 65000
-HOST = "192.168.1.52"
+HOST = "192.168.1.100"
 PORT = 5000
 
 # Set mode: "STREAM" or "RECORD"
@@ -37,6 +37,7 @@ frame_index = 0
 
 while ret:
     ret, frame = cap.read()
+    print("ğ")
     if not ret:
         break
 
@@ -59,6 +60,7 @@ while ret:
         end = start + MAX_LENGTH
         data = buffer[start:end]
         sock.sendto(data, (HOST, PORT))
+    print("send")
 
     if MODE == "RECORD":
         # Save the frame to a file
