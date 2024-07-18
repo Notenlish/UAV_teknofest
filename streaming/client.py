@@ -11,7 +11,7 @@ class VideoReceive:
         self.url = f'{self.protocol}://{host}:{port}'
 
         if use_udp == False:
-            print("Please note that you need to give network access for python in firewall + open up a special inbound port for it in advanced firewall settings")
+            print("Please note that you need to give network access for python in firewall + open up a special inbound & outbound port for it in advanced firewall settings")
             print("For TCP to work the connection must already be open(first run receiver then sender)")
             self.url += "/?listen"  # the client needs to specify its listening on tcp
 

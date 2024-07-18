@@ -7,6 +7,10 @@ MIRROR = True
 
 def start_ffmpeg_streaming(client_ip, port, use_udp=True):
     protocol = "udp" if use_udp else "tcp"
+    if not use_udp:
+        print("Please note that you need to give network access for python in firewall + open up a special inbound & outbound port for it in advanced firewall settings")
+        print("For TCP to work the connection must already be open(first run receiver then sender)")
+
     # fmt:off
     command = [
         'ffmpeg',
