@@ -2,7 +2,7 @@ import cv2
 
 def receive_ffmpeg_stream(port, use_udp=True):
     protocol = 'udp' if use_udp else 'tcp'
-    url = f'{protocol}://0.0.0.0:{port}'
+    url = f'{protocol}://192.168.1.97:{port}'
     cap = cv2.VideoCapture(url)
 
     if not cap.isOpened():

@@ -2,6 +2,7 @@ import subprocess
 import sys
 
 LINUX = sys.platform.startswith("linux")
+MIRROR = True
 
 
 def start_ffmpeg_streaming(client_ip, port, use_udp=True):
@@ -10,15 +11,17 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
     command = [
         'ffmpeg',
         '-f', 'dshow',
+        '-rtbufsize', '200MB',
         '-i', 'video=/dev/video0' if LINUX else "video=Integrated Camera",
         '-r', '20',
         '-s', '1280x720',
+        '-vf', 'hflip' if MIRROR else "", 
         "-flush_packets", "0",
         "-fflags", "nobuffer", # "+genpts",
         "-analyzeduration", "0",
         "-tune", "zerolatency",
         "-bf", "0",  # maybe dont allow this?
-        '-vcodec', 'libx265',
+        '-vcodec', 'libx264',
         '-pix_fmt', 'yuv420p',
         '-preset', 'veryfast',
         '-f', 'mpegts',
