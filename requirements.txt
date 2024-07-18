@@ -10,3 +10,5 @@ label-studio
 opencv-python
 pyproj
 gymnasium
+aiortc
+aiohttp
