@@ -1,50 +1,33 @@
-import cv2
-import socket
-import pickle
-import numpy as np
+import subprocess
 import sys
 
-HOST = "0.0.0.0" #"192.168.1.51"
-PORT = 5000
+LINUX = sys.platform.startswith("linux")
 
-max_length = 65540
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((HOST, PORT))
+def start_ffmpeg_streaming(client_ip, port, use_udp=True):
+    protocol = "udp" if use_udp else "tcp"
+    # fmt:off
+    command = [
+        'ffmpeg',
+        '-f', 'dshow',
+        '-i', 'video=/dev/video0' if LINUX else "video=Integrated Camera",
+        '-r', '25',
+        '-s', '640x480',
+        '-vcodec', 'libx264',
+        '-pix_fmt', 'yuv420p',
+        '-preset', 'veryfast',
+        '-f', 'mpegts',
+        f'{protocol}://{client_ip}:{port}'
+    ]
+    # fmt:on
 
-frame_info = None
-buffer = None
-frame = None
+    print(f"Starting FFmpeg with command: {' '.join(command)}")
+    subprocess.run(command)
 
-print("-> waiting for connection")
 
-while True:
-    data, address = sock.recvfrom(max_length)
-    
-    if len(data) < 100:
-        frame_info = pickle.loads(data)
-        # print("got data")
+if __name__ == "__main__":
+    client_ip = "127.0.0.1"  # Change to your client IP address
+    port = 12345  # Change to the port you want to use
+    start_ffmpeg_streaming(client_ip, port, use_udp=True)
 
-        if frame_info:
-            nums_of_packs = frame_info["packs"]
-
-            for i in range(nums_of_packs):
-                data, address = sock.recvfrom(max_length)
-
-                if i == 0:
-                    buffer = data
-                else:
-                    buffer += data
-
-            frame = np.frombuffer(buffer, dtype=np.uint8)
-            frame = frame.reshape(frame.shape[0], 1)
-
-            frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
-            frame = cv2.flip(frame, 1)
-            
-            if frame is not None and type(frame) == np.ndarray:
-                cv2.imshow("Stream", frame)
-                if cv2.waitKey(1) == 27:
-                    break
-                
-print("goodbye")
+# ffmpeg -f dshow -i video="Integrated Camera" -vcodec libx264 -pix_fmt yuv420p -preset veryfast -f mpegts udp://127.0.0.1:12345

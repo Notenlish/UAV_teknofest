@@ -1,76 +1,26 @@
 import cv2
-import socket
-import math
-import pickle
-import sys
-import os
 
-try:
-    from gstream import gstreamer_pipeline
-except ModuleNotFoundError:
-    from streaming.gstream import gstreamer_pipeline
+def receive_ffmpeg_stream(port, use_udp=True):
+    protocol = 'udp' if use_udp else 'tcp'
+    url = f'{protocol}://0.0.0.0:{port}'
+    cap = cv2.VideoCapture(url)
 
-# Constants
-MAX_LENGTH = 65000
-HOST = "192.168.1.100"
-PORT = 5000
+    if not cap.isOpened():
+        print("Error: Could not open video stream.")
+        return
 
-# Set mode: "STREAM" or "RECORD"
-MODE = "STREAM"
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-# Initialize socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        cv2.imshow('Video Stream', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-# Video capture initialization based on the platform
-if sys.platform.startswith("linux"):
-    cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
-else:
-    cap = cv2.VideoCapture(0)
+    cap.release()
+    cv2.destroyAllWindows()
 
-# Ensure the recording directory exists
-if MODE == "RECORD" and not os.path.exists("recording"):
-    os.makedirs("recording")
-
-# Read the first frame
-ret, frame = cap.read()
-frame_index = 0
-
-while ret:
-    ret, frame = cap.read()
-    print("ğ")
-    if not ret:
-        break
-
-    # Compress frame to JPEG format
-    retval, buffer = cv2.imencode(".jpg", frame)
-    if not retval:
-        continue
-
-    buffer = buffer.tobytes()
-    buffer_size = len(buffer)
-    num_of_packs = math.ceil(buffer_size / MAX_LENGTH)
-
-    # Frame information to be sent first
-    frame_info = {"packs": num_of_packs}
-    sock.sendto(pickle.dumps(frame_info), (HOST, PORT))
-
-    # Send the frame in chunks
-    for i in range(num_of_packs):
-        start = i * MAX_LENGTH
-        end = start + MAX_LENGTH
-        data = buffer[start:end]
-        sock.sendto(data, (HOST, PORT))
-    print("send")
-
-    if MODE == "RECORD":
-        # Save the frame to a file
-        with open(f"recording/frame_{frame_index:06d}.jpg", "wb") as f:
-            f.write(buffer)
-        frame_index += 1
-
-# Release resources
-cap.release()
-cv2.destroyAllWindows()
-sock.close()
-
-print("done")
+if __name__ == "__main__":
+    port = 12345  # Should match the port used on the server
+    receive_ffmpeg_stream(port, use_udp=True)
