@@ -10,6 +10,11 @@ class VideoReceive:
         self.protocol = 'udp' if use_udp else 'tcp'
         self.url = f'{self.protocol}://{host}:{port}'
 
+        if use_udp == False:
+            print("Please note that you need to give network access for python in firewall + open up a special inbound port for it in advanced firewall settings")
+            print("For TCP to work the connection must already be open(first run receiver then sender)")
+            self.url += "/?listen"  # the client needs to specify its listening on tcp
+
     def _start(self, url:str):
         print("attempting to connect...")
         cap = cv2.VideoCapture(url)
@@ -43,8 +48,8 @@ class VideoReceive:
 
 if __name__ == "__main__":
     port = 12345  # Should match the port used on the server
-    use_udp = True
-    host = "129.168.1.100"
+    use_udp = False
+    host = "127.0.0.1"
     
     receive = VideoReceive(port, host, use_udp=use_udp)
     receive.start()
