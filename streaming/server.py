@@ -36,3 +36,4 @@ if __name__ == "__main__":
     start_ffmpeg_streaming(client_ip, port, use_udp=True)
 
 # ffmpeg -f dshow -i video="Integrated Camera" -vcodec libx264 -pix_fmt yuv420p -preset veryfast -f mpegts udp://127.0.0.1:12345
+# see this for speedup: https://www.reddit.com/r/ffmpeg/comments/ikoohx/ffmpeg_command_for_lowest_latency_possible/?rdt=34741&onetap_auto=true&one_tap=true
