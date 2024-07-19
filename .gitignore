@@ -4,11 +4,13 @@ ui/tiles/*
 .VSCodeCounter/*
 venv/
 .VSCodeCounter/
+MAVProxy/windows/Output/
 
 keyframes/*
 input_vid/*
 recording/*
 
+!MAVProxy/MAVProxy/modules/mavproxy_test1.py
 
 *.pt
 *.onnx
