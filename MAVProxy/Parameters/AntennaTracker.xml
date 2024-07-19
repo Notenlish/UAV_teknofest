@@ -318,6 +318,9 @@
         <field name="Units">m</field>
         <field name="UnitText">meters</field>
       </param>
+      <param humanName="CoG adjustment ratio" name="CGA_RATIO" documentation="The ratio between the front and back motor outputs during steady-state hover. Positive when the CoG is in front of the motors midpoint (front motors work harder)." user="Advanced">
+        <field name="Range">0.5 2</field>
+      </param>
       <param humanName="Rover Quicktune enable" name="RTUN_ENABLE" documentation="Enable quicktune system" user="Standard">
         <values>
           <value code="0">Disabled</value>
@@ -804,6 +807,9 @@
         <field name="Units">litres</field>
         <field name="UnitText">litres</field>
       </param>
+      <param humanName="Halo6000 options" name="EFI_H6K_OPTIONS" documentation="Halo6000 options" user="Standard">
+        <field name="Bitmask">0:LogAllCanPackets</field>
+      </param>
       <param humanName="ViewPro debug" name="VIEP_DEBUG" documentation="ViewPro debug" user="Advanced">
         <values>
           <value code="0">Disabled</value>
@@ -852,6 +858,22 @@
       </param>
       <param humanName="ViewPro Zoom Times Max" name="VIEP_ZOOM_MAX" documentation="ViewPro Zoom Times Max" user="Standard">
         <field name="Range">0 30</field>
+      </param>
+      <param humanName="Enable NMEA 2000 EFI driver" name="EFI_2K_ENABLE" documentation="Enable NMEA 2000 EFI driver" user="Standard">
+        <values>
+          <value code="0">Disabled</value>
+          <value code="1">Enabled</value>
+        </values>
+      </param>
+      <param humanName="NMEA 2000 CAN driver" name="EFI_2K_CANDRV" documentation="NMEA 2000 CAN driver. Use 1 for first CAN scripting driver, 2 for 2nd driver" user="Standard">
+        <values>
+          <value code="0">Disabled</value>
+          <value code="1">FirstCAN</value>
+          <value code="2">SecondCAN</value>
+        </values>
+      </param>
+      <param humanName="NMEA 2000 options" name="EFI_2K_OPTIONS" documentation="NMEA 2000 driver options" user="Standard">
+        <field name="Bitmask">0:EnableLogging</field>
       </param>
       <param humanName="DJIRS2 debug" name="DJIR_DEBUG" documentation="Enable DJIRS2 debug" user="Advanced">
         <values>
@@ -1009,6 +1031,13 @@
       <param humanName="EFI INF-Inject options" name="EFI_INF_OPTIONS" documentation="EFI INF driver options" user="Standard">
         <field name="Bitmask">0:EnableLogging</field>
       </param>
+      <param humanName="EFI INF-Inject throttle rate" name="EFI_INF_THR_HZ" documentation="EFI INF throttle output rate" user="Standard">
+        <field name="Range">0 50</field>
+        <field name="Units">Hz</field>
+        <field name="UnitText">hertz</field>
+      </param>
+      <param humanName="EFI INF-Inject ignition aux function" name="EFI_INF_IGN_AUX" documentation="EFI INF throttle ignition aux function" user="Standard">
+</param>
       <param humanName="Hobbywing ESC Enable" name="ESC_HW_ENABLE" documentation="Enable Hobbywing ESC telemetry" user="Standard">
         <values>
           <value code="0">Disabled</value>
@@ -1294,8 +1323,17 @@
       <param humanName="Airspeed ratio" name="ARSPD2_RATIO" documentation="Calibrates pitot tube pressure to velocity. Increasing this value will indicate a higher airspeed at any given dynamic pressure." user="Advanced">
         <field name="Increment">0.1</field>
       </param>
-      <param humanName="Airspeed pin" name="ARSPD2_PIN" documentation="The pin number that the airspeed sensor is connected to for analog sensors. Set to 15 on the Pixhawk for the analog airspeed port. " user="Advanced">
-</param>
+      <param humanName="Airspeed pin" name="ARSPD2_PIN" documentation="The pin number that the airspeed sensor is connected to for analog sensors. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Advanced">
+        <values>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
+        </values>
+      </param>
       <param humanName="Automatic airspeed ratio calibration" name="ARSPD2_AUTOCAL" documentation="Enables automatic adjustment of airspeed ratio during a calibration flight based on estimation of ground speed and true airspeed. New ratio saved every 2 minutes if change is &gt; 5%. Should not be left enabled." user="Advanced">
 </param>
       <param humanName="Control pitot tube order" name="ARSPD2_TUBE_ORDR" documentation="This parameter allows you to control whether the order in which the tubes are attached to your pitot tube matters. If you set this to 0 then the first (often the top) connector on the sensor needs to be the stagnation pressure (the pressure at the tip of the pitot tube). If set to 1 then the second (often the bottom) connector needs to be the stagnation pressure. If set to 2 (the default) then the airspeed driver will accept either order. The reason you may wish to specify the order is it will allow your airspeed sensor to detect if the aircraft is receiving excessive pressure on the static port compared to the stagnation port such as during a stall, which would otherwise be seen as a positive airspeed." user="Advanced">
@@ -1361,8 +1399,17 @@
       <param humanName="Airspeed ratio" name="ARSPD_RATIO" documentation="Calibrates pitot tube pressure to velocity. Increasing this value will indicate a higher airspeed at any given dynamic pressure." user="Advanced">
         <field name="Increment">0.1</field>
       </param>
-      <param humanName="Airspeed pin" name="ARSPD_PIN" documentation="The pin number that the airspeed sensor is connected to for analog sensors. Set to 15 on the Pixhawk for the analog airspeed port. " user="Advanced">
-</param>
+      <param humanName="Airspeed pin" name="ARSPD_PIN" documentation="The pin number that the airspeed sensor is connected to for analog sensors. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Advanced">
+        <values>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
+        </values>
+      </param>
       <param humanName="Automatic airspeed ratio calibration" name="ARSPD_AUTOCAL" documentation="Enables automatic adjustment of airspeed ratio during a calibration flight based on estimation of ground speed and true airspeed. New ratio saved every 2 minutes if change is &gt; 5%. Should not be left enabled." user="Advanced">
 </param>
       <param humanName="Control pitot tube order" name="ARSPD_TUBE_ORDR" documentation="This parameter allows you to control whether the order in which the tubes are attached to your pitot tube matters. If you set this to 0 then the first (often the top) connector on the sensor needs to be the stagnation pressure (the pressure at the tip of the pitot tube). If set to 1 then the second (often the bottom) connector needs to be the stagnation pressure. If set to 2 (the default) then the airspeed driver will accept either order. The reason you may wish to specify the order is it will allow your airspeed sensor to detect if the aircraft is receiving excessive pressure on the static port compared to the stagnation port such as during a stall, which would otherwise be seen as a positive airspeed." user="Advanced">
@@ -1447,7 +1494,7 @@
         <field name="Increment">1</field>
       </param>
       <param humanName="External barometers to probe" name="BARO_PROBE_EXT" documentation="This sets which types of external i2c barometer to look for. It is a bitmask of barometer types. The I2C buses to probe is based on BARO_EXT_BUS. If BARO_EXT_BUS is -1 then it will probe all external buses, otherwise it will probe just the bus number given in BARO_EXT_BUS." user="Advanced">
-        <field name="Bitmask">0:BMP085,1:BMP280,2:MS5611,3:MS5607,4:MS5637,5:FBM320,6:DPS280,7:LPS25H,8:Keller,9:MS5837,10:BMP388,11:SPL06,12:MSP</field>
+        <field name="Bitmask">0:BMP085,1:BMP280,2:MS5611,3:MS5607,4:MS5637,5:FBM320,6:DPS280,7:LPS25H,8:Keller,9:MS5837,10:BMP388,11:SPL06,12:MSP,13:BMP581</field>
       </param>
       <param humanName="Baro ID" name="BARO1_DEVID" documentation="Barometer sensor ID, taking into account its type, bus and instance" user="Advanced">
         <field name="ReadOnly">True</field>
@@ -1736,14 +1783,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT2_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT2_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT2_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -1949,14 +1997,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT3_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT3_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT3_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -2162,14 +2211,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT4_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT4_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT4_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -2375,14 +2425,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT5_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT5_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT5_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -2588,14 +2639,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT6_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT6_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT6_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -2801,14 +2853,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT7_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT7_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT7_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -3014,14 +3067,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT8_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT8_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT8_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -3227,14 +3281,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT9_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT9_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT9_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -3440,14 +3495,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATTA_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATTA_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATTA_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -3653,14 +3709,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATTB_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATTB_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATTB_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -3866,14 +3923,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATTC_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATTC_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATTC_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -4079,14 +4137,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATTD_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATTD_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATTD_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -4292,14 +4351,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATTE_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATTE_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATTE_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -4505,14 +4565,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATTF_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATTF_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATTF_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -4718,14 +4779,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATTG_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATTG_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATTG_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -4931,14 +4993,15 @@
         <field name="UnitText">hertz</field>
         <field name="RebootRequired">True</field>
       </param>
-      <param humanName="Fuel level analog pin number" name="BATT_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to. Airspeed ports can be used for Analog input. When using analog pin 103, the maximum value of the input in 3.3V.">
+      <param humanName="Fuel level analog pin number" name="BATT_FL_PIN" documentation="Analog input pin that fuel level sensor is connected to.Analog Airspeed or RSSI ports can be used for Analog input( some autopilots provide others also). Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;.">
         <values>
-          <value code="-1">Not Used</value>
-          <value code="11">Pixracer</value>
-          <value code="13">Pixhawk ADC4</value>
-          <value code="14">Pixhawk ADC3</value>
-          <value code="15">Pixhawk ADC6/Pixhawk2 ADC</value>
-          <value code="103">Pixhawk SBUS</value>
+          <value code="-1">Disabled</value>
+          <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
+          <value code="5">Navigator</value>
+          <value code="13">Pixhawk2_PM2/CubeOrange_PM2</value>
+          <value code="14">CubeOrange</value>
+          <value code="16">Durandal</value>
+          <value code="100">PX4-v1</value>
         </values>
       </param>
       <param humanName="First order term" name="BATT_FL_FF" documentation="First order polynomial fit term" user="Advanced">
@@ -5483,6 +5546,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial CAN remote node number" name="CAN_D1_UC_S2_NOD" documentation="CAN remote node number for serial port" user="Advanced">
@@ -5572,6 +5636,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial CAN remote node number" name="CAN_D1_UC_S3_NOD" documentation="CAN node number for serial port" user="Advanced">
@@ -5661,6 +5726,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
     </parameters>
@@ -5851,6 +5917,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial CAN remote node number" name="CAN_D2_UC_S2_NOD" documentation="CAN remote node number for serial port" user="Advanced">
@@ -5940,6 +6007,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial CAN remote node number" name="CAN_D2_UC_S3_NOD" documentation="CAN node number for serial port" user="Advanced">
@@ -6029,6 +6097,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
     </parameters>
@@ -6219,6 +6288,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial CAN remote node number" name="CAN_D3_UC_S2_NOD" documentation="CAN remote node number for serial port" user="Advanced">
@@ -6308,6 +6378,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial CAN remote node number" name="CAN_D3_UC_S3_NOD" documentation="CAN node number for serial port" user="Advanced">
@@ -6397,6 +6468,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
     </parameters>
@@ -7846,6 +7918,9 @@
         <field name="Units">m</field>
         <field name="UnitText">meters</field>
       </param>
+      <param humanName="Optional EKF behaviour" name="EK3_OPTIONS" documentation="This controls optional EKF behaviour. Setting JammingExpected will change the EKF nehaviour such that if dead reckoning navigation is possible it will require the preflight alignment GPS quality checks controlled by EK3_GPS_CHECK and EK3_CHECK_SCALE to pass before resuming GPS use if GPS lock is lost for more than 2 seconds to prevent bad" user="Advanced">
+        <field name="Bitmask">0:JammingExpected</field>
+      </param>
     </parameters>
     <parameters name="EK3_SRC">
       <param humanName="Position Horizontal Source (Primary)" name="EK3_SRC1_POSXY" documentation="Position Horizontal Source (Primary)" user="Advanced">
@@ -7987,7 +8062,7 @@
         </values>
       </param>
       <param humanName="EKF Source Options" name="EK3_SRC_OPTIONS" documentation="EKF Source Options" user="Advanced">
-        <field name="Bitmask">0:FuseAllVelocities</field>
+        <field name="Bitmask">0:FuseAllVelocities, 1:AlignExtNavPosWhenUsingOptFlow</field>
       </param>
     </parameters>
     <parameters name="ESC_TLM">
@@ -10038,7 +10113,7 @@
         <field name="RebootRequired">True</field>
       </param>
       <param humanName="Test enable flags" name="NET_TESTS" documentation="Enable/Disable networking tests" user="Advanced">
-        <field name="Bitmask">0:UDP echo test,1:TCP echo test, 2:TCP discard test</field>
+        <field name="Bitmask">0:UDP echo test,1:TCP echo test, 2:TCP discard test, 3:TCP reflect test</field>
         <field name="RebootRequired">True</field>
       </param>
       <param humanName="Networking options" name="NET_OPTIONS" documentation="Networking options" user="Advanced">
@@ -10167,6 +10242,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Port number" name="NET_P1_PORT" documentation="Port number" user="Advanced">
@@ -10251,6 +10327,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Port number" name="NET_P2_PORT" documentation="Port number" user="Advanced">
@@ -10335,6 +10412,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Port number" name="NET_P3_PORT" documentation="Port number" user="Advanced">
@@ -10419,6 +10497,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Port number" name="NET_P4_PORT" documentation="Port number" user="Advanced">
@@ -11221,6 +11300,166 @@
         </values>
         <field name="RebootRequired">True</field>
       </param>
+      <param humanName="Scripting serial device enable" name="SCR_SDEV_EN" documentation="Enable scripting serial devices" user="Advanced">
+        <values>
+          <value code="0">Disabled</value>
+          <value code="1">Enabled</value>
+        </values>
+        <field name="RebootRequired">True</field>
+      </param>
+      <param humanName="Serial protocol of scripting serial device" name="SCR_SDEV1_PROTO" documentation="Serial protocol of scripting serial device" user="Advanced">
+        <field name="RebootRequired">True</field>
+        <values>
+          <value code="-1">None</value>
+          <value code="1">MAVLink1</value>
+          <value code="2">MAVLink2</value>
+          <value code="3">Frsky D</value>
+          <value code="4">Frsky SPort</value>
+          <value code="5">GPS</value>
+          <value code="7">Alexmos Gimbal Serial</value>
+          <value code="8">Gimbal</value>
+          <value code="9">Rangefinder</value>
+          <value code="10">FrSky SPort Passthrough (OpenTX)</value>
+          <value code="11">Lidar360</value>
+          <value code="13">Beacon</value>
+          <value code="14">Volz servo out</value>
+          <value code="15">SBus servo out</value>
+          <value code="16">ESC Telemetry</value>
+          <value code="17">Devo Telemetry</value>
+          <value code="18">OpticalFlow</value>
+          <value code="19">RobotisServo</value>
+          <value code="20">NMEA Output</value>
+          <value code="21">WindVane</value>
+          <value code="22">SLCAN</value>
+          <value code="23">RCIN</value>
+          <value code="24">EFI Serial</value>
+          <value code="25">LTM</value>
+          <value code="26">RunCam</value>
+          <value code="27">HottTelem</value>
+          <value code="28">Scripting</value>
+          <value code="29">Crossfire VTX</value>
+          <value code="30">Generator</value>
+          <value code="31">Winch</value>
+          <value code="32">MSP</value>
+          <value code="33">DJI FPV</value>
+          <value code="34">AirSpeed</value>
+          <value code="35">ADSB</value>
+          <value code="36">AHRS</value>
+          <value code="37">SmartAudio</value>
+          <value code="38">FETtecOneWire</value>
+          <value code="39">Torqeedo</value>
+          <value code="40">AIS</value>
+          <value code="41">CoDevESC</value>
+          <value code="42">DisplayPort</value>
+          <value code="43">MAVLink High Latency</value>
+          <value code="44">IRC Tramp</value>
+          <value code="45">DDS XRCE</value>
+          <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
+        </values>
+      </param>
+      <param humanName="Serial protocol of scripting serial device" name="SCR_SDEV2_PROTO" documentation="Serial protocol of scripting serial device" user="Advanced">
+        <field name="RebootRequired">True</field>
+        <values>
+          <value code="-1">None</value>
+          <value code="1">MAVLink1</value>
+          <value code="2">MAVLink2</value>
+          <value code="3">Frsky D</value>
+          <value code="4">Frsky SPort</value>
+          <value code="5">GPS</value>
+          <value code="7">Alexmos Gimbal Serial</value>
+          <value code="8">Gimbal</value>
+          <value code="9">Rangefinder</value>
+          <value code="10">FrSky SPort Passthrough (OpenTX)</value>
+          <value code="11">Lidar360</value>
+          <value code="13">Beacon</value>
+          <value code="14">Volz servo out</value>
+          <value code="15">SBus servo out</value>
+          <value code="16">ESC Telemetry</value>
+          <value code="17">Devo Telemetry</value>
+          <value code="18">OpticalFlow</value>
+          <value code="19">RobotisServo</value>
+          <value code="20">NMEA Output</value>
+          <value code="21">WindVane</value>
+          <value code="22">SLCAN</value>
+          <value code="23">RCIN</value>
+          <value code="24">EFI Serial</value>
+          <value code="25">LTM</value>
+          <value code="26">RunCam</value>
+          <value code="27">HottTelem</value>
+          <value code="28">Scripting</value>
+          <value code="29">Crossfire VTX</value>
+          <value code="30">Generator</value>
+          <value code="31">Winch</value>
+          <value code="32">MSP</value>
+          <value code="33">DJI FPV</value>
+          <value code="34">AirSpeed</value>
+          <value code="35">ADSB</value>
+          <value code="36">AHRS</value>
+          <value code="37">SmartAudio</value>
+          <value code="38">FETtecOneWire</value>
+          <value code="39">Torqeedo</value>
+          <value code="40">AIS</value>
+          <value code="41">CoDevESC</value>
+          <value code="42">DisplayPort</value>
+          <value code="43">MAVLink High Latency</value>
+          <value code="44">IRC Tramp</value>
+          <value code="45">DDS XRCE</value>
+          <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
+        </values>
+      </param>
+      <param humanName="Serial protocol of scripting serial device" name="SCR_SDEV3_PROTO" documentation="Serial protocol of scripting serial device" user="Advanced">
+        <field name="RebootRequired">True</field>
+        <values>
+          <value code="-1">None</value>
+          <value code="1">MAVLink1</value>
+          <value code="2">MAVLink2</value>
+          <value code="3">Frsky D</value>
+          <value code="4">Frsky SPort</value>
+          <value code="5">GPS</value>
+          <value code="7">Alexmos Gimbal Serial</value>
+          <value code="8">Gimbal</value>
+          <value code="9">Rangefinder</value>
+          <value code="10">FrSky SPort Passthrough (OpenTX)</value>
+          <value code="11">Lidar360</value>
+          <value code="13">Beacon</value>
+          <value code="14">Volz servo out</value>
+          <value code="15">SBus servo out</value>
+          <value code="16">ESC Telemetry</value>
+          <value code="17">Devo Telemetry</value>
+          <value code="18">OpticalFlow</value>
+          <value code="19">RobotisServo</value>
+          <value code="20">NMEA Output</value>
+          <value code="21">WindVane</value>
+          <value code="22">SLCAN</value>
+          <value code="23">RCIN</value>
+          <value code="24">EFI Serial</value>
+          <value code="25">LTM</value>
+          <value code="26">RunCam</value>
+          <value code="27">HottTelem</value>
+          <value code="28">Scripting</value>
+          <value code="29">Crossfire VTX</value>
+          <value code="30">Generator</value>
+          <value code="31">Winch</value>
+          <value code="32">MSP</value>
+          <value code="33">DJI FPV</value>
+          <value code="34">AirSpeed</value>
+          <value code="35">ADSB</value>
+          <value code="36">AHRS</value>
+          <value code="37">SmartAudio</value>
+          <value code="38">FETtecOneWire</value>
+          <value code="39">Torqeedo</value>
+          <value code="40">AIS</value>
+          <value code="41">CoDevESC</value>
+          <value code="42">DisplayPort</value>
+          <value code="43">MAVLink High Latency</value>
+          <value code="44">IRC Tramp</value>
+          <value code="45">DDS XRCE</value>
+          <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
+        </values>
+      </param>
     </parameters>
     <parameters name="SERIAL">
       <param humanName="Serial0 baud rate" name="SERIAL0_BAUD" documentation="The baud rate used on the USB console. Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -11297,6 +11536,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
         <field name="RebootRequired">True</field>
       </param>
@@ -11368,6 +11608,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Telemetry 2 Baud Rate" name="SERIAL2_BAUD" documentation="The baud rate of the Telem2 port. Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -11438,6 +11679,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial 3 (GPS) Baud Rate" name="SERIAL3_BAUD" documentation="The baud rate used for the Serial 3 (GPS). Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -11508,6 +11750,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial 4 Baud Rate" name="SERIAL4_BAUD" documentation="The baud rate used for Serial4. Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -11578,6 +11821,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial 5 Baud Rate" name="SERIAL5_BAUD" documentation="The baud rate used for Serial5. Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -11648,6 +11892,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial 6 Baud Rate" name="SERIAL6_BAUD" documentation="The baud rate used for Serial6. Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -11771,6 +12016,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial 7 Baud Rate" name="SERIAL7_BAUD" documentation="The baud rate used for Serial7. Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -11845,6 +12091,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial 8 Baud Rate" name="SERIAL8_BAUD" documentation="The baud rate used for Serial8. Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -11919,6 +12166,7 @@
           <value code="44">IRC Tramp</value>
           <value code="45">DDS XRCE</value>
           <value code="46">IMUDATA</value>
+          <value code="48">PPP</value>
         </values>
       </param>
       <param humanName="Serial 9 Baud Rate" name="SERIAL9_BAUD" documentation="The baud rate used for Serial8. Most stm32-based boards can support rates of up to 1500. If you setup a rate you cannot support and then can't connect to your board you should load a firmware from a different vehicle type. That will reset all your parameters to defaults." user="Standard">
@@ -17440,6 +17688,10 @@
       <param humanName="Channel Bitmask" name="SERVO_VOLZ_MASK" documentation="Enable of volz servo protocol to specific channels" user="Standard">
         <field name="Bitmask">0:Channel1,1:Channel2,2:Channel3,3:Channel4,4:Channel5,5:Channel6,6:Channel7,7:Channel8,8:Channel9,9:Channel10,10:Channel11,11:Channel12,12:Channel13,13:Channel14,14:Channel15,15:Channel16,16:Channel17,17:Channel18,18:Channel19,19:Channel20,20:Channel21,21:Channel22,22:Channel23,23:Channel24,24:Channel25,25:Channel26,26:Channel27,28:Channel29,29:Channel30,30:Channel31,31:Channel32</field>
       </param>
+      <param humanName="Range of travel" name="SERVO_VOLZ_RANGE" documentation="Range to map between 1000 and 2000 PWM. Default value of 200 gives full +-100 deg range of extended position command. This results in 0.2 deg movement per US change in PWM. If the full range is not needed it can be reduced to increase resolution. 40 deg range gives 0.04 deg movement per US change in PWM, this is higher resolution than possible with the VOLZ protocol so further reduction in range will not improve resolution. Reduced range does allow PWMs outside the 1000 to 2000 range, with 40 deg range 750 PWM results in a angle of -30 deg, 2250 would be +30 deg. This is still limited by the 200 deg maximum range of the actuator.">
+        <field name="Units">deg</field>
+        <field name="UnitText">degrees</field>
+      </param>
     </parameters>
     <parameters name="SIM_">
       <param humanName="Simulated Wind speed" name="SIM_WIND_SPD" documentation="Allows you to emulate wind in sim" user="Advanced">
@@ -17476,14 +17728,16 @@
       </param>
       <param humanName="transport type for first CAN interface" name="SIM_CAN_TYPE1" documentation="transport type for first CAN interface" user="Advanced">
         <values>
-          <value code="0">MulticastUDP</value>
-          <value code="1">SocketCAN</value>
+          <value code="0">None</value>
+          <value code="1">MulticastUDP</value>
+          <value code="2">SocketCAN</value>
         </values>
       </param>
       <param humanName="transport type for second CAN interface" name="SIM_CAN_TYPE2" documentation="transport type for second CAN interface" user="Advanced">
         <values>
-          <value code="0">MulticastUDP</value>
-          <value code="1">SocketCAN</value>
+          <value code="0">None</value>
+          <value code="1">MulticastUDP</value>
+          <value code="2">SocketCAN</value>
         </values>
       </param>
       <param humanName="Opflow Enable" name="SIM_FLOW_ENABLE" documentation="Enable simulated Optical Flow sensor">
@@ -17527,7 +17781,11 @@
         <field name="Units">m</field>
         <field name="UnitText">meters</field>
       </param>
-      <param humanName="Wind Profile Type" name="SIM_WIND_T_" documentation="Selects how wind varies from surface to WIND_T_ALT" user="Advanced    ">
+      <param humanName="Simulated wind vertical direction" name="SIM_WIND_DIR_Z" documentation="Allows you to set vertical wind direction (true deg) in sim. 0 means pure horizontal wind. 90 means pure updraft." user="Advanced">
+        <field name="Units">deg</field>
+        <field name="UnitText">degrees</field>
+      </param>
+      <param humanName="Wind Profile Type" name="SIM_WIND_T" documentation="Selects how wind varies from surface to WIND_T_ALT" user="Advanced    ">
         <values>
           <value code="0">square law</value>
           <value code="1">none</value>
@@ -18060,6 +18318,8 @@
         <field name="UnitText">radians per second</field>
       </param>
       <param humanName="SIM-on_hardware Relay Enable Mask" name="SIM_OH_RELAY_MSK" documentation="Allow relay output operation when running SIM-on-hardware">
+</param>
+      <param humanName="Simulated Clamp Channel" name="SIM_CLAMP_CH" documentation="If non-zero the vehicle will be clamped in position until the value on this servo channel passes 1800PWM">
 </param>
     </parameters>
     <parameters name="SIM_ARSPD2_">
@@ -18829,7 +19089,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP1_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP1_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP1_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
@@ -18885,7 +19145,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP2_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP2_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP2_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
@@ -18941,7 +19201,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP3_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP3_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP3_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
@@ -18997,7 +19257,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP4_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP4_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP4_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
@@ -19053,7 +19313,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP5_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP5_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP5_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
@@ -19109,7 +19369,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP6_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP6_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP6_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
@@ -19165,7 +19425,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP7_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP7_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP7_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
@@ -19221,7 +19481,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP8_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP8_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP8_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>
@@ -19277,7 +19537,7 @@
       </param>
       <param humanName="Sensor Source Identification" name="TEMP9_SRC_ID" documentation="Sensor Source Identification is used to replace a specific instance of a system component's temperature report with the temp sensor's. Examples: TEMP_SRC = 1 (ESC), TEMP_SRC_ID = 1 will set the temp of ESC1. TEMP_SRC = 3 (BatteryIndex),TEMP_SRC_ID = 2 will set the temp of BATT2. TEMP_SRC = 4 (BatteryId/SerialNum),TEMP_SRC_ID=42 will set the temp of all batteries that have param BATTn_SERIAL = 42.">
 </param>
-      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP9_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring." user="Standard">
+      <param humanName="Temperature sensor analog voltage sensing pin" name="TEMP9_PIN" documentation="Sets the analog input pin that should be used for temprature monitoring. Values for some autopilots are given as examples. Search wiki for &quot;Analog pins&quot;." user="Standard">
         <values>
           <value code="-1">Disabled</value>
           <value code="2">Pixhawk/Pixracer/Navio2/Pixhawk2_PM1</value>

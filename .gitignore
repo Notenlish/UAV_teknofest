@@ -3,11 +3,13 @@ ui/earth.jpg
 ui/tiles/*
 .VSCodeCounter/*
 venv/
+MAVProxy/windows/Output/
 
 keyframes/*
 input_vid/*
 recording/*
 
+!MAVProxy/MAVProxy/modules/mavproxy_test1.py
 
 *.pt
 *.onnx
