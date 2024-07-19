@@ -1,4 +1,7 @@
 {
+  "videoPort": 12345,
+  "videoHost": "127.0.0.1",
+  "sendVideoUDP": false,
   "windowSize": [
     1200,
     675

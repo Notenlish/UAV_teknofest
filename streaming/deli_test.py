@@ -17,7 +17,7 @@ frame_lock = threading.Lock()
 def receive_ffmpeg_stream(port, use_udp=True):
     global frame_data
     protocol = "udp" if use_udp else "tcp"
-    url = f"{protocol}://192.168.1.97:{port}"
+    url = f"{protocol}://127.0.0.1:{port}"
     cap: cv2.Mat = cv2.VideoCapture(url)
 
     if not cap.isOpened():
@@ -32,7 +32,6 @@ def receive_ffmpeg_stream(port, use_udp=True):
             break
 
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame = np.rot90(frame)
         surf = pygame.surfarray.make_surface(frame)
 
         # Flip the frame for mirroring
@@ -70,16 +69,15 @@ def main():
 
         if frame_data is not None:
             try:
-                with frame_lock:
-                    # Resize the frame
-                    # frame = cv2.resize(frame_data, (WINDOW_WIDTH, WINDOW_HEIGHT))
-                    # Convert the frame to a Pygame surface
-                    surface = frame_data
-                    screen.blit(surface, (0, 0))
-                    pygame.display.update()
+                # Resize the frame
+                # frame = cv2.resize(frame_data, (WINDOW_WIDTH, WINDOW_HEIGHT))
+                # Convert the frame to a Pygame surface
+                surface = frame_data
+                screen.blit(surface, (0, 0))
+                pygame.display.update()
 
                 # Cap the frame rate
-                clock.tick(20)  # Adjust the frame rate as necessary
+                clock.tick(60)  # Adjust the frame rate as necessary
             except Exception as e:
                 print(f"Error processing frame: {e}")
 
