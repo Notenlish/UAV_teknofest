@@ -3,6 +3,7 @@ ui/earth.jpg
 ui/tiles/*
 .VSCodeCounter/*
 venv/
+.VSCodeCounter/
 
 keyframes/*
 input_vid/*

@@ -6,11 +6,14 @@ import numpy as np
 import pygame
 import colorsys
 
+from data import XPlaneDataHandler
 
-class XPlaneRotationEnvironment(gym.Env):
+
+class XPlaneEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 60}
 
     def __init__(self, render_mode=None):
+        self.xplane = XPlaneDataHandler()
         self.window_size = np.array([512, 512])  # The size of the PyGame window
 
         # Observations are dictionaries with the agent's and the target's location.
@@ -50,17 +53,19 @@ class XPlaneRotationEnvironment(gym.Env):
 
         # Get the current state
         data = self.xplane.get_all_data()
-        position = data["position"]
         velocity = data["velocity"]
         rotation = data["orientation"]
+
+        target_velocity = data["ai_velocity"]
+        target_rotation = data["ai_orientation"]
 
         # Calculate the distance to the target position
         distance = np.linalg.norm(
             np.array(
                 [
-                    self.target_position[0] - position["local_x"],
-                    self.target_position[1] - position["local_y"],
-                    self.target_position[2] - position["local_z"],
+                    rotation[0] - target_rotation[0],
+                    rotation[1] - target_rotation[1],
+                    rotation[2] - target_rotation[2],
                 ]
             )
         )
@@ -68,21 +73,21 @@ class XPlaneRotationEnvironment(gym.Env):
         # Define a reward function (e.g., negative distance to the target position)
         reward = -distance
 
+        if distance < 20:
+            reward = 20 - distance
+
         # Check if the target position is reached
         done = distance < 10  # Example threshold
 
         # Create the observation array
         observation = np.array(
             [
-                position["local_x"],
-                position["local_y"],
-                position["local_z"],
-                velocity["local_vx"],
-                velocity["local_vy"],
-                velocity["local_vz"],
-                rotation["pitch"],
-                rotation["roll"],
-                rotation["yaw"],
+                velocity[0],
+                velocity[1],
+                velocity[2],
+                rotation[0],
+                rotation[1],
+                rotation[2],
             ]
         )
 
@@ -108,10 +113,7 @@ class XPlaneRotationEnvironment(gym.Env):
         self.target["velocity"] = data["ai_velocity"]
         self.target["rotation"] = data["ai_rotation"]
 
-        observation = {
-            "agent":self.agent,
-            "target":self.target
-        }
+        observation = {"agent": self.agent, "target": self.target}
         return observation
 
     def render(self):
