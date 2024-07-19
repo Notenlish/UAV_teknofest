@@ -129,7 +129,7 @@ class XPlaneRotationEnvironment(gym.Env):
             values = np.array([self.agent["vel"], self.agent["rot"]]).flatten()
             for x in values:
                 c = colorsys.hsv_to_rgb(i / len(values), 0.7, 0.6)
-                c = [c[0] * 255, c[1] * 255, c[2] * 255]
+                c = [c[0] * 255, c[1] * 255, c[2] * 255]  # de normalize
                 draw(x, c)
                 i += len(values)
         pass  # Visualization can be added if needed
