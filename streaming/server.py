@@ -2,8 +2,9 @@ import subprocess
 import sys
 
 LINUX = sys.platform.startswith("linux")
-MIRROR = True
-
+SCHOOL_PC = False
+MIRROR = False
+win_cam = "video=Integrated Camera" if SCHOOL_PC else "video=HD Webcam"
 
 def start_ffmpeg_streaming(client_ip, port, use_udp=True):
     protocol = "udp" if use_udp else "tcp"
@@ -16,10 +17,9 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
         'ffmpeg',
         '-f', 'dshow',
         '-rtbufsize', '200MB',
-        '-i', 'video=/dev/video0' if LINUX else "video=Integrated Camera",
+        '-i', 'video=/dev/video0' if LINUX else win_cam,
         '-r', '20',
         '-s', '1280x720',
-        '-vf', 'hflip' if MIRROR else "", 
         "-flush_packets", "0",
         "-fflags", "nobuffer", # "+genpts",
         # "-analyzeduration", "0",
@@ -29,8 +29,11 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
         '-pix_fmt', 'yuv420p',
         '-preset', 'veryfast',
         '-f', 'mpegts',
-        f'{protocol}://{client_ip}:{port}'
     ]
+    if MIRROR:
+        command.append('-vf')
+        command.append('hflip')
+    command.append(f'{protocol}://{client_ip}:{port}')
     # fmt:on
 
     print(f"Starting FFmpeg with command: {' '.join(command)}")
