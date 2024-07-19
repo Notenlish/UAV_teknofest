@@ -10,6 +10,7 @@ from ui.earth_viewer import EarthViewer
 from ui.indicator import Indicator
 from ui.team_viewer import TeamViewer
 from ui.command_panel import CommandPanel
+from ui.video_stream import VideoStream
 
 pygame.font.init()
 
@@ -67,6 +68,17 @@ class UI:
             ),
         )
 
+        self.video_stream = VideoStream(
+            config,
+            self.memory,
+            pygame.Rect(
+                self.pixel_percent_w * 20,
+                self.pixel_percent_h * 65,
+                self.pixel_percent_w * 30,
+                self.pixel_percent_h * 35
+            )
+        )
+
         self.font = pygame.font.Font(
             config["windowFont"], size=config["windowFontSize"]
         )
@@ -75,6 +87,7 @@ class UI:
     def render_children(self):
         self.earthviewer.render(self.screen, self.font)
         self.teamviewer.render(self.screen, self.font)
+        self.video_stream.render(self.screen)
         draw_text(
             self.screen,
             self.font,

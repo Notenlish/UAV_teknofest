@@ -52,7 +52,7 @@ class XPlaneRotationEnvironment(gym.Env):
         data = self.xplane.get_all_data()
         position = data["position"]
         velocity = data["velocity"]
-        orientation = data["orientation"]
+        rotation = data["orientation"]
 
         # Calculate the distance to the target position
         distance = np.linalg.norm(
@@ -80,9 +80,9 @@ class XPlaneRotationEnvironment(gym.Env):
                 velocity["local_vx"],
                 velocity["local_vy"],
                 velocity["local_vz"],
-                orientation["pitch"],
-                orientation["roll"],
-                orientation["yaw"],
+                rotation["pitch"],
+                rotation["roll"],
+                rotation["yaw"],
             ]
         )
 
@@ -91,27 +91,27 @@ class XPlaneRotationEnvironment(gym.Env):
     def reset(self):
         # Reset the position of the aircraft to a random position
         # This can be customized as needed
-        self.agent = {"vel": np.array([0, 0, 0]), "rot": np.array([0, 0, 0])}
-        self.target = {"vel": np.array([0, 0, 0]), "rot": np.array([0, 0, 0])}
+        self.agent = {"velocity": np.array([0, 0, 0]), "rotation": np.array([0, 0, 0])}
+        self.target = {"velocity": np.array([0, 0, 0]), "rotation": np.array([0, 0, 0])}
 
-        initial_position = [0, 1000, 0, 0, 0, 0]  # Example initial position
-        self.xplane.send_data({"position": initial_position})
+        # initial_position = [0, 1000, 0, 0, 0, 0]  # Example initial position
+        # self.xplane.send_data({"position": initial_position})
 
         # Get the initial state
         data = self.xplane.get_all_data()
         velocity = data["velocity"]
-        orientation = data["orientation"]
+        rotation = data["rotation"]
 
-        observation = np.array(
-            [
-                velocity["local_vx"],
-                velocity["local_vy"],
-                velocity["local_vz"],
-                orientation["pitch"],
-                orientation["roll"],
-                orientation["yaw"],
-            ]
-        )
+        self.agent["velocity"] = velocity
+        self.agent["rotation"] = rotation
+
+        self.target["velocity"] = data["ai_velocity"]
+        self.target["rotation"] = data["ai_rotation"]
+
+        observation = {
+            "agent":self.agent,
+            "target":self.target
+        }
         return observation
 
     def render(self):
@@ -135,4 +135,6 @@ class XPlaneRotationEnvironment(gym.Env):
         pass  # Visualization can be added if needed
 
     def close(self):
-        pass
+        if self.window is not None:
+            pygame.display.quit()
+            pygame.quit()
