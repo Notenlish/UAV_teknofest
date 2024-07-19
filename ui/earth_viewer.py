@@ -8,6 +8,10 @@ from dotenv import load_dotenv
 from utils import draw_text
 
 
+# TODO: when it loads tiles it calculates which tiles to use incorrectly(tries to get the whole row)
+# it should get only the tiles visible
+
+
 class EarthViewer:
     def __init__(
         self, config: dict[str, any], memory: dict[str, any], screen_area: pygame.Rect
@@ -27,6 +31,11 @@ class EarthViewer:
 
         self.camera_x = 0
         self.camera_y = 0
+
+        if self.scale == 1:
+            self.no_img = pygame.image.load("ui/data/empty.png")
+        elif self.scale == 2:
+            self.no_img = pygame.image.load("ui/data/empty@2x.png")
 
     def _calculate_max_tiles(self):
         self.max_tile_nums = 2**self.zoom if self.zoom != 0 else 1
@@ -79,7 +88,8 @@ class EarthViewer:
             try:
                 tiles_to_fetch.index(tile)
             except ValueError:
-                tiles_to_fetch.append(tile)
+                tiles_to_fetch.insert(0, tile)
+                # tiles_to_fetch.append(tile)
 
         return tile_path
 
@@ -92,12 +102,15 @@ class EarthViewer:
         except KeyError:
             tile_path = self._get_tile(zoom, x, y, cache_dir=cache_dir)
             if tile_path == None:
-                if self.scale == 1:
-                    return pygame.image.load("ui/data/empty.png")
-                elif self.scale == 2:
-                    return pygame.image.load("ui/data/empty@2x.png")
-            img = pygame.image.load(tile_path)
-            self.memory["tiles_loaded"][tile_path] = img
+                return self.no_img
+            try:
+                img = pygame.image.load(tile_path)
+                self.memory["tiles_loaded"][tile_path] = img
+            except Exception as e:
+                print("ERR!", e)
+                return self.no_img
+                # tile = {"scale": self.scale, "zoom": zoom, "x": x, "y": y}
+                # self.memory["tiles_to_fetch"].append(tile)
         return img
 
     def calculate_tiles(self, screen, font):
