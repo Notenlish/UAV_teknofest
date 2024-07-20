@@ -63,12 +63,21 @@ Bak usta yapmam gereken her şeyi buraya yazıcam.
 
 ### PZT 'ye kadar
 [ ] - UI'ı MAVProxy e taşı
+
 [ ] - MAVProxy hareket ettirme motor kontrolü
+
 [ ] - Haberleşme menzil testleri(Ubiquiti)  -> seed ile packet gönder, packetlerin kaçının bozulduğunu veya kaybolduğunu her iki cihazdan da aynı seed ile rastgele değerler üretip karşılaştırarak bul
+
 [ ] - Haberleşme menzil testleri(telemetri) -> mavproxy nasıl haberleşme yapıyor ona bakmamız lazım
+
 [ ] - UI'da uçağın ve ai uçağın haritada gösterimi
+
+
 ### Kalanlar
 [ ] - UAV tespit YOLO modeli(dataset ztn olması lazım)
+
 [ ] - XPlane 11 de test et. 
+
 [ ] - Rakip takip ve kilitlenme, yol bulma
+
 [ ] - Kamikaze + diğer 
