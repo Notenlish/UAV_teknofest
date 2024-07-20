@@ -30,7 +30,7 @@ class XPlaneUDP:
     MCAST_GRP = "239.255.1.1"
     MCAST_PORT = 49707  # (MCAST_PORT was 49000 for XPlane10)
 
-    def __init__(self):
+    def __init__(self, defaultFreq=1):
         # Open a UDP Socket to receive on Port 49000
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.settimeout(3.0)
@@ -40,7 +40,7 @@ class XPlaneUDP:
         # values from xplane
         self.BeaconData = {}
         self.xplaneValues = {}
-        self.defaultFreq = 1
+        self.defaultFreq = defaultFreq
 
     def __del__(self):
         for i in range(len(self.datarefs)):
@@ -65,7 +65,10 @@ class XPlaneUDP:
             message = struct.pack("<5sI500s", cmd, int(value), string)
 
         assert len(message) == 509
-        self.socket.sendto(message, (self.BeaconData["IP"], self.UDP_PORT))
+        # code from xplaneudp(original)
+        # self.socket.sendto(message, (self.BeaconData["IP"], self.UDP_PORT))
+        # my fix
+        self.socket.sendto(message, (self.BeaconData["IP"], self.BeaconData["Port"]))
 
     def AddDataRef(self, dataref, freq=None):
         """
@@ -147,6 +150,7 @@ class XPlaneUDP:
             sock.bind((self.MCAST_GRP, self.MCAST_PORT))
         mreq = struct.pack("=4sl", socket.inet_aton(self.MCAST_GRP), socket.INADDR_ANY)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+        print(sock)
         sock.settimeout(3.0)
 
         # receive data
@@ -224,7 +228,7 @@ class XPlaneUDP:
             raise XPlaneIpNotFound()
         finally:
             sock.close()
-
+        print(self.BeaconData)
         return self.BeaconData
 
 

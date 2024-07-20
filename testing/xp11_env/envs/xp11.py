@@ -6,6 +6,8 @@ import numpy as np
 import pygame
 import colorsys
 
+import time
+
 from data import XPlaneDataHandler
 
 
@@ -21,7 +23,7 @@ class XPlaneEnv(gym.Env):
         print("observation space may be wrong, idk")
         self.observation_space = spaces.Dict(
             {
-                # velocity, orientation
+                # velocity, rotation
                 "agent": spaces.Box(
                     low=-np.inf, high=np.inf, shape=(2,), dtype=np.float32
                 ),
@@ -32,7 +34,7 @@ class XPlaneEnv(gym.Env):
         )
 
         # increase or decrease the yaw, roll, pitch
-        self.action_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)
+        self.action_space = spaces.Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -46,21 +48,45 @@ class XPlaneEnv(gym.Env):
         """
         self.window = None
         self.clock = None
+        
+        self.start_time = time.time()
 
-    def step(self, action):
-        # Apply the action to X-Plane (adjust orientation)
-        self.xplane.send_data({"orientation": action})
+    def reset(self):
+        start_pos = [130_000, 3_000, 130_000]
+        self.xplane.send_data({"position":start_pos})
+        
+        # Reset the position of the aircraft to a random position
+        # This can be customized as needed
+        self.agent = {"velocity": np.array([0, 0, 0], dtype=np.float32), "rotation": np.array([0, 0, 0], dtype=np.float32)}
+        self.target = {"velocity": np.array([0, 0, 0], dtype=np.float32), "rotation": np.array([0, 0, 0], dtype=np.float32)}
 
-        # Get the current state
-        data = self.xplane.get_all_data()
-        velocity = data["velocity"]
-        rotation = data["orientation"]
+        # initial_position = [0, 1000, 0, 0, 0, 0]  # Example initial position
+        # self.xplane.send_data({"position": initial_position})
 
-        target_velocity = data["ai_velocity"]
-        target_rotation = data["ai_orientation"]
+        # Get the initial state
+        self.get_values()
 
-        # Calculate the distance to the target position
-        distance = np.linalg.norm(
+        observation = {"agent": self.agent, "target": self.target}
+        info = self._get_info()
+        return observation, info
+
+    def get_values(self):
+        t_dif = time.time() - self.start_time
+        if t_dif < 0.1:
+            time.sleep(0.1 - t_dif)
+        self.xplane.fetch_drefs()
+        
+        self.agent["velocity"] = np.array(list(self.xplane.get_velocity().values()))
+        self.agent["rotation"] = np.array(list(self.xplane.get_rotation().values()))
+
+    def _get_info(self):
+        return {}
+    
+    def _get_rot_diff(self):
+        rotation = self.agent["rotation"]
+        target_rotation = self.target["rotation"]
+        
+        return np.linalg.norm(
             np.array(
                 [
                     rotation[0] - target_rotation[0],
@@ -70,51 +96,26 @@ class XPlaneEnv(gym.Env):
             )
         )
 
-        # Define a reward function (e.g., negative distance to the target position)
-        reward = -distance
-
-        if distance < 20:
-            reward = 20 - distance
-
-        # Check if the target position is reached
-        done = distance < 10  # Example threshold
-
-        # Create the observation array
-        observation = np.array(
-            [
-                velocity[0],
-                velocity[1],
-                velocity[2],
-                rotation[0],
-                rotation[1],
-                rotation[2],
-            ]
-        )
-
-        return observation, reward, done, {}
-
-    def reset(self):
-        # Reset the position of the aircraft to a random position
-        # This can be customized as needed
-        self.agent = {"velocity": np.array([0, 0, 0]), "rotation": np.array([0, 0, 0])}
-        self.target = {"velocity": np.array([0, 0, 0]), "rotation": np.array([0, 0, 0])}
-
-        # initial_position = [0, 1000, 0, 0, 0, 0]  # Example initial position
-        # self.xplane.send_data({"position": initial_position})
-
+    def step(self, action: np.ndarray):
         # Get the initial state
-        data = self.xplane.get_all_data()
-        velocity = data["velocity"]
-        rotation = data["rotation"]
-
-        self.agent["velocity"] = velocity
-        self.agent["rotation"] = rotation
-
-        self.target["velocity"] = data["ai_velocity"]
-        self.target["rotation"] = data["ai_rotation"]
+        self.get_values()
+        
+        rot = self.target["rotation"]
+        
+        action *= 10
+        
+        # Apply the action to X-Plane (adjust rotation)
+        self.xplane.send_data({"rot_acc": action})
 
         observation = {"agent": self.agent, "target": self.target}
-        return observation
+        info = self._get_info()
+
+        distance = self._get_rot_diff()
+        reward = -distance
+
+        done = False  # TODO: fix this
+
+        return observation, reward, done, {}
 
     def render(self):
         if self.render_mode == "human":

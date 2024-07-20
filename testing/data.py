@@ -1,121 +1,123 @@
 import xpc2
 import xpc
+import time
 
 
 class XPlaneDataHandler:
     def __init__(self, xplane_port=50501):
-        self.client = xpc2.XPlaneUDP(port=xplane_port)
+        self.xp = xpc2.XPlaneUDP(defaultFreq=20)
+        self.xp.FindIp()
 
         # None = default frequency
-        self.drefs = {
+        self.drefs_inp = {
             "sim/flightmodel/position/local_x": None,
             "sim/flightmodel/position/local_y": None,
             "sim/flightmodel/position/local_z": None,
             "sim/flightmodel/position/local_vx": None,
             "sim/flightmodel/position/local_vy": None,
             "sim/flightmodel/position/local_vz": None,
-            "sim/flightmodel/position/P":None,  # roll
-            "sim/flightmodel/position/Q":None,  # pitch
-            "sim/flightmodel/position/R":None,  # yaw
+            "sim/flightmodel/position/phi": None,  # roll
+            "sim/flightmodel/position/theta": None,  # pitch
+            "sim/flightmodel/position/psi": None,  # yaw
         }
+        self.drefs = {k: v for k, v in self.drefs_inp.items()}
 
         for dref, freq in self.drefs.items():
-            self.client.AddDataRef(dref, freq)
+            self.xp.AddDataRef(dref, freq)
 
-    def get_drefs(self, drefs: list[str]):
-        vals = []
-        for name in drefs:
-            val = self.client.getDREF(name)
-            vals.append(val)
-        return vals
+    def fetch_drefs(self):
+        for k, v in self.xp.GetValues().items():
+            self.drefs[k] = v
 
     def get_position(self):
-        """Retrieve the current position (local_x, local_y, local_z) of the aircraft."""
+        """(local_x, local_y, local_z) of the aircraft."""
         datarefs = [
             "sim/flightmodel/position/local_x",
             "sim/flightmodel/position/local_y",
             "sim/flightmodel/position/local_z",
         ]
-        position = self.get_drefs(datarefs)
+        arr = [self.drefs[name] for name in datarefs]
         return {
-            "local_x": position[0][0],
-            "local_y": position[1][0],
-            "local_z": position[2][0],
+            "local_x": arr[0],
+            "local_y": arr[1],
+            "local_z": arr[2],
         }
 
     def get_velocity(self):
-        """Retrieve the current velocity (local_vx, local_vy, local_vz) of the aircraft."""
+        """(local_vx, local_vy, local_vz) of the aircraft."""
         datarefs = [
             "sim/flightmodel/position/local_vx",
             "sim/flightmodel/position/local_vy",
             "sim/flightmodel/position/local_vz",
         ]
-        velocity = self.get_drefs(datarefs)
+        arr = [self.drefs[name] for name in datarefs]
         return {
-            "local_vx": velocity[0][0],
-            "local_vy": velocity[1][0],
-            "local_vz": velocity[2][0],
+            "local_vx": arr[0],
+            "local_vy": arr[1],
+            "local_vz": arr[2],
         }
 
-    def get_orientation(self):
-        """Retrieve the current orientation (pitch, roll, yaw) of the aircraft."""
+    def get_rotation(self):
+        """(pitch, roll, yaw) of the aircraft."""
         datarefs = [
-            "sim/flightmodel/position/P",
-            "sim/flightmodel/position/Q",
-            "sim/flightmodel/position/R",
+            "sim/flightmodel/position/phi",
+            "sim/flightmodel/position/theta",
+            "sim/flightmodel/position/psi",
         ]
-        orientation = self.client.getDREFs(datarefs)
+        arr = [self.drefs[name] for name in datarefs]
         return {
-            "pitch": orientation[0][0],
-            "roll": orientation[1][0],
-            "yaw": orientation[2][0],
+            "P": arr[0],
+            "Q": arr[1],
+            "R": arr[2],
         }
 
-    def get_all_data(self):
-        """Retrieve all required data in a single call."""
-        print(self.client.getDREF("sim/flightmodel/position/P"))
-        # position = self.get_position()
-        # velocity = self.get_velocity()
-        # orientation = self.get_orientation()
-        return {
-            # "position": position,
-            # "velocity": velocity,
-            # "orientation": orientation
-        }
-
-    def send_data(self, data):
-        """
-        Send data to X-Plane.
-        This method can be customized to send commands or control inputs to the simulator.
-        """
-        # Example: Set the aircraft position
-        if "position" in data:
-            self.client.sendPOSI(data["position"])
-
-        # Example: Set the aircraft velocity (Note: not directly supported by X-Plane Connect)
-        if "velocity" in data:
-            print("I'm not setting velocity")
-            pass  # Handle velocity setting if needed
-
-        # Example: Set the aircraft orientation
-        if "orientation" in data:
-            self.client.sendCTRL(data["orientation"])
+    def send_data(self, data: dict[str, float | int]):
+        for key, val in data.items():
+            if key == "rotation":
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/phi", val[0], vtype="float"
+                )
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/theta", val[1], vtype="float"
+                )
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/psi", val[2], vtype="float"
+                )
+            elif key == "rot_acc":
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/P", val[0], vtype="float"
+                )
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/Q", val[1], vtype="float"
+                )
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/R", val[2], vtype="float"
+                )
+            elif key == "position":
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/local_x", val[0], vtype="float"
+                )
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/local_y", val[1], vtype="float"
+                )
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/local_z", val[2], vtype="float"
+                )
+            elif key == "velocity":
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/local_vx", val[0], vtype="float"
+                )
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/local_vy", val[1], vtype="float"
+                )
+                self.xp.WriteDataRef(
+                    "sim/flightmodel/position/local_vz", val[2], vtype="float"
+                )
 
 
 # Example usage
 if __name__ == "__main__":
-    xplane_data_handler = XPlaneDataHandler()
-    position = xplane_data_handler.get_position()
-    velocity = xplane_data_handler.get_velocity()
-    orientation = xplane_data_handler.get_orientation()
+    xp_data = XPlaneDataHandler()
 
-    print("Position:", position)
-    print("Velocity:", velocity)
-    print("Orientation:", orientation)
-
-    # Example of sending data
-    data_to_send = {
-        "position": [0, 10, 0, 0, 0, 0],  # Example position data
-        "orientation": [0, 0, 0, 0],  # Example orientation data
-    }
-    xplane_data_handler.send_data(data_to_send)
+    # xp_data.fetch_drefs()
+    # xp_data.send_data({"sim/flightmodel/position/local_y": 70})
