@@ -1,3 +1,6 @@
+!MAVProxy/modules/mavproxy_customui
+!MAVProxy/modules/mavproxy_customui.py
+
 mavproxy
 *~
 *.o
