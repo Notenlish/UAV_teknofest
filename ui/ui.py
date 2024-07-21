@@ -17,7 +17,11 @@ pygame.font.init()
 
 class UI:
     def __init__(
-            self, app, config: dict[str, any], memory: dict[str, any], events: dict[str, any]
+        self,
+        app,
+        config: dict[str, any],
+        memory: dict[str, any],
+        events: dict[str, any],
     ) -> None:
         self.app = app
         self.screen_size = config["windowSize"]
@@ -61,6 +65,7 @@ class UI:
             ),
         )
         self.command_panel = CommandPanel(
+            self,
             config,
             pygame.Rect(
                 self.pixel_percent_w * 85,
@@ -77,8 +82,8 @@ class UI:
                 self.pixel_percent_w * 20,
                 self.pixel_percent_h * 65,
                 self.pixel_percent_w * 30,
-                self.pixel_percent_h * 35
-            )
+                self.pixel_percent_h * 35,
+            ),
         )
 
         self.font = pygame.font.Font(
@@ -109,6 +114,8 @@ class UI:
 
             self.render_children()
 
+            m_just_press = [False, False, False, False, False]
+
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_F1:
@@ -119,6 +126,9 @@ class UI:
                     self.is_running = False
                     self.events["close_app"].set()
                     break
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if pygame.mouse.get_pressed()[0]:
+                        m_just_press[0] = True
 
             events = pygame.key.get_pressed()
             if events[pygame.K_w]:
@@ -129,6 +139,8 @@ class UI:
                 self.earthviewer.move(0, 1, self.dt)
             if events[pygame.K_d]:
                 self.earthviewer.move(1, 0, self.dt)
+
+            self.command_panel.test_events(m_just_press)
 
             self.dt = self.clock.tick(self.UI_FPS) / 1000
             pygame.display.update()

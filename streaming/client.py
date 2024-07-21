@@ -48,8 +48,7 @@ class VideoReceive:
 
 if __name__ == "__main__":
     port = 12345  # Should match the port used on the server
-    use_udp = False
     host = "127.0.0.1"
     
-    receive = VideoReceive(port, host, use_udp=use_udp)
+    receive = VideoReceive(port, host, use_udp=False)
     receive.start()

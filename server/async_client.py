@@ -1,32 +1,41 @@
 import asyncio
 
-import commands
-from commands import Command, COMMANDS, CommandConverter
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from uav import UAVSoftware
+
+
+try:
+    from commands import Command, COMMANDS, CommandConverter
+except ModuleNotFoundError:
+    from server.commands import Command, COMMANDS, CommandConverter
 import utils
 
 import logging
+import time
 
 try:
-    config = utils.read_json("../config.json")
+    config = utils.read_config("../config.json")
 except FileNotFoundError:
-    config = utils.read_json("config.json")
+    config = utils.read_config("config.json")
 
 HOST = config["GCS_IP"]
 PORT = config["PORT"]
 MSG_SIZE = config["MSG_SIZE"]
 
 
+# UAV
 class TCPClient:
-    def __init__(self, uav) -> None:
+    def __init__(self, uav: "UAVSoftware") -> None:
         self.uav = uav
         self.msg_queue: list[bytes] = [
             Command(type=COMMANDS.CONNECT, data={"successful": False}),
             Command(COMMANDS.MOVE_TO, data={}),
-            Command(COMMANDS.TEST_RANGE_UBIQUITI, data={}),
         ]
         self.cmd_converter = CommandConverter()
         self.cmd2func = {
-            COMMANDS.TEST_RANGE_UBIQUITI: self.uav.ubi_range_test()
+            COMMANDS.TEST_RANGE_UBIQUITI: self.uav.start_ubi_thread
         }  # to be changed by uav_comm.py
 
         self.logger = logging.Logger("TCPClient", logging.DEBUG)
@@ -34,7 +43,12 @@ class TCPClient:
         self.log_fh.setLevel(logging.DEBUG)
         self.logger.addHandler(self.log_fh)
 
-    def add_cmd(self, cmd: commands.Command):
+        self.time_since_heartbeat = 0
+        self.start_time = time.time()
+
+        print("ĞĞĞĞĞĞĞĞĞĞĞ async client")
+
+    def add_cmd(self, cmd: Command):
         msg = cmd
         self.msg_queue.append(msg)
 
@@ -55,7 +69,11 @@ class TCPClient:
                 print("Communication with server has been established")
         print(incoming_cmd)
 
-        while True:
+        self.start_time = time.time()
+
+        while True:  # write & read
+            # print("32 async client")
+            self.time_since_heartbeat = time.time() - self.start_time
             if len(self.msg_queue):
                 cmd = self.msg_queue.pop(0)
                 encrypted = self.cmd_converter.msg_from_command(cmd)
@@ -78,13 +96,24 @@ class TCPClient:
                 self.logger.log(logging.DEBUG, e)
                 succesful = False
 
+            if self.time_since_heartbeat > 5:
+                self.logger.log(
+                    logging.DEBUG,
+                    "OH NO! I CANT GET HEARTBEAT! I should just make it return to the starting point but its 1.04 AM and im not looking forward to working with this mess.",
+                )
+
             if not succesful:
                 continue
+            # print(incoming_cmd)
+            if incoming_cmd.type == COMMANDS.HEARTBEAT:
+                self.time_since_heartbeat = 0
+                self.start_time = time.time()
+                # self.logger.log(logging.DEBUG, "HEARTBEAT")
 
-            if cmd.type in self.cmd2func.keys():
-                func_to_exec = self.cmd2func[cmd.type]
-                func_to_exec(cmd.data)
-            if cmd.type == COMMANDS.DISCONNECT:
+            if incoming_cmd.type in self.cmd2func.keys():
+                func = self.cmd2func[incoming_cmd.type]
+                func(incoming_cmd.data)
+            if incoming_cmd.type == COMMANDS.DISCONNECT:
                 break
         print("closing the connection from client side")
         writer.close()

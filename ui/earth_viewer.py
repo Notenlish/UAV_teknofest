@@ -49,13 +49,6 @@ class EarthViewer:
         elif self.scale == 2:
             self.no_img = pygame.image.load("ui/data/empty@2x.png")
 
-        self.add_wp()
-        self.add_wp()
-        self.add_wp()
-        self.add_wp()
-        self.add_wp()
-        self.add_wp()
-
     def _calculate_max_tiles(self):
         self.max_tile_nums = 2**self.zoom if self.zoom != 0 else 1
 

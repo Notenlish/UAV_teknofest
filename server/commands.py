@@ -75,9 +75,9 @@ class Command:
 class CommandConverter:
     def __init__(self) -> None:
         try:
-            self.key = utils.read_json("../config.json")["ENCRYPT_KEY"]
+            self.key = utils.read_config("../config.json")["ENCRYPT_KEY"]
         except FileNotFoundError:
-            self.key = utils.read_json("config.json")["ENCRYPT_KEY"]
+            self.key = utils.read_config("config.json")["ENCRYPT_KEY"]
         self.encrypter = Fernet(self.key)
 
     def msg_from_command(self, command: Command):

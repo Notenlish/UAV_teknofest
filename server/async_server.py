@@ -1,21 +1,34 @@
 import asyncio
 import logging
+import sys
+
+from typing import TYPE_CHECKING
+import time
+
+if TYPE_CHECKING:
+    from process.gcs import GCSComm
 
 import utils
-from commands import COMMANDS, Command, CommandConverter
 
 try:
-    config = utils.read_json("../config.json")
+    from commands import COMMANDS, Command, CommandConverter
+except ModuleNotFoundError:
+    from server.commands import COMMANDS, Command, CommandConverter
+
+try:
+    config = utils.read_config("../config.json")
 except FileNotFoundError:
-    config = utils.read_json("config.json")
+    config = utils.read_config("config.json")
 
 HOST = config["GCS_IP"]
 PORT = config["PORT"]
 MSG_SIZE = config["MSG_SIZE"]
 
 
+# GCS
 class TCPServer:
-    def __init__(self) -> None:
+    def __init__(self, gcs: "GCSComm") -> None:
+        self.gcs = gcs
         self.cmd_converter = CommandConverter()
         self.msg_queue: list[bytes] = []
 
@@ -23,6 +36,11 @@ class TCPServer:
         self.log_fh = logging.FileHandler("tcpserver.log")  # filehandle
         self.log_fh.setLevel(logging.DEBUG)
         self.logger.addHandler(self.log_fh)
+
+        print("ĞĞĞĞĞĞĞĞĞĞĞ  async server")
+
+        self.time_since_heartbeat = 0
+        self.start_time = time.time()
 
         self.cmd2func = {}
 
@@ -48,7 +66,11 @@ class TCPServer:
             writer.write(response_msg)
             await writer.drain()
 
+        self.start_time = time.time()
+
         while True:
+            self.time_since_heartbeat = time.time() - self.start_time
+
             incoming_data = await reader.read(MSG_SIZE)
 
             succesful = None
@@ -63,7 +85,9 @@ class TCPServer:
                 continue
 
             if incoming_cmd.type == COMMANDS.HEARTBEAT:
-                pass
+                self.time_since_heartbeat = 0
+                self.start_time = time.time()
+                # self.logger.log(logging.DEBUG, "HEARTBEAT")
 
             if incoming_cmd.type in self.cmd2func:
                 self.cmd2func[incoming_cmd.type](
@@ -74,6 +98,12 @@ class TCPServer:
                 print(f"closing connection to {addr}")
                 writer.close()
                 raise SystemExit
+
+            if self.time_since_heartbeat > 5:
+                self.logger.log(
+                    logging.DEBUG,
+                    "OH NO! GCS CANT GET HEARTBEAT! I should just make it return to the starting point but its 1.04 AM and im not looking forward to working with this mess.",
+                )
 
             if len(self.msg_queue):
                 msg_to_send = self.msg_queue.pop(0)

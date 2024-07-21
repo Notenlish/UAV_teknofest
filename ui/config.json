@@ -1,11 +1,8 @@
 {
-  "videoPort": 12345,
+  "videoPort": 12940,
   "videoHost": "127.0.0.1",
-  "sendVideoUDP": false,
-  "windowSize": [
-    1200,
-    675
-  ],
+  "sendVideoUDP": true,
+  "windowSize": [1200, 675],
   "windowName": "StarWing UAV YKİ",
   "windowFPS": 60,
   "earthMoveSpeed": 1200,
@@ -27,6 +24,11 @@
     {
       "imagePath": "ui/data/plane_kamikaze.svg",
       "commandName": "Kamikaze"
+    },
+    {
+      "imagePath": "ui/data/network_test.svg",
+      "commandName": "Ubiquiti Test",
+      "function": "ubi_range_test"
     }
   ],
   "testTeams": [
