@@ -1,4 +1,5 @@
 cd mavproxy
 py setup.py build install --user
-cd mavproxy
-py mavproxy.py
+cd ..
+py move.py
+py MAVProxy/MAVProxy/mavproxy.py
