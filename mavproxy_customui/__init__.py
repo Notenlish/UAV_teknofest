@@ -10,6 +10,19 @@ from MAVProxy.modules.lib import mp_module
 from MAVProxy.modules.lib import mp_util
 from MAVProxy.modules.lib import mp_settings
 
+import threading
+import sys
+
+# go from mavproxy folder to
+print("ğğğğğğğğğğğğğğğğğğğğğğ")
+print(sys.path)
+start = sys.path[0]  # C:\\Users\\ihsan\\npmbugsolve\\UAV_teknofest\\MAVProxy\\MAVProxy
+root = os.path.join(start, "..", "..")
+sys.path.append(root)
+print(root)
+# module load customui
+
+
 # from MAVProxy.modules.mavproxy_customui import controls
 
 class CustomUI(mp_module.MPModule):
@@ -43,7 +56,14 @@ class CustomUI(mp_module.MPModule):
         self.log('Initializing pygame', 2)
         pygame.init()
         pygame.joystick.init()
-        pygame.display.set_mode((400,400))
+        
+        def runapp(self):
+            from app import App
+            a = App()
+            a.run()
+        
+        self.app_thread = threading.Thread(target=runapp, args=(self,))
+        self.app_thread.start()
 
     def init_settings(self):
         pass
@@ -120,8 +140,6 @@ class CustomUI(mp_module.MPModule):
                 **self.joystick.controls))
 
     def idle_task(self):
-        self.screen.fill("black")
-        
         if self.joystick is None:
             return
 
@@ -135,8 +153,6 @@ class CustomUI(mp_module.MPModule):
             if override != self.module('rc').override:
                 self.module('rc').override = override
                 self.module('rc').override_period.force()
-        
-        pygame.display.update()
 
 
 def init(mpstate):
