@@ -48,17 +48,23 @@ class XPlaneEnv(gym.Env):
         """
         self.window = None
         self.clock = None
-        
+
         self.start_time = time.time()
 
     def reset(self):
         start_pos = [130_000, 3_000, 130_000]
-        self.xplane.send_data({"position":start_pos})
-        
+        self.xplane.send_data({"position": start_pos})
+
         # Reset the position of the aircraft to a random position
         # This can be customized as needed
-        self.agent = {"velocity": np.array([0, 0, 0], dtype=np.float32), "rotation": np.array([0, 0, 0], dtype=np.float32)}
-        self.target = {"velocity": np.array([0, 0, 0], dtype=np.float32), "rotation": np.array([0, 0, 0], dtype=np.float32)}
+        self.agent = {
+            "velocity": np.array([0, 0, 0], dtype=np.float32),
+            "rotation": np.array([0, 0, 0], dtype=np.float32),
+        }
+        self.target = {
+            "velocity": np.array([0, 0, 0], dtype=np.float32),
+            "rotation": np.array([0, 0, 0], dtype=np.float32),
+        }
 
         # initial_position = [0, 1000, 0, 0, 0, 0]  # Example initial position
         # self.xplane.send_data({"position": initial_position})
@@ -75,17 +81,17 @@ class XPlaneEnv(gym.Env):
         if t_dif < 0.1:
             time.sleep(0.1 - t_dif)
         self.xplane.fetch_drefs()
-        
+
         self.agent["velocity"] = np.array(list(self.xplane.get_velocity().values()))
         self.agent["rotation"] = np.array(list(self.xplane.get_rotation().values()))
 
     def _get_info(self):
         return {}
-    
+
     def _get_rot_diff(self):
         rotation = self.agent["rotation"]
         target_rotation = self.target["rotation"]
-        
+
         return np.linalg.norm(
             np.array(
                 [
@@ -99,11 +105,11 @@ class XPlaneEnv(gym.Env):
     def step(self, action: np.ndarray):
         # Get the initial state
         self.get_values()
-        
+
         rot = self.target["rotation"]
-        
+
         action *= 10
-        
+
         # Apply the action to X-Plane (adjust rotation)
         self.xplane.send_data({"rot_acc": action})
 

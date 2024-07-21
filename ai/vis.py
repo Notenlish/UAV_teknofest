@@ -9,7 +9,7 @@ metrics = [
     "           val/box_loss",
     "           val/cls_loss",
     "       metrics/mAP50(B)",
-    "    metrics/mAP50-95(B)"
+    "    metrics/mAP50-95(B)",
 ]
 
 # Load CSV data

@@ -1,7 +1,8 @@
-import cv2
-import numpy as np
 import os
 import sys
+
+import cv2
+import numpy as np
 
 
 def get_keyframes(video_name, video_folder, threshold=30, min_diff=350_000):

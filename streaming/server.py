@@ -65,7 +65,7 @@ def range_test_streaming(client_ip, port, use_udp=True):
         addr = (client_ip, port)
         print(f"connecting UBI test with {addr[0]}:{addr[1]}")
         s.connect(addr)
-        
+
         while True:
             np.random.seed(SEED)
             u8_max = 2**8
@@ -73,10 +73,10 @@ def range_test_streaming(client_ip, port, use_udp=True):
                 [round(np.random.random() * u8_max) for _ in range(MSG_SIZE)],
                 dtype=np.uint8,
             )
-            
+
             # Send the data
             s.sendall(buf.tobytes())
-            
+
             # Receive data
             data = s.recv(MSG_SIZE)
             # we wont do anything with it

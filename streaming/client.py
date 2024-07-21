@@ -7,15 +7,19 @@ class VideoError(Exception):
 
 class VideoReceive:
     def __init__(self, port, host, use_udp=True) -> None:
-        self.protocol = 'udp' if use_udp else 'tcp'
-        self.url = f'{self.protocol}://{host}:{port}'
+        self.protocol = "udp" if use_udp else "tcp"
+        self.url = f"{self.protocol}://{host}:{port}"
 
         if use_udp == False:
-            print("Please note that you need to give network access for python in firewall + open up a special inbound & outbound port for it in advanced firewall settings")
-            print("For TCP to work the connection must already be open(first run receiver then sender)")
+            print(
+                "Please note that you need to give network access for python in firewall + open up a special inbound & outbound port for it in advanced firewall settings"
+            )
+            print(
+                "For TCP to work the connection must already be open(first run receiver then sender)"
+            )
             self.url += "/?listen"  # the client needs to specify its listening on tcp
 
-    def _start(self, url:str):
+    def _start(self, url: str):
         print("attempting to connect...")
         cap = cv2.VideoCapture(url)
         print("started capture")
@@ -27,8 +31,8 @@ class VideoReceive:
             if not ret:
                 break
 
-            cv2.imshow('Video Stream', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            cv2.imshow("Video Stream", frame)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
         cap.release()
@@ -46,9 +50,10 @@ class VideoReceive:
                 err_count += 10
                 raise Exception("aaaaaaaaaaaaaaaaaaaaa")
 
+
 if __name__ == "__main__":
     port = 12345  # Should match the port used on the server
     host = "127.0.0.1"
-    
+
     receive = VideoReceive(port, host, use_udp=False)
     receive.start()

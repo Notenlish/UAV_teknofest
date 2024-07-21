@@ -1,6 +1,7 @@
 from time import sleep
 import xpc
 
+
 def ex():
     print("X-Plane Connect example script")
     print("Setting up simulation")
@@ -18,22 +19,22 @@ def ex():
         # Set position of the player aircraft
         print("Setting position")
         #       Lat     Lon         Alt   Pitch Roll Yaw Gear
-        posi = [37.524, -122.06899, 2500, 0,    0,   0,  1]
+        posi = [37.524, -122.06899, 2500, 0, 0, 0, 1]
         client.sendPOSI(posi)
-        
+
         # Set position of a non-player aircraft
         print("Setting NPC position")
         #       Lat       Lon         Alt   Pitch Roll Yaw Gear
-        posi = [37.52465, -122.06899, 2500, 0,    20,   0,  1]
+        posi = [37.52465, -122.06899, 2500, 0, 20, 0, 1]
         client.sendPOSI(posi, 1)
 
         # Set angle of attack, velocity, and orientation using the DATA command
         print("Setting orientation")
-        data = [\
-            [18,   0, -998,   0, -998, -998, -998, -998, -998],\
-            [ 3, 130,  130, 130,  130, -998, -998, -998, -998],\
-            [16,   0,    0,   0, -998, -998, -998, -998, -998]\
-            ]
+        data = [
+            [18, 0, -998, 0, -998, -998, -998, -998, -998],
+            [3, 130, 130, 130, 130, -998, -998, -998, -998],
+            [16, 0, 0, 0, -998, -998, -998, -998, -998],
+        ]
         client.sendDATA(data)
 
         # Set control surfaces and throttle of the player aircraft using sendCTRL
@@ -67,6 +68,7 @@ def ex():
 
         print("End of Python client example")
         input("Press any key to exit...")
+
 
 if __name__ == "__main__":
     ex()

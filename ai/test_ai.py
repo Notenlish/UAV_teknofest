@@ -1,6 +1,7 @@
 if __name__ == "__main__":
-    from ultralytics import YOLO
     import os
+
+    from ultralytics import YOLO
 
     model = YOLO("runs/detect/colab-first/weights/best.pt")
 

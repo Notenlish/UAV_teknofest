@@ -1,6 +1,7 @@
 from time import sleep
 import xpc
 
+
 def ex():
     print("X-Plane Connect example script")
     print("Setting up simulation")
@@ -22,12 +23,13 @@ def ex():
 
         # Make sure gear was stowed successfully
         # gear_status = client.getDREF(gear_dref)
-        #if gear_status[0] == 0:
+        # if gear_status[0] == 0:
         #    print("Gear stowed")
-        #else:
+        # else:
         #    print("Error stowing gear")
 
         print("End of Python client example")
+
 
 if __name__ == "__main__":
     ex()

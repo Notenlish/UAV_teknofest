@@ -470,6 +470,6 @@ class ViewType(object):
     FullscreenNoHud = 85
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     xpc = XPlaneConnect()
     xpc.getDREF("sim/flightmodel/position/local_x")

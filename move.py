@@ -1,5 +1,5 @@
-import shutil
 import os
+import shutil
 
 source = "mavproxy_customui"
 dest = "venv/Lib/site-packages/MAVProxy/modules/mavproxy_customui"

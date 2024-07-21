@@ -10,8 +10,9 @@ from pymavlink import fgFDM
 
 class udp_socket(object):
     """A UDP socket."""
+
     def __init__(self, device, blocking=True, is_input=True):
-        a = device.split(':')
+        a = device.split(":")
         if len(a) != 2:
             print("UDP ports must be specified as host:port")
             sys.exit(1)
@@ -61,7 +62,9 @@ while True:
         print("%u FPS len=%u" % (count, len(udp_buffer)))
         count = 0
         tlast = time.time()
-        print(fg.get('latitude', units='degrees'),
-              fg.get('longitude', units='degrees'),
-              fg.get('altitude', units='meters'),
-              fg.get('vcas', units='mps'))
+        print(
+            fg.get("latitude", units="degrees"),
+            fg.get("longitude", units="degrees"),
+            fg.get("altitude", units="meters"),
+            fg.get("vcas", units="mps"),
+        )

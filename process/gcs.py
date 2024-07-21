@@ -14,12 +14,9 @@ class GCSComm:
         self.app = app
         self.config = config
         self.memory = memory
-        
+
         print("ĞĞĞĞ GCS COMM")
-    
+
     def start(self):
         self.server = TCPServer(self)
         self.server.run()
-    
-    
-

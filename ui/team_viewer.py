@@ -38,7 +38,9 @@ class TeamViewer:
             )  # TODO: change this later
             coord_2 = (latitude, longtitude)
 
-            dist = distance.distance(coord_1, coord_2).kilometers  # TODO: change to meters
+            dist = distance.distance(
+                coord_1, coord_2
+            ).kilometers  # TODO: change to meters
 
             table.append(
                 [

@@ -11,6 +11,7 @@ load_dotenv()
 # style z=zoom x y[optionally the scale modifier] scale file_format api_key
 URL = "https://tile.thunderforest.com/{}/{}/{}/{}.{}?apikey={}"
 
+
 class Process:
     def __init__(self, config: dict[str, any]) -> None:
         pass
@@ -67,6 +68,7 @@ class Process:
             print("Tile already exists, skipping download")
         return result
 
+
 if __name__ == "__main__":
     # Example usage
     MEMORY = {
@@ -76,7 +78,7 @@ if __name__ == "__main__":
             {"scale": 1, "zoom": 10, "x": 2, "y": 0},
             # Add more tiles as needed
         ],
-        "i": 0
+        "i": 0,
     }
     EVENTS = {"close_app": Event()}
 

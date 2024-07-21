@@ -16,7 +16,9 @@ class PathMaker:
         # rho = turning radius
 
         path = DubinsPath()
-        _ = dubins_shortest_path(path, own_uav.as_dubin_point(), target_uav.as_dubin_point(), rho)
+        _ = dubins_shortest_path(
+            path, own_uav.as_dubin_point(), target_uav.as_dubin_point(), rho
+        )
 
         results = {}
 

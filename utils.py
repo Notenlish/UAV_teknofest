@@ -1,7 +1,7 @@
 import json
+import math
 
 from pyproj import Proj, transform
-import math
 
 # https://epsg.io/3857
 # https://epsg.io/4326
@@ -158,27 +158,29 @@ def normalize(min_val, max_val, value):
 # 2 - StaticMaps API
 # 3 - Lat ve lon değerleriyle direkten hesaplamayı çözerim
 
-# taken from: https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames 
+
+# taken from: https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 def latlon_to_map(lat_deg, lon_deg, zoom):
-  lat_rad = math.radians(lat_deg)
-  n = 1 << zoom
-  xtile = int((lon_deg + 180.0) / 360.0 * n)
-  ytile = int((1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n)
-  return xtile, ytile
+    lat_rad = math.radians(lat_deg)
+    n = 1 << zoom
+    xtile = int((lon_deg + 180.0) / 360.0 * n)
+    ytile = int((1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n)
+    return xtile, ytile
+
 
 # this doesnt seem to be working but who cares, latlon_to_map works!
 def map_to_latlon(xtile, ytile, zoom):
-  n = 1 << zoom
-  lon_deg = xtile / n * 360.0 - 180.0
-  lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
-  lat_deg = math.degrees(lat_rad)
-  return lat_deg, lon_deg
+    n = 1 << zoom
+    lon_deg = xtile / n * 360.0 - 180.0
+    lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
+    lat_deg = math.degrees(lat_rad)
+    return lat_deg, lon_deg
 
 
 if __name__ == "__main__":
     # istanbul lat and lon
     lat_deg, lon_deg = 41.015137, 28.979530
     zoom = 14
-    
+
     x, y = latlon_to_map(lat_deg, lon_deg, zoom=zoom)
     print(x, y)

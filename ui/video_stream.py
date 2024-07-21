@@ -1,5 +1,6 @@
 import pygame
 
+
 class VideoStream:
     def __init__(self, config, memory, rect) -> None:
         self.config = config

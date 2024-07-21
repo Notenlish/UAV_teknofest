@@ -1,19 +1,14 @@
+import logging
 import os
 import sys
-
-from utils import read_config
-
-from ui.ui import UI
-
 from threading import Event, Lock, Thread
 
+from process.gcs import GCSComm
 from process.tile_proc import TileFetchProcess
 from process.video import VideoProcess
-from process.gcs import GCSComm
-
 from server.commands import COMMANDS, Command
-
-import logging
+from ui.ui import UI
+from utils import read_config
 
 CONFIG = read_config("ui/config.json")
 
@@ -72,7 +67,9 @@ class App:
         def a():
             print("lmao")
             import socket
+
             import numpy as np
+
             from utils import read_config
 
             try:

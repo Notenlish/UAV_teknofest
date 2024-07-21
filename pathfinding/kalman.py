@@ -2,10 +2,13 @@ import numpy as np
 from filterpy.kalman import KalmanFilter
 from filterpy.common import Q_discrete_white_noise
 
+
 class BaseKalmanFilter:
     def __init__(self, initial: float, rate_of_change: float) -> None:
         self.f = KalmanFilter(dim_x=2, dim_z=1)
-        self.f.x = np.array([[initial], [rate_of_change]])  # theta  # theta rate of change
+        self.f.x = np.array(
+            [[initial], [rate_of_change]]
+        )  # theta  # theta rate of change
         self.f.F = np.array([[1.0, 1.0], [0.0, 1.0]])
         self.f.H = np.array([[1.0, 0.0]])
         self.f.P *= 100.0
@@ -27,6 +30,7 @@ class ThetaKalmanFilter(BaseKalmanFilter):
     def __init__(self, initial_theta: float, theta_rate_of_change: float) -> None:
         super().__init__(initial_theta, theta_rate_of_change)
 
+
 class VelocityKalmanFilter(BaseKalmanFilter):
     def __init__(self, initial_vel: float, acceleration: float) -> None:
-        super().__init__(initial_vel, acceleration)    
+        super().__init__(initial_vel, acceleration)

@@ -57,8 +57,8 @@ class Indicator:
 
         pygame.draw.line(screen, "red", left_start.center, left_end.center, width=3)
         pygame.draw.line(screen, "red", right_start.center, right_end.center, width=3)
-        #pygame.draw.circle(screen, "blue", bottom_start.center, radius=2)
-        #pygame.draw.circle(screen, "blue", bottom_end.center, radius=2)
+        # pygame.draw.circle(screen, "blue", bottom_start.center, radius=2)
+        # pygame.draw.circle(screen, "blue", bottom_end.center, radius=2)
         pygame.draw.line(screen, "red", bottom_start.center, bottom_end.center, width=3)
 
 

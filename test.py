@@ -1,8 +1,8 @@
 from pyproj import Proj, transform
 
 # Define the source and destination projections
-source_proj = Proj(init='epsg:4326')  # EPSG:4326 - WGS 84
-dest_proj = Proj(init='epsg:3857')   # EPSG:3857 - Web Mercator
+source_proj = Proj(init="epsg:4326")  # EPSG:4326 - WGS 84
+dest_proj = Proj(init="epsg:3857")  # EPSG:3857 - Web Mercator
 
 # Example coordinate in EPSG:4326 (longitude, latitude)
 lat, lon = 47.608013, -122.335167  # Example coordinate for Seattle, WA

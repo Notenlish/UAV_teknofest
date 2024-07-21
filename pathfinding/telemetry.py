@@ -121,5 +121,5 @@ class Telemetry:
         self.move_target(time_passed_s)
 
         self.send_target_pos(time_passed_s)
-        
+
         return self.waited, self.server_wait_time

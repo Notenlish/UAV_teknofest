@@ -21,9 +21,7 @@ UBI_RANGE_PORT = CONFIG["UBI_RANGE_PORT"]
 
 class UAVSoftware:
     def __init__(self) -> None:
-        self.comm_thread = threading.Thread(
-            target=self._start_comm_thread, args=()
-        )
+        self.comm_thread = threading.Thread(target=self._start_comm_thread, args=())
         self.video_thread = threading.Thread(target=self._send_video, args=())
 
     def start_com_thread(self):
@@ -38,7 +36,7 @@ class UAVSoftware:
 
     def start_ubi_thread(self, inc_data):  # this is called by TCPClient
         self._ubi_range_test()
-        
+
     def _start_comm_thread(self):
         client = TCPClient(self)
         client.run()

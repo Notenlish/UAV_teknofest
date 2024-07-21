@@ -74,9 +74,7 @@ handles, labels = fig.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
 fig.legend(by_label.values(), by_label.keys())
 
-plt.subplots_adjust(
-    left=0.1, bottom=0.1, right=0.85, top=0.85, wspace=0.4, hspace=0.4
-)
+plt.subplots_adjust(left=0.1, bottom=0.1, right=0.85, top=0.85, wspace=0.4, hspace=0.4)
 
 ax1.set_ylim(-1, 7)
 ax2.set_ylim(-1, 7)
