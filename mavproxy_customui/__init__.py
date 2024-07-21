@@ -25,7 +25,7 @@ class CustomUI(mp_module.MPModule):
         super(CustomUI, self).__init__(mpstate, 'customui',
                                        'A flexible customui driver')
 
-        self.customui = None
+        self.joystick = None
 
         self.init_pygame()
         self.init_settings()
@@ -42,7 +42,8 @@ class CustomUI(mp_module.MPModule):
     def init_pygame(self):
         self.log('Initializing pygame', 2)
         pygame.init()
-        pygame.customui.init()
+        pygame.joystick.init()
+        pygame.display.set_mode((400,400))
 
     def init_settings(self):
         pass
@@ -110,21 +111,23 @@ class CustomUI(mp_module.MPModule):
         self.probe()
 
     def cmd_status(self):
-        if self.customui is None:
+        if self.joystick is None:
             print('No active joystick')
         else:
             print('Active joystick:')
-            print('Path: {path}'.format(**self.customui.controls))
+            print('Path: {path}'.format(**self.joystick.controls))
             print('Description: {description}'.format(
-                **self.customui.controls))
+                **self.joystick.controls))
 
     def idle_task(self):
-        if self.customui is None:
+        self.screen.fill("black")
+        
+        if self.joystick is None:
             return
 
         for e in pygame.event.get():
             override = self.module('rc').override[:]
-            values = self.customui.read()
+            values = self.joystick.read()
             override = values + override[len(values):]
 
             # self.log('channels: {}'.format(override), level=3)
@@ -132,6 +135,8 @@ class CustomUI(mp_module.MPModule):
             if override != self.module('rc').override:
                 self.module('rc').override = override
                 self.module('rc').override_period.force()
+        
+        pygame.display.update()
 
 
 def init(mpstate):
