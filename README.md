@@ -46,6 +46,7 @@ Need training data.
 `-` Feeding to the system
 
 # NOTE:
+
 xplaneconnect should be downloaded as a compiled zip, just downlaoding the project source and putting it to plugins dir wont work.
 
 # stuff
@@ -56,28 +57,30 @@ https://forums.x-plane.org/index.php?/forums/topic/171171-machine-learning-gym_x
 https://openreview.net/pdf?id=H1mMHwt9X
 https://github.com/nasa/XPlaneConnect
 
-
-
 # Uçuş Kanıt Video Hazırlık
+
 Bak usta yapmam gereken her şeyi buraya yazıcam.
 
 ### PZT 'ye kadar
-[ ] - UI'ı MAVProxy e taşı
 
-[ ] - MAVProxy hareket ettirme motor kontrolü
+[+] - UI'ı MAVProxy e taşı
 
-[ ] - Haberleşme menzil testleri(Ubiquiti)  -> seed ile packet gönder, packetlerin kaçının bozulduğunu veya kaybolduğunu her iki cihazdan da aynı seed ile rastgele değerler üretip karşılaştırarak bul
+[?] - MAVProxy hareket ettirme motor kontrolü(yaptım bişiler ama yani ucube bişi)
+
+[ ] - Haberleşme menzil testleri(Ubiquiti) -> seed ile packet gönder, packetlerin kaçının bozulduğunu veya kaybolduğunu her iki cihazdan da aynı seed ile rastgele değerler üretip karşılaştırarak bul
 
 [ ] - Haberleşme menzil testleri(telemetri) -> mavproxy nasıl haberleşme yapıyor ona bakmamız lazım
 
 [ ] - UI'da uçağın ve ai uçağın haritada gösterimi
 
+[ ] - Uçağın 1 dk boyunca bağlantı gelmezse başlangıç noktasına geri gelmesi(Uçak havada uçup gitmesin)
 
 ### Kalanlar
+
 [ ] - UAV tespit YOLO modeli(dataset ztn olması lazım)
 
-[ ] - XPlane 11 de test et. 
+[ ] - XPlane 11 de test et.
 
 [ ] - Rakip takip ve kilitlenme, yol bulma
 
-[ ] - Kamikaze + diğer 
+[ ] - Kamikaze + diğer

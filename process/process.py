@@ -12,7 +12,7 @@ load_dotenv()
 URL = "https://tile.thunderforest.com/{}/{}/{}/{}.{}?apikey={}"
 
 
-class Process:
+class TileFetchProcess:
     def __init__(self, config: dict[str, any]) -> None:
         pass
 

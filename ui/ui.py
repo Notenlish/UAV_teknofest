@@ -17,8 +17,9 @@ pygame.font.init()
 
 class UI:
     def __init__(
-            self, config: dict[str, any], memory: dict[str, any], events: dict[str, any]
+            self, app, config: dict[str, any], memory: dict[str, any], events: dict[str, any]
     ) -> None:
+        self.app = app
         self.screen_size = config["windowSize"]
         self.screen = pygame.display.set_mode(self.screen_size)
         self.clock = pygame.time.Clock()
@@ -34,6 +35,7 @@ class UI:
         self.pixel_percent_h = self.screen_size[1] / 100
 
         self.earthviewer = EarthViewer(
+            self,
             config,
             self.memory,
             screen_area=pygame.Rect(

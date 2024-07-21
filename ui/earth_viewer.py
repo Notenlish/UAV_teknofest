@@ -1,12 +1,19 @@
 import math
 import os
 
+import json
+
 import pygame
 import requests
 from dotenv import load_dotenv
 
 from utils import draw_text
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ui.ui import UI
+    from MAVProxy.modules.mavproxy_wp import WPModule
 
 # TODO: when it loads tiles it calculates which tiles to use incorrectly(tries to get the whole row)
 # it should get only the tiles visible
@@ -14,8 +21,13 @@ from utils import draw_text
 
 class EarthViewer:
     def __init__(
-        self, config: dict[str, any], memory: dict[str, any], screen_area: pygame.Rect
+        self,
+        ui: "UI",
+        config: dict[str, any],
+        memory: dict[str, any],
+        screen_area: pygame.Rect,
     ) -> None:
+        self.ui = ui
         self.screen_area = screen_area
         self.earth_move_speed = config["earthMoveSpeed"]
         self.memory = memory
@@ -37,6 +49,13 @@ class EarthViewer:
         elif self.scale == 2:
             self.no_img = pygame.image.load("ui/data/empty@2x.png")
 
+        self.add_wp()
+        self.add_wp()
+        self.add_wp()
+        self.add_wp()
+        self.add_wp()
+        self.add_wp()
+
     def _calculate_max_tiles(self):
         self.max_tile_nums = 2**self.zoom if self.zoom != 0 else 1
 
@@ -56,7 +75,9 @@ class EarthViewer:
             val = 2
 
         self.camera_x = min(max(self.camera_x, 0), (self.max_tile_nums - val) * tile_w)
-        self.camera_y = min(max(self.camera_y, 0), (self.max_tile_nums - val + 0.29) * tile_h)
+        self.camera_y = min(
+            max(self.camera_y, 0), (self.max_tile_nums - val + 0.29) * tile_h
+        )
 
     def change_zoom(self, amount):
         self.zoom += amount
@@ -123,7 +144,7 @@ class EarthViewer:
         tile_start_x = int(self.camera_x) // tile_w
         tile_start_y = int(self.camera_y) // tile_h
 
-        how_many_rects_hor = (int(self.screen_area.width) // tile_w) + 2 
+        how_many_rects_hor = (int(self.screen_area.width) // tile_w) + 2
         how_many_rects_ver = (int(self.screen_area.height) // tile_h) + 2
 
         tile_end_x = tile_start_x + how_many_rects_hor
@@ -177,7 +198,7 @@ class EarthViewer:
             if self.debug:
                 pygame.draw.rect(screen, "grey", tile_rect, 3)
                 draw_text(
-                screen, font, f"x{tile_x} y{tile_y}", tile_rect.center, color="red"
+                    screen, font, f"x{tile_x} y{tile_y}", tile_rect.center, color="red"
                 )
         pygame.draw.rect(
             screen,
@@ -189,3 +210,14 @@ class EarthViewer:
                 self.window_size[1] - self.screen_area.h,
             ),
         )
+
+    def add_wp(self):
+        mpstate = self.ui.app.mpstate
+        mpstate.click_location = (41.015137, 28.979530)  # istanbul lat lon
+        # print wont work, you gotta get the self.log function from the module and pass it to the app
+
+        for m in mpstate.modules:
+            m_name = m[0].name
+            if m_name == "wp":  # waypoint module
+                waypoint_m: "WPModule" = m[0]
+                waypoint_m.cmd_add(())

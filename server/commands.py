@@ -6,10 +6,14 @@ import utils
 from cryptography.fernet import Fernet
 
 
+class MSG_SIZE_BIG(Exception):
+    pass
+
+
 class COMMANDS(enum.IntEnum):
     CONNECT = enum.auto()
     DISCONNECT = enum.auto()
-    NOTHING = enum.auto()  # nothing to send, used to pass msg sending to the server
+    HEARTBEAT = enum.auto()  # nothing to send, used to pass msg sending to the server
     FOUND_SOLDIER = enum.auto()
     CANT_FIND_SOLDIER = enum.auto()
     SETUP = enum.auto()
@@ -27,6 +31,8 @@ class COMMANDS(enum.IntEnum):
     MOVE_TO = enum.auto()
     SOLDIER_SPOTTED = enum.auto()
     KAMIKAZE = enum.auto()
+    TEST_RANGE_UBIQUITI = enum.auto()
+    TEST_RANGE_TELEMETRY = enum.auto()
 
 
 class Command:
@@ -53,7 +59,10 @@ class Command:
         return cls(_dict["TYPE"], _dict["DATA"])
 
     def __str__(self) -> str:
-        return f"<Command {self.type} {self.data} />"
+        return f"<Command {COMMANDS(self.type).name} {self.data} />"
+
+    def __repr__(self) -> str:
+        return str(self)
 
     def __eq__(self, other: object) -> bool:
         if self.type != other.type:
@@ -65,13 +74,18 @@ class Command:
 
 class CommandConverter:
     def __init__(self) -> None:
-        self.key = utils.read_json("../config.json")["ENCRYPT_KEY"]
+        try:
+            self.key = utils.read_json("../config.json")["ENCRYPT_KEY"]
+        except FileNotFoundError:
+            self.key = utils.read_json("config.json")["ENCRYPT_KEY"]
         self.encrypter = Fernet(self.key)
 
     def msg_from_command(self, command: Command):
         _str = json.dumps(Command.to_dict(command))
         _encrypted_str = self.encrypter.encrypt(_str.encode("utf8"))
-        print(f"size of encrypted_str is: {len(_encrypted_str)}")
+        # print(f"size of encrypted_str is: {len(_encrypted_str)}")
+        if len(_encrypted_str) > 1024:
+            raise MSG_SIZE_BIG
         return _encrypted_str
 
     def command_from_msg(self, msg: bytes):

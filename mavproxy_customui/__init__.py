@@ -14,29 +14,28 @@ import threading
 import sys
 
 # go from mavproxy folder to
-print("ğğğğğğğğğğğğğğğğğğğğğğ")
-print(sys.path)
 start = sys.path[0]  # C:\\Users\\ihsan\\npmbugsolve\\UAV_teknofest\\MAVProxy\\MAVProxy
 root = os.path.join(start, "..", "..")
 sys.path.append(root)
-print(root)
 # module load customui
 
 
 # from MAVProxy.modules.mavproxy_customui import controls
 
+
 class CustomUI(mp_module.MPModule):
-    '''
+    """
     customui set verbose
     customui set debug
     customui status
     customui probe
-    '''
+    """
 
     def __init__(self, mpstate):
         """Initialise module"""
-        super(CustomUI, self).__init__(mpstate, 'customui',
-                                       'A flexible customui driver')
+        super(CustomUI, self).__init__(
+            mpstate, "customui", "A flexible customui driver"
+        )
 
         self.joystick = None
 
@@ -50,18 +49,21 @@ class CustomUI(mp_module.MPModule):
         if self.mpstate.settings.moddebug < level:
             return
 
-        print('{}: {}'.format(__name__, msg))
+        print("{}: {}".format(__name__, msg))
 
     def init_pygame(self):
-        self.log('Initializing pygame', 2)
+        self.log("Initializing pygame", 2)
         pygame.init()
         pygame.joystick.init()
-        
+
+        self.log("KAFAYI YICEM")
+
         def runapp(self):
             from app import App
-            a = App()
+
+            a = App(self.mpstate)
             a.run()
-        
+
         self.app_thread = threading.Thread(target=runapp, args=(self,))
         self.app_thread.start()
 
@@ -69,92 +71,93 @@ class CustomUI(mp_module.MPModule):
         pass
 
     def init_commands(self):
-        self.log('Initializing commands', 2)
-        self.add_command('customui', self.cmd_customui,
-                         "A flexible customui drvier",
-                         ['status',  'probe'])
+        self.log("Initializing commands", 2)
+        self.add_command(
+            "customui",
+            self.cmd_customui,
+            "A flexible customui drvier",
+            ["status", "probe"],
+        )
 
     def load_definitions(self):
-        self.log('Loading customui definitions', 1)
+        self.log("Loading customui definitions", 1)
 
         self.joydefs = []
         search = []
 
         userjoysticks = os.environ.get(
-            'MAVPROXY_JOYSTICK_DIR',
-            mp_util.dot_mavproxy('joysticks'))
+            "MAVPROXY_JOYSTICK_DIR", mp_util.dot_mavproxy("joysticks")
+        )
         if userjoysticks is not None and os.path.isdir(userjoysticks):
             search.append(userjoysticks)
 
-        search.append(pkg_resources.resource_filename(__name__, 'joysticks'))
+        search.append(pkg_resources.resource_filename(__name__, "joysticks"))
 
         for path in search:
-            self.log('Looking for joystick definitions in {}'.format(path),
-                     2)
+            self.log("Looking for joystick definitions in {}".format(path), 2)
             path = os.path.expanduser(path)
             for dirpath, dirnames, filenames in os.walk(path):
                 for joyfile in filenames:
                     root, ext = os.path.splitext(joyfile)
-                    if ext[1:] not in ['yml', 'yaml', 'json']:
+                    if ext[1:] not in ["yml", "yaml", "json"]:
                         continue
 
                     joypath = os.path.join(dirpath, joyfile)
-                    self.log('Loading definition from {}'.format(joypath), 2)
-                    with open(joypath, 'r') as fd:
+                    self.log("Loading definition from {}".format(joypath), 2)
+                    with open(joypath, "r") as fd:
                         joydef = yaml.safe_load(fd)
-                        joydef['path'] = joypath
+                        joydef["path"] = joypath
                         self.joydefs.append(joydef)
 
     def probe(self):
         print("probe")
 
     def usage(self):
-        '''show help on command line options'''
+        """show help on command line options"""
         return "Usage: customui <status|set>"
 
     def cmd_customui(self, args):
         if not len(args):
-            self.log('No subcommand specified.')
-        elif args[0] == 'status':
+            self.log("No subcommand specified.")
+        elif args[0] == "status":
             self.cmd_status()
-        elif args[0] == 'probe':
+        elif args[0] == "probe":
             self.cmd_probe()
-        elif args[0] == 'help':
+        elif args[0] == "help":
             self.cmd_help()
 
     def cmd_help(self):
-        print('customui probe -- reload and match customui definitions')
-        print('customui status -- show currently loaded definition, if any')
+        print("customui probe -- reload and match customui definitions")
+        print("customui status -- show currently loaded definition, if any")
 
     def cmd_probe(self):
-        self.log('Re-detecting available joysticks', 0)
+        self.log("Re-detecting available joysticks", 0)
         self.probe()
 
     def cmd_status(self):
         if self.joystick is None:
-            print('No active joystick')
+            print("No active joystick")
         else:
-            print('Active joystick:')
-            print('Path: {path}'.format(**self.joystick.controls))
-            print('Description: {description}'.format(
-                **self.joystick.controls))
+            print("Active joystick:")
+            print("Path: {path}".format(**self.joystick.controls))
+            print("Description: {description}".format(**self.joystick.controls))
 
     def idle_task(self):
         if self.joystick is None:
             return
 
         for e in pygame.event.get():
-            override = self.module('rc').override[:]
+            override = self.module("rc").override[:]
             values = self.joystick.read()
-            override = values + override[len(values):]
+            override = values + override[len(values) :]
 
             # self.log('channels: {}'.format(override), level=3)
 
-            if override != self.module('rc').override:
-                self.module('rc').override = override
-                self.module('rc').override_period.force()
+            if override != self.module("rc").override:
+                self.module("rc").override = override
+                self.module("rc").override_period.force()
 
 
 def init(mpstate):
-    '''initialise module'''
+    """initialise module"""
     return CustomUI(mpstate)
