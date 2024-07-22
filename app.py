@@ -84,39 +84,43 @@ class App:
 
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
                 addr = (UAV_IP, UBI_RANGE_PORT)
+                print("UBI ", addr)
                 server_socket.bind(addr)
+                print("31 UBIé")
                 server_socket.listen()
                 print(f"UBI TEST Server listening on {addr}")
 
-                client_socket, client_address = server_socket.accept()
                 while True:
-                    # Receive data
-                    incoming = client_socket.recv(MSG_SIZE)
-                    # print(f"Received data {incoming[:10]}...")
-                    incoming_buf = np.frombuffer(incoming, dtype=np.uint8)
+                    client_socket, client_address = server_socket.accept()
+                    with client_socket:
+                        while True:
+                            # Receive data
+                            incoming = client_socket.recv(MSG_SIZE)
+                            # print(f"Received data {incoming[:10]}...")
+                            incoming_buf = np.frombuffer(incoming, dtype=np.uint8)
 
-                    np.random.seed(SEED)
-                    u8_max = 2**8
-                    orig_buf = np.array(
-                        [round(np.random.random() * u8_max) for _ in range(MSG_SIZE)],
-                        dtype=np.uint8,
-                    )
+                            np.random.seed(SEED)
+                            u8_max = 2**8
+                            orig_buf = np.array(
+                                [round(np.random.random() * u8_max) for _ in range(MSG_SIZE)],
+                                dtype=np.uint8,
+                            )
 
-                    # compare the data & received bytes
-                    self.ubi_logger.log(
-                        logging.DEBUG,
-                        {"original": list(orig_buf), "arrived": list(incoming)},
-                    )
-                    # if orig_buf == incoming:
-                    #     print("OHA AYNI VERI GELDI")
-                    # else:
-                    #     print("zorttiri zort zort")
+                            # compare the data & received bytes
+                            self.ubi_logger.log(
+                                logging.DEBUG,
+                                {"original": list(orig_buf), "arrived": list(incoming_buf)},
+                            )
+                            # if orig_buf == incoming:
+                            #     print("OHA AYNI VERI GELDI")
+                            # else:
+                            #     print("zorttiri zort zort")
 
-                    # Send the data
-                    client_socket.sendall(orig_buf)
+                            # Send the data
+                            client_socket.sendall(orig_buf)
 
         self.video_thread = Thread(target=a, args=())
-        self.video_thread.run()
+        self.video_thread.start()
 
 
 if __name__ == "__main__":

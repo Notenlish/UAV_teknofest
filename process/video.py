@@ -1,6 +1,8 @@
 import cv2
 import pygame
 import numpy as np
+import os
+import socket
 
 
 class VideoException(Exception):
@@ -28,16 +30,19 @@ class VideoProcess:
             self.url += "/?listen"  # the client needs to specify its listening on tcp
 
     def _start(self, url: str):
-        print("attempting to connect...")
+        print(f"attempting to connect {url}")
         cap = cv2.VideoCapture(url)
         print("started capture")
         if not cap.isOpened():
             raise VideoException("Cant connect(try again)")
 
         while True:
+            print("ULA OKU VERI")
             ret, frame = cap.read()
+            print("ALLAHIM VERI GELIYOR")
             if not ret:
                 break
+            print("ret")
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame = cv2.resize(frame, self.screen_area.size)
@@ -56,7 +61,7 @@ class VideoProcess:
     def start(self):
         print("starting capture")
         err_count = 0
-        while err_count < 10:
+        while err_count < 100000:
             try:
                 self._start(self.url)
             except VideoException:

@@ -1,7 +1,7 @@
 {
   "videoPort": 12940,
-  "videoHost": "127.0.0.1",
-  "sendVideoUDP": true,
+  "videoHost": "192.168.38.114",
+  "sendVideoUDP": false,
   "windowSize": [1200, 675],
   "windowName": "StarWing UAV YKİ",
   "windowFPS": 60,

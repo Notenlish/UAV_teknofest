@@ -104,6 +104,8 @@ class TCPServer:
                     logging.DEBUG,
                     "OH NO! GCS CANT GET HEARTBEAT! I should just make it return to the starting point but its 1.04 AM and im not looking forward to working with this mess.",
                 )
+                self.time_since_heartbeat = 0
+                self.start_time = 0
 
             if len(self.msg_queue):
                 msg_to_send = self.msg_queue.pop(0)

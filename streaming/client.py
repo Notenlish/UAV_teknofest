@@ -20,7 +20,7 @@ class VideoReceive:
             self.url += "/?listen"  # the client needs to specify its listening on tcp
 
     def _start(self, url: str):
-        print("attempting to connect...")
+        print(f"attempting to connect with url: {url}")
         cap = cv2.VideoCapture(url)
         print("started capture")
         if not cap.isOpened():
