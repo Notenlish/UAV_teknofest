@@ -37,12 +37,12 @@ class VideoProcess:
             raise VideoException("Cant connect(try again)")
 
         while True:
-            print("ULA OKU VERI")
+            # print("ULA OKU VERI")
             ret, frame = cap.read()
-            print("ALLAHIM VERI GELIYOR")
+            # print("ALLAHIM VERI GELIYOR")
             if not ret:
                 break
-            print("ret")
+            # print("ret")
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame = cv2.resize(frame, self.screen_area.size)

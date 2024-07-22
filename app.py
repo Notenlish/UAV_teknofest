@@ -79,14 +79,13 @@ class App:
 
             SEED = config["RANGE_TEST_SEED"]
             MSG_SIZE = config["MSG_SIZE"]
-            UAV_IP = config["UAV_IP"]
+            GCS_IP = config["GCS_IP"]
             UBI_RANGE_PORT = config["UBI_RANGE_PORT"]
 
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-                addr = (UAV_IP, UBI_RANGE_PORT)
+                addr = (GCS_IP, UBI_RANGE_PORT)
                 print("UBI ", addr)
                 server_socket.bind(addr)
-                print("31 UBIé")
                 server_socket.listen()
                 print(f"UBI TEST Server listening on {addr}")
 
@@ -102,19 +101,28 @@ class App:
                             np.random.seed(SEED)
                             u8_max = 2**8
                             orig_buf = np.array(
-                                [round(np.random.random() * u8_max) for _ in range(MSG_SIZE)],
+                                [
+                                    round(np.random.random() * u8_max)
+                                    for _ in range(MSG_SIZE)
+                                ],
                                 dtype=np.uint8,
                             )
 
-                            # compare the data & received bytes
-                            self.ubi_logger.log(
-                                logging.DEBUG,
-                                {"original": list(orig_buf), "arrived": list(incoming_buf)},
-                            )
-                            # if orig_buf == incoming:
-                            #     print("OHA AYNI VERI GELDI")
-                            # else:
-                            #     print("zorttiri zort zort")
+
+                            correct_size = len(incoming_buf) == MSG_SIZE
+                            if correct_size:
+                                mismatched_elements = np.sum(orig_buf != incoming_buf)
+                                # Calculate the corruption score
+                                corruption_score = mismatched_elements / MSG_SIZE
+
+                                # compare the data & received bytes
+                                self.ubi_logger.log(
+                                    logging.DEBUG,
+                                    {
+                                        "mismatch_num_count": mismatched_elements,
+                                        "corruption": corruption_score,
+                                    },
+                                )
 
                             # Send the data
                             client_socket.sendall(orig_buf)

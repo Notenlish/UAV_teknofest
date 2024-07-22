@@ -67,15 +67,18 @@ Bak usta yapmam gereken her şeyi buraya yazıcam.
 
 [?] - MAVProxy hareket ettirme motor kontrolü(yaptım bişiler ama yani ucube bişi)
 
-[ ] - Haberleşme menzil testleri(Ubiquiti) -> seed ile packet gönder, packetlerin kaçının bozulduğunu veya kaybolduğunu her iki cihazdan da aynı seed ile rastgele değerler üretip karşılaştırarak bul
+[+] - Haberleşme menzil testleri(Ubiquiti) -> seed ile packet gönder, packetlerin kaçının bozulduğunu veya kaybolduğunu her iki cihazdan da aynı seed ile rastgele değerler üretip karşılaştırarak bul
 
-[ ] - Haberleşme menzil testleri(telemetri) -> mavproxy nasıl haberleşme yapıyor ona bakmamız lazım
+[?] - Haberleşme menzil testleri(telemetri) -> mavproxy nasıl haberleşme yapıyor ona bakmamız lazım
 
 [ ] - UI'da uçağın ve ai uçağın haritada gösterimi
 
-[ ] - Uçağın 1 dk boyunca bağlantı gelmezse başlangıç noktasına geri gelmesi(Uçak havada uçup gitmesin)
+[o] - Uçağın 1 dk boyunca bağlantı gelmezse başlangıç noktasına geri gelmesi(Uçak havada uçup gitmesin)
+(Orangebox yapıyo)
 
 ### Kalanlar
+
+[ ] - Komünikasyon da heartbeat dışında bişiler gönder(send video dont send video etc.)
 
 [ ] - UAV tespit YOLO modeli(dataset ztn olması lazım)
 
