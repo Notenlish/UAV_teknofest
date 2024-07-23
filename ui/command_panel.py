@@ -11,9 +11,9 @@ class CommandPanel:
 
         self.icon_size = (64, 64)
 
-        self.bg_col = config["windowBackground"]
+        self.bg_col = config["window"]["windowBackground"]
 
-        self.commands = config["windowCommands"]
+        self.commands = config["window"]["windowCommands"]
         self._load_images()
 
     def test_events(self, m_just_pressed):

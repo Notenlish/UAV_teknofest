@@ -25,7 +25,7 @@ PORT = config["PORT"]
 MSG_SIZE = config["MSG_SIZE"]
 
 
-# UAV
+# UAV (İHA)
 class TCPClient:
     def __init__(self, uav: "UAVSoftware") -> None:
         self.uav = uav

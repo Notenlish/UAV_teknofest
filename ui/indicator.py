@@ -8,8 +8,8 @@ class Indicator:
     def __init__(self, config: dict[str, any], screen_area: pygame.Rect) -> None:
         self.screen_area = screen_area
 
-        self.sky_col = config["indicatorSkyBackground"]
-        self.ground_col = config["indicatorGroundBackground"]
+        self.sky_col = config["window"]["indicatorSkyBackground"]
+        self.ground_col = config["window"]["indicatorGroundBackground"]
 
         self.altitude_vel = 0
         self.roll = 0  # rad

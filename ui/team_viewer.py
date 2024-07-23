@@ -11,8 +11,8 @@ class TeamViewer:
     def __init__(self, config: dict[str, any], screen_area: pygame.Rect) -> None:
         self.screen_area = screen_area
 
-        self.bg_col = config["windowBackground"]
-        self.test_teams = config["testTeams"]
+        self.bg_col = config["window"]["windowBackground"]
+        self.test_teams = config["window"]["testTeams"]
 
         self.altitude_vel = 0
 

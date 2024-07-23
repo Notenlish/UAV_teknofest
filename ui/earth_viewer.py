@@ -29,15 +29,15 @@ class EarthViewer:
     ) -> None:
         self.ui = ui
         self.screen_area = screen_area
-        self.earth_move_speed = config["earthMoveSpeed"]
+        self.earth_move_speed = config["window"]["earthMoveSpeed"]
         self.memory = memory
 
         self.zoom = 0
         self._calculate_max_tiles()
         self.scale = 1
 
-        self.bg_col = config["windowBackground"]
-        self.window_size = config["windowSize"]
+        self.bg_col = config["window"]["windowBackground"]
+        self.window_size = config["window"]["windowSize"]
 
         self.debug = True
 

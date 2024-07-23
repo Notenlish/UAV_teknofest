@@ -2,21 +2,19 @@ import logging
 import os
 import sys
 from threading import Event, Lock, Thread
+import time
 
 from process.gcs import GCSComm
 from process.tile_proc import TileFetchProcess
 from process.video import VideoProcess
+from process.mav_comm import MavComm
+
 from server.commands import COMMANDS, Command
+
 from ui.ui import UI
 from utils import read_config
 
-CONFIG = read_config("ui/config.json")
-
-c1, c2 = read_config("config.json"), read_config("ui/config.json")
-if c1["VIDEO_PORT"] != c2["videoPort"]:
-    print("Zort! Video çalışmayacak çünkü portlar aynı değil.")
-if c1["VID_USE_UDP"] != c2["sendVideoUDP"]:
-    print("Zort! Video çalışmayacak çünkü UDP/TCP aynı değil.")
+CONFIG = read_config("config.json")
 
 global MEMORY
 MEMORY = {"i": 0, "tiles_to_fetch": [], "videoStream": None}
@@ -33,6 +31,7 @@ class App:
             CONFIG, MEMORY, self.ui.video_stream.screen_area
         )
         self.comm_process = GCSComm(self, CONFIG, MEMORY)
+        self.mav_comm_process = MavComm(self, CONFIG, MEMORY)
 
     def run(self):
         try:
@@ -50,6 +49,8 @@ class App:
                 target=self.comm_process.start, name="GCS Comm", args=()
             )
             self.comm_thread.start()
+            self.mav_thread = Thread(target=self.mav_comm_process.start, name="MAV Comm", args=())
+            self.mav_thread.start()
             self.ui.start()
         except Exception as e:
             print("Error found:", e)
@@ -121,6 +122,7 @@ class App:
                                     {
                                         "mismatch_num_count": mismatched_elements,
                                         "corruption": corruption_score,
+                                        "time":time.time()
                                     },
                                 )
 

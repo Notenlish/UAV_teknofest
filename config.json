@@ -1,11 +1,82 @@
 {
-  "GCS_IP": "192.168.38.114",
-  "UAV_IP": "192.168.38.115",
+  "GCS_IP": "192.168.1.49",
+  "UAV_IP": "192.168.1.46",
   "PORT": 12942,
   "VIDEO_PORT": 12940,
   "UBI_RANGE_PORT":12941,
+  "MAVLINK_PORT": 12945,
   "MSG_SIZE": 1024,
   "ENCRYPT_KEY": "OLSWjky0LCrEiorAamj6Ljb4ZvwiA4dqtocjrlqtHRA=",
   "RANGE_TEST_SEED": 123456789,
-  "VID_USE_UDP": false
+  "VID_USE_UDP": false,
+  "window": {
+    "windowSize": [1200, 675],
+    "windowName": "StarWing UAV YKİ",
+    "windowFPS": 60,
+    "earthMoveSpeed": 1200,
+    "windowFont": "ui/data/Renogare-Regular.otf",
+    "windowFontSize": 20,
+    "windowCommands": [
+      {
+        "imagePath": "ui/data/plane_takeoff.svg",
+        "commandName": "OTO-Kalkış"
+      },
+      {
+        "imagePath": "ui/data/plane_land.svg",
+        "commandName": "OTO-İniş"
+      },
+      {
+        "imagePath": "ui/data/plane_lock.svg",
+        "commandName": "Kilitlen"
+      },
+      {
+        "imagePath": "ui/data/plane_kamikaze.svg",
+        "commandName": "Kamikaze"
+      },
+      {
+        "imagePath": "ui/data/network_test.svg",
+        "commandName": "Ubiquiti Test",
+        "function": "ubi_range_test"
+      }
+    ],
+    "testTeams": [
+      {
+        "takim_numarasi": 1,
+        "iha_enlem": 41.5118256,
+        "iha_boylam": 36.11993,
+        "iha_irtifa": 36.0,
+        "iha_dikilme": -8.0,
+        "iha_yonelme": 127,
+        "iha_yatis": 19.0,
+        "iha_hizi": 41.0,
+        "zaman_farki": 467
+      },
+      {
+        "takim_numarasi": 2,
+        "iha_enlem": 41.5100365,
+        "iha_boylam": 36.11837,
+        "iha_irtifa": 44.0,
+        "iha_dikilme": 24.0,
+        "iha_yonelme": 277.0,
+        "iha_yatis": -37.0,
+        "iha_hizi": 40.0,
+        "zaman_farki": 248
+      },
+      {
+        "takim_numarasi": 3,
+        "iha_enlem": 41.5123138,
+        "iha_boylam": 36.12,
+        "iha_irtifa": 32.0,
+        "iha_dikilme": 9.0,
+        "iha_yonelme": 13,
+        "iha_yatis": -30.0,
+        "iha_hizi": 45.0,
+        "zaman_farki": 30
+      }
+    ],
+    "windowBackground": "#184EB6",
+    "indicatorSkyBackground": "#73E6FF",
+    "indicatorGroundBackground": "#99F2A0"
+  }
+  
 }
