@@ -2,7 +2,8 @@ import socket
 import threading
 
 from server.async_client import TCPClient
-from streaming.server import start_ffmpeg_streaming, range_test_streaming
+from streaming.server import range_test_streaming
+from streaming.video_thread import VideoThread
 
 from utils import read_config
 
@@ -21,8 +22,8 @@ UBI_RANGE_PORT = CONFIG["UBI_RANGE_PORT"]
 
 class UAVSoftware:
     def __init__(self) -> None:
+        self.vid_active = False
         self.comm_thread = threading.Thread(target=self._start_comm_thread, args=())
-        self.video_thread = threading.Thread(target=self._send_video, args=())
 
     def start_com_thread(self):
         print("ĞĞĞĞ CLİENT")
@@ -31,18 +32,19 @@ class UAVSoftware:
         except Exception as e:
             print(e)
 
-    def start_vid_thread(self):
-        self.video_thread.start()
+    def start_vid(self, inc_data):
+        self.video_thread = VideoThread("UAV Vid Thread", CONFIG)
+        self.video_thread.run()
+        
+    def stop_vid(self, inc_data):
+        self.video_thread.stop()
 
     def start_ubi_thread(self, inc_data):  # this is called by TCPClient
         self._ubi_range_test()
 
     def _start_comm_thread(self):
-        client = TCPClient(self)
+        client = TCPClient(self, CONFIG)
         client.run()
-
-    def _send_video(self):
-        start_ffmpeg_streaming(GCS_IP, VIDEO_PORT, use_udp=VID_USE_UDP)
 
     def _ubi_range_test(self):
         def video_test():

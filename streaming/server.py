@@ -3,7 +3,7 @@ import sys
 import socket
 
 LINUX = sys.platform.startswith("linux")
-SCHOOL_PC = False
+SCHOOL_PC = True
 MIRROR = False
 win_cam = "video=Integrated Camera" if SCHOOL_PC else "video=HD Webcam"
 
@@ -45,7 +45,9 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
     # print(f"Starting FFmpeg with command: {' '.join(command)}")
     print("starting ffmpeg.")
     print("Terminal output disabled for ffmpeg vid stream")
-    subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    return subprocess.Popen(
+        command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
+    )
 
 
 # For UBI Range Test(UAV)
@@ -78,14 +80,13 @@ def range_test_streaming(client_ip, port, use_udp=True):
             s.sendall(buf.tobytes())
 
             # Receive data
-            data = s.recv(MSG_SIZE)
-            # we wont do anything with it
+            data = s.recv(MSG_SIZE)  # we wont do anything with it
             # print(f"Received data {data[:10]}...")
 
 
 if __name__ == "__main__":
-    client_ip = "127.0.0.1"  # Change to your client IP address
-    port = 12345  # Change to the port you want to use
+    client_ip = "127.0.0.1"
+    port = 12345
     range_test_streaming(client_ip, port, use_udp=False)
 
 # ffmpeg -f dshow -i video="Integrated Camera" -vcodec libx264 -pix_fmt yuv420p -preset veryfast -f mpegts udp://127.0.0.1:12345

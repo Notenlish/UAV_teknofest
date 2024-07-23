@@ -1,5 +1,4 @@
 from math import sin, cos
-import os
 
 import pygame
 

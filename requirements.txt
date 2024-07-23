@@ -12,3 +12,4 @@ pyproj
 gymnasium
 aiortc
 aiohttp
+ruff

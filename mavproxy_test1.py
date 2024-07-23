@@ -12,15 +12,11 @@ This module simply serves as a starting point for your own MAVProxy module.
 3. trim (or comment) out any functionality you do not need
 """
 
-import errno
-import os
-import os.path
-import sys
 import time
 
 from pymavlink import mavutil
 
-from MAVProxy.modules.lib import mp_module, mp_settings, mp_util
+from MAVProxy.modules.lib import mp_module, mp_settings
 
 
 class example1(mp_module.MPModule):
@@ -70,7 +66,7 @@ class example1(mp_module.MPModule):
             % {
                 "status_callcount": self.status_callcount,
                 "packets_mytarget": self.packets_mytarget,
-                "packets_othertarget": self.packets_othertarget,
+                
             }
         )
 

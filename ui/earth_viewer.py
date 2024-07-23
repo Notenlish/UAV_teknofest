@@ -1,11 +1,7 @@
-import math
 import os
 
-import json
 
 import pygame
-import requests
-from dotenv import load_dotenv
 
 from utils import draw_text
 

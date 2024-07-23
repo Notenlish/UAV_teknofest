@@ -1,7 +1,7 @@
 import json
 
 from pydubins import DubinsPath, dubins_path_sample_many, dubins_shortest_path
-from shape import DubinPoint, Point
+from shape import DubinPoint
 
 from uav import OwnUAV, TargetUAV
 

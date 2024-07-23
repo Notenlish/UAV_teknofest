@@ -1,7 +1,7 @@
 import json
 import math
 
-from pyproj import Proj, transform
+from pyproj import Proj
 
 # https://epsg.io/3857
 # https://epsg.io/4326

@@ -1,5 +1,3 @@
-import math
-import os
 
 import pygame
 from geopy import distance

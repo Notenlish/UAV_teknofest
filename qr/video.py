@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 
-from im_contrast import contrast
 
 detector = cv2.QRCodeDetector()
 

@@ -1,8 +1,6 @@
 import cv2
 import pygame
 import numpy as np
-import os
-import socket
 
 
 class VideoException(Exception):

@@ -1,7 +1,6 @@
 import time
 from threading import Event
 import os
-import pygame
 import requests
 from dotenv import load_dotenv
 

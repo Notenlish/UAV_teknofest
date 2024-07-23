@@ -1,6 +1,3 @@
-from random import randint
-from sys import getsizeof
-from threading import Event
 
 import pygame
 

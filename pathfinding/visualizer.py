@@ -2,9 +2,7 @@ import math
 
 import pygame
 from camera import Camera
-from pydubins import DubinsPath
-from shape import Point
-from uav import DubinPoint, OwnUAV, TargetUAV, UAV
+from uav import UAV
 from path_finding import PathFinding
 
 # TODO the pathfinder will calculate two paths, one for the guessed location of target

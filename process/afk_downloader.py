@@ -1,4 +1,4 @@
-from threading import Event, Lock, Thread
+from threading import Event, Thread
 
 from process import Process
 

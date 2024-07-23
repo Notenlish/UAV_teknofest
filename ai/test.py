@@ -50,6 +50,6 @@ best_epoch, best_results = find_best_epoch(results_path, categories)
 
 if best_epoch is not None:
     print(f"Best epoch: {best_epoch + 1} (1-indexed)")
-    print(f"Best results:", best_results)
+    print("Best results:", best_results)
 else:
     print("No clear best epoch found.")

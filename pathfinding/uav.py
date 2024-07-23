@@ -1,5 +1,4 @@
 from shape import DubinPoint
-from enum import Enum
 
 
 class UAVPredictColors:

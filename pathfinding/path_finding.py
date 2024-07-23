@@ -1,5 +1,5 @@
 from path_maker import PathMaker
-from uav import DubinPoint, OwnUAV, TargetUAV, UAVPredictColors
+from uav import OwnUAV, TargetUAV, UAVPredictColors
 from copy import deepcopy
 
 

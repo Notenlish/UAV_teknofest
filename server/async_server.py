@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import sys
 
 from typing import TYPE_CHECKING
 import time
