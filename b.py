@@ -12,6 +12,9 @@ gst_str = f"appsrc ! videoconvert ! x264enc tune=zerolatency bitrate=500 speed-p
 
 # Create OpenCV VideoCapture object
 cap = cv2.VideoCapture(0)
+
+
+
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, frame_width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_height)
 cap.set(cv2.CAP_PROP_FPS, fps)
@@ -52,3 +55,5 @@ cv2.destroyAllWindows()
 # B
 # https://forums.developer.nvidia.com/t/gstreamer-tcpserversink-2-3-seconds-latency/183388/4
 # https://forums.developer.nvidia.com/t/video-streaming/246362
+
+# $ gst-launch-1.0 videotestsrc is-live=1 ! video/x-raw,width=1280,height=720 ! timeoverlay valignment=4 halignment=1 ! nvvidconv ! 'video/x-raw(memory:NVMM),width=1280,height=720' ! tee name=t ! nvv4l2h264enc insert-sps-pps=1 idrinterval=15 ! h264parse ! rtph264pay ! udpsink host=10.19.106.10 port=5000 sync=0 t. ! queue ! nvegltransform ! nveglglessink sync=0
