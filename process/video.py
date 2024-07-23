@@ -1,8 +1,6 @@
 import cv2
 import pygame
 import numpy as np
-import os
-import socket
 
 
 class VideoException(Exception):
@@ -15,9 +13,9 @@ class VideoProcess:
         self.memory = memory
         self.screen_area = screen_area
 
-        self.port = config["videoPort"]
-        self.protocol = "udp" if config["sendVideoUDP"] else "tcp"
-        self.host = config["videoHost"]
+        self.port = config["VIDEO_PORT"]
+        self.protocol = "udp" if config["VID_USE_UDP"] else "tcp"
+        self.host = config["GCS_IP"]
         self.url = f"{self.protocol}://{self.host}:{self.port}"
 
         if self.protocol == "tcp":
@@ -30,12 +28,10 @@ class VideoProcess:
             self.url += "/?listen"  # the client needs to specify its listening on tcp
 
     def _start(self, url: str):
-        print(f"attempting to connect {url}")
         cap = cv2.VideoCapture(url)
-        print("started capture")
         if not cap.isOpened():
             raise VideoException("Cant connect(try again)")
-
+        print("started capturing video stream.")
         while True:
             # print("ULA OKU VERI")
             ret, frame = cap.read()
@@ -59,14 +55,15 @@ class VideoProcess:
         cv2.destroyAllWindows()
 
     def start(self):
-        print("starting capture")
+        print(f"attempting to connect {self.url}")
         err_count = 0
-        while err_count < 100000:
+        _max = 100000
+        while err_count < _max:
             try:
                 self._start(self.url)
             except VideoException:
                 err_count += 1
             except Exception as e:
                 print("err", e)
-                err_count += 10
+                err_count += _max
                 raise Exception("aaaaaaaaaaaaaaaaaaaaa")

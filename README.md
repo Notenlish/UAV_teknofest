@@ -14,8 +14,6 @@ Credits to [Andrew Walker](https://github.com/AndrewWalker/Dubins-Curves) for th
 
 Need training data.
 
-`...` [In progress] making a test training data by just placing red objects and recording them. WOOHOO!
-
 # Algorithm
 
 `-` Going to specified location
@@ -78,7 +76,7 @@ Bak usta yapmam gereken her şeyi buraya yazıcam.
 
 ### Kalanlar
 
-[ ] - Komünikasyon da heartbeat dışında bişiler gönder(send video dont send video etc.)
+[?] - Komünikasyon da heartbeat dışında bişiler gönder(send video dont send video etc.)
 
 [ ] - UAV tespit YOLO modeli(dataset ztn olması lazım)
 

@@ -1,7 +1,6 @@
 import gymnasium as gym
 from gymnasium import spaces
-from scipy.spatial import distance
-from math import pi, sin, cos
+from math import sin, cos
 import numpy as np
 import pygame
 import colorsys

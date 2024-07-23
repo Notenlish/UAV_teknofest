@@ -1,5 +1,7 @@
 from setuptools import setup
-import os, platform, sys
+import os
+import platform
+import sys
 
 version = "1.8.70"
 

@@ -1,6 +1,6 @@
 import enum
 import json
-from typing import Any, Type
+from typing import Any
 
 import utils
 from cryptography.fernet import Fernet
@@ -33,6 +33,8 @@ class COMMANDS(enum.IntEnum):
     KAMIKAZE = enum.auto()
     TEST_RANGE_UBIQUITI = enum.auto()
     TEST_RANGE_TELEMETRY = enum.auto()
+    START_VIDEO_STREAM = enum.auto()
+    STOP_VIDEO_STREAM = enum.auto()
 
 
 class Command:

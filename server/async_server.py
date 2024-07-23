@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import sys
 
 from typing import TYPE_CHECKING
 import time
@@ -25,7 +24,7 @@ PORT = config["PORT"]
 MSG_SIZE = config["MSG_SIZE"]
 
 
-# GCS
+# GCS (WIN PC)
 class TCPServer:
     def __init__(self, gcs: "GCSComm") -> None:
         self.gcs = gcs

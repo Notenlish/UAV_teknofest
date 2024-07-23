@@ -1,6 +1,3 @@
-from random import randint
-from sys import getsizeof
-from threading import Event
 
 import pygame
 
@@ -24,16 +21,16 @@ class UI:
         events: dict[str, any],
     ) -> None:
         self.app = app
-        self.screen_size = config["windowSize"]
+        self.screen_size = config["window"]["windowSize"]
         self.screen = pygame.display.set_mode(self.screen_size)
         self.clock = pygame.time.Clock()
-        self.UI_FPS = config["windowFPS"]
+        self.UI_FPS = config["window"]["windowFPS"]
         self.is_running = False
 
         self.memory = memory
         self.events = events
 
-        self.bg_col = config["windowBackground"]
+        self.bg_col = config["window"]["windowBackground"]
 
         self.pixel_percent_w = self.screen_size[0] / 100
         self.pixel_percent_h = self.screen_size[1] / 100
@@ -87,7 +84,7 @@ class UI:
         )
 
         self.font = pygame.font.Font(
-            config["windowFont"], size=config["windowFontSize"]
+            config["window"]["windowFont"], size=config["window"]["windowFontSize"]
         )
         # pygame.transform.set_smoothscale_backend("SSE2")
 

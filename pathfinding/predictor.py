@@ -1,7 +1,7 @@
 from kalman import ThetaKalmanFilter, VelocityKalmanFilter
 
 from path_finding import PathFinding
-from uav import OwnUAV, TargetUAV
+from uav import TargetUAV
 
 import math
 

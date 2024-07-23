@@ -10,32 +10,28 @@ try:
     from commands import Command, COMMANDS, CommandConverter
 except ModuleNotFoundError:
     from server.commands import Command, COMMANDS, CommandConverter
-import utils
 
 import logging
 import time
 
-try:
-    config = utils.read_config("../config.json")
-except FileNotFoundError:
-    config = utils.read_config("config.json")
 
-HOST = config["GCS_IP"]
-PORT = config["PORT"]
-MSG_SIZE = config["MSG_SIZE"]
-
-
-# UAV
+# UAV (İHA)
 class TCPClient:
-    def __init__(self, uav: "UAVSoftware") -> None:
+    def __init__(self, uav: "UAVSoftware", config: dict) -> None:
         self.uav = uav
+        self.HOST = config["GCS_IP"]
+        self.PORT = config["PORT"]
+        self.MSG_SIZE = config["MSG_SIZE"]
+
         self.msg_queue: list[bytes] = [
             Command(type=COMMANDS.CONNECT, data={"successful": False}),
             Command(COMMANDS.MOVE_TO, data={}),
         ]
         self.cmd_converter = CommandConverter()
         self.cmd2func = {
-            COMMANDS.TEST_RANGE_UBIQUITI: self.uav.start_ubi_thread
+            COMMANDS.TEST_RANGE_UBIQUITI: self.uav.start_ubi_thread,
+            COMMANDS.START_VIDEO_STREAM: self.uav.start_vid,
+            COMMANDS.STOP_VIDEO_STREAM: self.uav.stop_vid,
         }  # to be changed by uav_comm.py
 
         self.logger = logging.Logger("TCPClient", logging.DEBUG)
@@ -53,7 +49,7 @@ class TCPClient:
         self.msg_queue.append(msg)
 
     async def main(self):
-        reader, writer = await asyncio.open_connection(HOST, PORT)
+        reader, writer = await asyncio.open_connection(self.HOST, self.PORT)
         # Initial Connection
         cmd = self.msg_queue.pop(0)
         encrypted = self.cmd_converter.msg_from_command(cmd)
@@ -61,7 +57,7 @@ class TCPClient:
         writer.write(encrypted)
         await writer.drain()
 
-        incoming_data = await reader.read(MSG_SIZE)
+        incoming_data = await reader.read(self.MSG_SIZE)
         incoming_cmd = self.cmd_converter.command_from_msg(incoming_data)
 
         if incoming_cmd.type == COMMANDS.CONNECT:
@@ -86,7 +82,7 @@ class TCPClient:
                 await writer.drain()
 
             # Read the response from the server
-            incoming_data = await reader.read(MSG_SIZE)
+            incoming_data = await reader.read(self.MSG_SIZE)
 
             succesful = None
             try:

@@ -5,7 +5,7 @@ try:
     from utils import lat_lon_to_web_mercator
 except ModuleNotFoundError:
     import sys
-    from os.path import dirname, curdir
+    from os.path import curdir
 
     print(__file__, curdir)
     sys.path.append(curdir)

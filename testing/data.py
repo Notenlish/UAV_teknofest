@@ -1,6 +1,4 @@
 import xpc2
-import xpc
-import time
 
 
 class XPlaneDataHandler:
