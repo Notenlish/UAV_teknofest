@@ -3,7 +3,8 @@ cd cv2-env
 Scripts/activate
 git clone --recursive https://github.com/skvark/opencv-python.git
 cd opencv-python
-export CMAKE_ARGS="-DWITH_GSTREAMER=ON"
+# export CMAKE_ARGS="-DWITH_GSTREAMER=ON"
+$env:CMAKE_ARGS = "-DWITH_GSTREAMER=ON"
 # pip install --upgrade pip wheel
 pip wheel . --verbose
 # pip install opencv_python*.whl

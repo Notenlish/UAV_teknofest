@@ -75,7 +75,7 @@ def join_threads():
 for v1 in range(192, 255):
     print(f"testing {v1}")
     for v2 in range(168, 255):
-        for v3 in range(160, 255):  # 160da kaldım
+        for v3 in range(140, 255):  # 160da kaldım
             print(f"testing {v1}.{v2}.{v3}.x")
             for v4 in range(0, 255):
                 i = v1
