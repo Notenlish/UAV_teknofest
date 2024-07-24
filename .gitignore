@@ -5,6 +5,7 @@ ui/tiles/*
 venv/
 .VSCodeCounter/
 MAVProxy/windows/Output/
+cv2-env/
 
 keyframes/*
 input_vid/*
