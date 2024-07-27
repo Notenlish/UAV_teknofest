@@ -9,7 +9,7 @@ import os
 CONFIG = {}
 
 global MEMORY
-MEMORY = {"i": 0, "tiles_to_fetch": []}
+MEMORY = {"tiles_to_fetch": []}
 global EVENTS
 EVENTS = {"close_app": Event()}
 

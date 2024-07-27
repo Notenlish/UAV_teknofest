@@ -15,7 +15,7 @@ from utils import read_config
 CONFIG = read_config("config.json")
 
 global MEMORY
-MEMORY = {"i": 0, "tiles_to_fetch": [], "videoStream": None}
+MEMORY = {"tiles_to_fetch": [], "videoStream": None}
 global EVENTS
 EVENTS = {"close_app": Event()}
 

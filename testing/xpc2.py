@@ -53,8 +53,11 @@ class XPlaneUDP:
         DREF0+(4byte byte value)+dref_path+0+spaces to complete the whole message to 509 bytes
         DREF0+(4byte byte value of 1)+ sim/cockpit/switches/anti_ice_surf_heat_left+0+spaces to complete to 509 bytes
         """
-        cmd = b"DREF\x00"
-        dataref = dataref + "\x00"
+        MSG_SIZE = 509
+        
+        esc = b"\x00"
+        cmd = b"DREF" + esc
+        dataref = dataref + esc
         string = dataref.ljust(500).encode()
         message = "".encode()
         if vtype == "float":
@@ -63,8 +66,18 @@ class XPlaneUDP:
             message = struct.pack("<5si500s", cmd, value, string)
         elif vtype == "bool":
             message = struct.pack("<5sI500s", cmd, int(value), string)
+        elif vtype == "bool[20]":
+            value: list[bool, 20]
+            val_str = b""
+            for v in value:
+                val_str += struct.pack("I", int(v))
+            print(len(val_str))
+            message = struct.pack("<5s20I", cmd, val_str)
+            msg_size = len(message)
+            string = dataref.ljust(MSG_SIZE - msg_size).encode()
+            message += string
 
-        assert len(message) == 509
+        assert len(message) == MSG_SIZE
         # code from xplaneudp(original)
         # self.socket.sendto(message, (self.BeaconData["IP"], self.UDP_PORT))
         # my fix

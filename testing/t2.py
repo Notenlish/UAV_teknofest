@@ -4,7 +4,7 @@ import xpc
 def ex():
     print("X-Plane Connect example script")
     print("Setting up simulation")
-    with xpc.XPlaneConnect(port=50501) as client:
+    with xpc.XPlaneConnect() as client:
         # Verify connection
         try:
             # If X-Plane does not respond to the request, a timeout error

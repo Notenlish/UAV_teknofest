@@ -1,4 +1,3 @@
-import socket
 import threading
 
 from server.async_client import TCPClient

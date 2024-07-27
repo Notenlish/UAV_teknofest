@@ -92,13 +92,6 @@ class UI:
         self.earthviewer.render(self.screen, self.font)
         self.teamviewer.render(self.screen, self.font)
         self.video_stream.render(self.screen)
-        draw_text(
-            self.screen,
-            self.font,
-            f"{self.memory['i']}",
-            (self.screen_size[0] * 0.5, self.screen_size[1] * 0.5),
-            color="white",
-        )
         self.indicator.render(self.screen)
         self.command_panel.render(self.screen)
 

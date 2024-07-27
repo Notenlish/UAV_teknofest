@@ -2,6 +2,7 @@ import os
 
 
 import pygame
+import math
 
 from utils import draw_text
 
@@ -69,9 +70,16 @@ class EarthViewer:
         )
 
     def change_zoom(self, amount):
-        self.zoom += amount
-        self.zoom = min(max(self.zoom, 0), 22)
+        capped = min(max(self.zoom + amount, 0), 22)
+        dif = capped - self.zoom
+        # print(dif, amount, self.zoom, capped)
+        self.zoom = capped
         self._calculate_max_tiles()
+
+        self.camera_x *= 2**dif
+        self.camera_y *= 2**dif
+
+        print(self.camera_x)
 
     def set_scale(self, new_scale):
         self.scale = new_scale
@@ -94,7 +102,7 @@ class EarthViewer:
         if not os.path.exists(tile_path):
             tile_path = None
             tiles_to_fetch: list = self.memory["tiles_to_fetch"]
-            tile = {"scale": self.scale, "zoom": zoom, "x": x, "y": y}
+            tile = {"scale": self.scale, "zoom": zoom, "x": x, "y": y, "taken": False}
             try:
                 tiles_to_fetch.index(tile)
             except ValueError:
@@ -133,21 +141,26 @@ class EarthViewer:
         tile_start_x = int(self.camera_x) // tile_w
         tile_start_y = int(self.camera_y) // tile_h
 
-        how_many_rects_hor = (int(self.screen_area.width) // tile_w) + 2
-        how_many_rects_ver = (int(self.screen_area.height) // tile_h) + 2
+        how_many_rects_hor = math.ceil(int(self.screen_area.width) / tile_w)  # + 2
+        how_many_rects_ver = math.ceil(int(self.screen_area.height) / tile_h) + 1
 
         tile_end_x = tile_start_x + how_many_rects_hor
 
         tile_diff_x = tile_start_x
         tile_diff_y = tile_start_y
 
-        if self.zoom == 0:
-            tile_end_x = 1
-
         tile_end_y = tile_start_y + how_many_rects_ver
 
         if self.zoom == 0:
             tile_end_y = 1
+            tile_end_x = 1
+
+        # olan:
+        # x 0 4
+        # y 0 3
+        # olması gereken:
+        # x 0 2
+        # y 0 1
 
         tiles = []
         for y in range(tile_start_y, tile_end_y):
@@ -172,7 +185,9 @@ class EarthViewer:
         return tiles
 
     def render(self, screen: pygame.Surface, font: pygame.Font):
-        for tile in self.calculate_tiles(screen, font):
+        tiles = self.calculate_tiles(screen, font)
+        # print(tiles)
+        for tile in tiles:
             tile_rect = pygame.Rect(tile["x"], tile["y"], tile["w"], tile["h"])
             tile_x = tile["tile_x"]
             tile_y = tile["tile_y"]
