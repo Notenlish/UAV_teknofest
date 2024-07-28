@@ -2,25 +2,27 @@ import subprocess
 import threading
 import random
 
+quality = 30  # 0 - 100(highest quality)
+
 gst_args = (
     "gst-launch-1.0",
     "nvarguscamerasrc", "!",
-    "video/x-raw(memory:NVMM), width=1280, height=720, framerate=30/1, format=NV12", "!",
-    "nvvidconv", "!", "video/x-raw, format=I420", "!",
-    "videoconvert", "!", "video/x-raw, format=RGB", "!",
-    "jpegenc", "!", "filesink", "location=/dev/stdout"
+    "video/x-raw(memory:NVMM), width=1280, height=720, framerate=20/1, format=NV12", "!",
+    "nvjpegenc", f"quality={quality}", "!",
+    "image/jpeg, framerate=20/1", "!",
+    "filesink", "location=/dev/stdout"
 )
 
 v = random.randint(0, 1000)
 filename = f"output-{v}.mp4"
 
 ffmpeg_args = (
-    "ffmpeg", "-f", "image2pipe", "-vcodec", "mjpeg",
-    "-i", "-", "-vcodec", "libx264", "-pix_fmt", "yuv420p", "-f", "mp4", filename
+    "ffmpeg", "-f", "image2pipe", "-framerate", "20", "-vcodec", "mjpeg",
+    "-i", "-", "-r", "20", "-vcodec", "libx264", "-preset", "fast", "-pix_fmt", "yuv420p", "-f", "mp4", filename
 )
 
 def run_gstreamer():
-    proc = subprocess.Popen(gst_args, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(gst_args, stdout=subprocess.PIPE, bufsize=10**8)
     return proc
 
 def run_ffmpeg(pipe):
@@ -39,4 +41,3 @@ try:
 except KeyboardInterrupt:
     gst_proc.terminate()
     ffmpeg_thread.join()
-
