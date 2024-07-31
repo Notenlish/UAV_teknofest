@@ -1,16 +1,25 @@
 import threading
 import ctypes
 
+import logging
+
 from streaming.server import start_ffmpeg_streaming
 
 
 class VideoThread(threading.Thread):
-    def __init__(self, name, config):
+    def __init__(self, name, config, memory):
         threading.Thread.__init__(self)
+        self.logger = logging.Logger("video uav")
+        self.fh = logging.FileHandler("video_uav.log")
+        self.logger.addHandler(self.fh)
+
+        self.memory = memory
 
         self.gcs_ip = config["GCS_IP"]
         self.port = config["VIDEO_PORT"]
         self.use_udp = config["VID_USE_UDP"]
+        if self.use_udp != False:
+            self.logger.log(logging.DEBUG, "HAHAH TCP kullanmıyorsun aptal adam")
 
         self.name = name
 

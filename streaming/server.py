@@ -1,9 +1,10 @@
 import subprocess
 import sys
 import socket
+import time
 
 LINUX = sys.platform.startswith("linux")
-SCHOOL_PC = True
+SCHOOL_PC = False
 MIRROR = False
 win_cam = "video=Integrated Camera" if SCHOOL_PC else "video=HD Webcam"
 
@@ -19,7 +20,8 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
         )
 
     # fmt:off
-    command = [
+    if not LINUX:
+        command = [
         'ffmpeg',
         '-f', 'dshow',
         '-rtbufsize', '200MB',
@@ -36,6 +38,12 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
         '-preset', 'veryfast',
         '-f', 'mpegts',
     ]
+    if LINUX:
+        from kamera import run
+        run()
+        # get frame data
+        while True:
+            pass
     if MIRROR:
         command.append('-vf')
         command.append('hflip')
