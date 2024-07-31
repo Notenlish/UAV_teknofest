@@ -14,6 +14,7 @@ recording/*
 !MAVProxy/MAVProxy/modules/mavproxy_test1.py
 
 *.pt
+!iha.pt
 *.onnx
 *.torchscript
 *.pb
