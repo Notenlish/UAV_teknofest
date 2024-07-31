@@ -15,7 +15,7 @@ class VideoProcess:
 
         self.port = config["VIDEO_PORT"]
         self.protocol = "udp" if config["VID_USE_UDP"] else "tcp"
-        self.host = config["GCS_IP"]
+        self.host = config["UAV_IP"]
         self.url = f"{self.protocol}://{self.host}:{self.port}"
 
         if self.protocol == "tcp":

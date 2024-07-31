@@ -1,5 +1,6 @@
 import socket
 
+
 class MavComm:
     def __init__(self, app, config, memory) -> None:
         self.app = app
@@ -12,8 +13,11 @@ class MavComm:
         print(f"mav comm çalışıy kardeş {self.addr}")
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.bind(self.addr)
-            while True:
-                print("okuy")
-                sock.sendall(b"31")
-                data, addr = sock.recvfrom(280)
-                print(data, addr)
+            print("MAVlink mesajları dinleniyor.")
+            # while True:
+            #    print("okuy")
+            #    sock.sendall(b"31")
+            #    data, addr = sock.recvfrom(280)
+            #
+            #
+            # print(data, addr)

@@ -25,7 +25,7 @@ class UAVSoftware:
         self.comm_thread = threading.Thread(target=self._start_comm_thread, args=())
 
     def start_com_thread(self):
-        print("ĞĞĞĞ CLİENT")
+        print("UAV(İHA) Kodu çalışıyor")
         try:
             self.comm_thread.start()
         except Exception as e:

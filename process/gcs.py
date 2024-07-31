@@ -15,7 +15,7 @@ class GCSComm:
         self.config = config
         self.memory = memory
 
-        print("ĞĞĞĞ GCS COMM")
+        print("GCS(YKİ) Haberleşme modülü başlatıldı.")
 
     def start(self):
         self.server = TCPServer(self)

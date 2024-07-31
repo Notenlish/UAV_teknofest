@@ -19,12 +19,12 @@ try:
 except FileNotFoundError:
     config = utils.read_config("config.json")
 
-HOST = config["GCS_IP"]
+HOST = "0.0.0.0"  # config["GCS_IP"]
 PORT = config["PORT"]
 MSG_SIZE = config["MSG_SIZE"]
 
 
-# GCS (WIN PC)
+# GCS (WIN PC(YKİ))
 class TCPServer:
     def __init__(self, gcs: "GCSComm") -> None:
         self.gcs = gcs
@@ -36,7 +36,7 @@ class TCPServer:
         self.log_fh.setLevel(logging.DEBUG)
         self.logger.addHandler(self.log_fh)
 
-        print("ĞĞĞĞĞĞĞĞĞĞĞ  async server")
+        print("GCS(YKİ) Haberleşme Sunucusu Başlatıldı.")
 
         self.time_since_heartbeat = 0
         self.start_time = time.time()

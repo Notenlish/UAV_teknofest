@@ -42,7 +42,7 @@ class TCPClient:
         self.time_since_heartbeat = 0
         self.start_time = time.time()
 
-        print("ĞĞĞĞĞĞĞĞĞĞĞ async client")
+        print("İHA haberleşme, çalışıyor", self.HOST, self.PORT)
 
     def add_cmd(self, cmd: Command):
         msg = cmd

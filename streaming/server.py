@@ -39,11 +39,8 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
         '-f', 'mpegts',
     ]
     if LINUX:
-        from kamera import run
-        run()
-        # get frame data
-        while True:
-            pass
+        from kamera import main
+        main()
     if MIRROR:
         command.append('-vf')
         command.append('hflip')
