@@ -13,6 +13,7 @@ recording/*
 
 !MAVProxy/MAVProxy/modules/mavproxy_test1.py
 
+*.tlog
 *.pt
 !iha.pt
 *.onnx

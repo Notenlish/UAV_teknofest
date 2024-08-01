@@ -49,6 +49,7 @@ class TCPClient:
         self.msg_queue.append(msg)
 
     async def main(self):
+        print("Waiting for open connection")
         reader, writer = await asyncio.open_connection(self.HOST, self.PORT)
         # Initial Connection
         cmd = self.msg_queue.pop(0)

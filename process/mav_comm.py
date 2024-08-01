@@ -10,7 +10,7 @@ class MavComm:
         self.addr = (HOST, PORT)
 
     def start(self):
-        print(f"mav comm çalışıy kardeş {self.addr}")
+        print(f"MAV Communications çalışıyor {self.addr}")
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.bind(self.addr)
             print("MAVlink mesajları dinleniyor.")

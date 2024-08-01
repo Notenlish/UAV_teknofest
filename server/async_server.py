@@ -19,7 +19,7 @@ try:
 except FileNotFoundError:
     config = utils.read_config("config.json")
 
-HOST = "0.0.0.0"  # config["GCS_IP"]
+HOST = config["GCS_IP"]
 PORT = config["PORT"]
 MSG_SIZE = config["MSG_SIZE"]
 
@@ -54,7 +54,9 @@ class TCPServer:
     async def handle_client(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
     ):
+        print("Handling Client")
         incoming_data = await reader.read(MSG_SIZE)
+        print(incoming_data)
         incoming_cmd = self.cmd_converter.command_from_msg(incoming_data)
 
         print(f"Received: {incoming_cmd}")

@@ -55,7 +55,7 @@ class VideoProcess:
         cv2.destroyAllWindows()
 
     def start(self):
-        print(f"attempting to connect {self.url}")
+        print(f"VideoReceiver Process: trying to connect to {self.url}")
         err_count = 0
         _max = 100000
         while err_count < _max:
