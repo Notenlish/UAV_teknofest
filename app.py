@@ -146,12 +146,22 @@ class App:
 
 
 if __name__ == "__main__":
+    try:
 
-    class MPState:
-        pass
+        class MPState:
+            pass
 
-    mpstate = MPState()
-    mpstate.click_location = None  # get rid of err
+        mpstate = MPState()
+        mpstate.click_location = None  # get rid of err
 
-    a = App(mpstate)
-    a.run()
+        a = App(mpstate)
+        a.run()
+    except KeyboardInterrupt:
+        EVENTS["close_app"].set()
+        print("deleting app")
+        del a.comm_process
+        del a.comm_thread
+        del a.video_process
+        del a.video_thread
+        del a
+        print("AAAAAAAAAAAAAA KAFAYI YICEM TERMINAL KAPANMIYOR")

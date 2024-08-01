@@ -11,7 +11,6 @@ try:
 except FileNotFoundError:
     CONFIG = read_config("config.json")
 
-print(CONFIG)
 
 GCS_IP = CONFIG["GCS_IP"]
 PORT = CONFIG["PORT"]
@@ -20,6 +19,8 @@ RANGE_TEST_SEED = CONFIG["RANGE_TEST_SEED"]
 VID_USE_UDP = CONFIG["VID_USE_UDP"]
 UBI_RANGE_PORT = CONFIG["UBI_RANGE_PORT"]
 
+global MEMORY
+MEMORY = {}
 
 class UAVSoftware:
     def __init__(self) -> None:
@@ -34,7 +35,7 @@ class UAVSoftware:
             print(e)
 
     def start_vid(self, inc_data):
-        self.video_thread = VideoThread("UAV Vid Thread", CONFIG)
+        self.video_thread = VideoThread("UAV Vid Thread", CONFIG, memory=MEMORY)
         self.video_thread.run()
 
     def stop_vid(self, inc_data):

@@ -19,6 +19,7 @@ class VideoThread(threading.Thread):
         self.port = config["VIDEO_PORT"]
         self.use_udp = config["VID_USE_UDP"]
         if self.use_udp != False:
+            print("HAHAHA TCP kullanmıyorsun aptal adam")
             self.logger.log(logging.DEBUG, "HAHAH TCP kullanmıyorsun aptal adam")
 
         self.name = name

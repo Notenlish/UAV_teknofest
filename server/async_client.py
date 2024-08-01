@@ -121,5 +121,8 @@ class TCPClient:
 
 
 if __name__ == "__main__":
-    tcp = TCPClient()
+    import sys, os
+    sys.argv.append(os.path.join(os.getcwd, ".."))
+    from utils import read_config
+    tcp = TCPClient(None, read_config())
     tcp.run()

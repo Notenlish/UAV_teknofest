@@ -37,22 +37,22 @@ def start_ffmpeg_streaming(client_ip, port, use_udp=True):
         '-pix_fmt', 'yuv420p',
         '-preset', 'veryfast',
         '-f', 'mpegts',
-    ]
+        ]
+        if MIRROR:
+            command.append('-vf')
+            command.append('hflip')
+        command.append(f'{protocol}://{client_ip}:{port}')
+        print("starting ffmpeg.")
+        print("Terminal output disabled for ffmpeg vid stream")
+        return subprocess.Popen(
+            command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
+        )
     if LINUX:
         from kamera import main
         main()
-    if MIRROR:
-        command.append('-vf')
-        command.append('hflip')
-    command.append(f'{protocol}://{client_ip}:{port}')
     # fmt:on
 
     # print(f"Starting FFmpeg with command: {' '.join(command)}")
-    print("starting ffmpeg.")
-    print("Terminal output disabled for ffmpeg vid stream")
-    return subprocess.Popen(
-        command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
-    )
 
 
 # For UBI Range Test(UAV)

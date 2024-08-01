@@ -20,7 +20,7 @@ def load_yolov8_model():
 def run_yolov8_prediction(model: YOLO, frame):
     results: Results = model.predict(frame)
     # Run your YOLOv8 prediction here and return the result
-    pass
+    return results
 
 
 quality = 30  # 0 - 100 (highest quality)
@@ -91,14 +91,16 @@ def read_and_process_frames(pipe, model):
         frame = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2BGR)
 
         # Run YOLOv8 prediction
-        predictions = run_yolov8_prediction(model, frame)
+        #predictions = run_yolov8_prediction(model, frame)
+        #print(predictions)
 
         # Process predictions (e.g., draw bounding boxes, save results, etc.)
         # ...
 
 
 def main():
-    model = load_yolov8_model()
+    # model = load_yolov8_model()
+    model = None
 
     gst_pipe = gstreamer_pipeline(gst_args)
 
